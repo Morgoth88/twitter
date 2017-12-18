@@ -27,6 +27,36 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    /**
+     * @var string
+     */
     protected $table = 'users';
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comment(){
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function message(){
+        return $this->hasMany(Message::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function activity_log(){
+        return $this->hasMany(Activity_log::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function role(){
+        return $this->hasOne(Role::class);
+    }
 }

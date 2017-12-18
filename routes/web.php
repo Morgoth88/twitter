@@ -15,6 +15,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Route::prefix('api/v1')->group(function () {
 
-Route::get('/home', 'HomeController@index')->name('home');
+    Auth::routes();
+
+    Route::get('/home', 'HomeController@index')->name('home');
+
+    Route::get('/account', 'userController@showAccountUpdateForm')->name('accountUpdateForm');
+
+    Route::put('/account', 'userController@update')->name('accountUpdate');
+
+});
