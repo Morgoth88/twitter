@@ -8,5 +8,4 @@ class Activity_log extends Model
 {
     protected $table = 'activity_log';
 
-    protected $dateFormat = 'c';
 }

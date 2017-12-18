@@ -8,6 +8,6 @@ class Message extends Model
 {
     protected $table = 'message';
 
-    protected $dateFormat = 'c';
+
 
 }

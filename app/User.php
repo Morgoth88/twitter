@@ -27,7 +27,6 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    protected $table = 'user';
+    protected $table = 'users';
 
-    protected $dateFormat = 'c';
 }
