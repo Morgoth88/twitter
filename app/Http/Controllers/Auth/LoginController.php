@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use App\Activity_log;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -36,4 +39,28 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    public function authenticated (Request $request, $user) {
+
+        $activity_log = new Activity_log();
+
+        $activity_log->user_id = $user->id;
+        $activity_log->activity = 'User login';
+        $activity_log->save();
+        
+    }
+
+    public function logout (Request $request) {
+        $activity_log = new Activity_log();
+
+        $activity_log->user_id = $request->user()->id;
+        $activity_log->activity = 'User logout';
+        $activity_log->save();
+
+        Auth::logout();
+
+        return redirect(route('welcome'));
+
+    }
+
 }

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Activity_log;
 
 class RegisterController extends Controller
 {
@@ -68,4 +70,14 @@ class RegisterController extends Controller
             'password' => bcrypt($data['password']),
         ]);
     }
+
+    public function registered (Request $request, $user) {
+        $activity_log = new Activity_log();
+
+        $activity_log->user_id = $user->id;
+        $activity_log->activity = 'User registration';
+        $activity_log->save();
+
+    }
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Activity_log;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -45,6 +46,13 @@ class userController extends Controller
             $user->password = bcrypt($request->new_password);
 
             $user->save();
+
+            $activity_log = new Activity_log();
+
+            $activity_log->user_id = $request->user()->id;
+            $activity_log->activity = 'Account settings update';
+            $activity_log->save();
+
 
             $request->session()->flash('status','Account has been successfully updated');
             return redirect(route('home'));
