@@ -64,7 +64,7 @@ class userController extends Controller
 
 
             $request->session()->flash('status','Account has been successfully updated');
-            return redirect(route('home'));
+            return redirect(route('readTweet'));
         }
         else{
 

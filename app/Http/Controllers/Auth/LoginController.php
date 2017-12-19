@@ -28,7 +28,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = 'api/v1/home';
+    protected $redirectTo = 'api/v1/tweet';
 
     /**
      * Create a new controller instance.
@@ -48,6 +48,7 @@ class LoginController extends Controller
         $activity_log->activity = 'User login';
         $activity_log->save();
 
+        $request->session()->flash('status','You are logged in!');
     }
 
     public function logout (Request $request) {
@@ -58,6 +59,8 @@ class LoginController extends Controller
         $activity_log->save();
 
         Auth::logout();
+
+        $request->session()->flash('status','You are logged out!');
 
         return redirect(route('welcome'));
 

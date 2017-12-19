@@ -17,15 +17,26 @@ Route::get('/', function () {
 })->name('welcome');
 
 
-
 Route::prefix('api/v1')->group(function () {
 
     Auth::routes();
 
-    Route::get('/home', 'HomeController@index')->name('home');
-
+    /**
+     * Account updates routes
+     */
+    //Acount update form route
     Route::get('/account', 'userController@showAccountUpdateForm')->name('accountUpdateForm');
-
+    //Acount update route
     Route::put('/account', 'userController@update')->name('accountUpdate');
+
+
+    /**
+     * tweet routes
+     */
+    Route::post('/tweet','messageController@create')->name('createTweet');
+
+    Route::get('/tweet','messageController@read')->name('readTweet');
+
+    Route::put('/tweet','messageController@update')->name('updateTweet');
 
 });

@@ -68,14 +68,20 @@
 <div class="flex-center position-ref full-height">
 
     <div class="content">
+
+        @if (session('status'))
+            <div class="alert alert-success">
+                {{ session('status') }}
+            </div>
+        @endif
+
         <div class="title m-b-md">
             Twattyr
         </div>
-
         <div class="links">
             @if (Route::has('login'))
                 @auth
-                    <a href="{{route('home') }}">Home</a>
+                    <a href="{{route('readTweet') }}">Home</a>
                     @else
                         <a href="{{ route('login') }}">Login</a>
                         <a href="{{ route('register') }}">Register</a>

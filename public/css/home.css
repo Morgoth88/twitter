@@ -1,0 +1,45 @@
+#tweetTextarea{
+    border-radius: 5px;
+    border: 2px solid #d3e0e9;
+    width: 500px;
+    height: 100px;
+    padding: 10px;
+}
+#tweet-form{
+    text-align: center;
+}
+#tweetBtn{
+    margin-left: 570px;
+}
+#buttons-div{
+    text-align: center;
+}
+#submitBtn, #cancelBtn{
+    margin: 3px;
+}
+.tweet{
+    border-left: 1px solid #d3e0e9;
+    border-bottom: 1px solid #d3e0e9;
+    border-radius: 3px;
+    box-shadow: 2px 2px 3px #d3e0e9;
+    width: 600px;
+    margin: 10px auto;
+    padding: 3px 7px;
+}
+.tweet-name{
+    font-weight: bold;
+    font-size: 14px;
+    color: black;
+}
+.tweet-text{
+    font-size: 12px;
+    margin: 3px 10px;
+    max-width: 550px;
+    margin: 5px auto;
+    word-wrap: break-word;
+}
+.tweet-time{
+    margin-left: 10px;
+    font-size: 12px;
+    font-weight: lighter;
+}
