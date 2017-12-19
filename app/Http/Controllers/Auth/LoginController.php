@@ -47,7 +47,7 @@ class LoginController extends Controller
         $activity_log->user_id = $user->id;
         $activity_log->activity = 'User login';
         $activity_log->save();
-        
+
     }
 
     public function logout (Request $request) {

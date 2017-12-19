@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Activity_log extends Model
 {
+
+    const WEEK = 3600*24*7;
+
     /**
      * @var string
      */
@@ -27,15 +30,16 @@ class Activity_log extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function periodic_log_delete () {
+    /**
+     * Periodic log delete every week
+     */
+    public static function periodic_log_delete () {
 
         $oldestLog = strtotime(Activity_log::min('created_at'));
 
-        if ((time() - $oldestLog) >= 1) {
-            $logs = Activity_log::where('created_at', '>', Activity_log::min('created_at'))->get();
+        if ((time() - $oldestLog) >= self::WEEK) {
 
-            $logs->delete();
+            $logs = Activity_log::where('created_at', '>=', Activity_log::min('created_at'))->delete();
         }
-        ;
     }
 }

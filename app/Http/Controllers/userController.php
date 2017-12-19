@@ -12,13 +12,19 @@ use Illuminate\Validation\Rule;
 class userController extends Controller
 {
 
+    /**
+     * userController constructor.
+     */
     public function __construct () {
 
         $this->middleware('auth');
     }
 
 
-
+    /**
+     * @param Request $request
+     * @return $this
+     */
     public function showAccountUpdateForm (Request $request) {
 
         $user = $request->user();
@@ -26,7 +32,10 @@ class userController extends Controller
     }
 
 
-
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function update (Request $request) {
 
         $user = User::where('id',$request->user()->id)->first();
