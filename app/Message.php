@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Message extends Model
 {
     const
-        DAY = 3600*24,
+        DAY = 3600 * 24,
         HOUR = 3600,
         MINUTE = 60;
 
@@ -45,24 +45,30 @@ class Message extends Model
 
         $divide = round((time() - $time));
 
-        if ($divide > self::DAY)
-        {
+        if ($divide > self::DAY) {
             return $dateTime;
-        }
-        elseif($divide > self::HOUR)
-        {
+
+        } elseif ($divide > self::HOUR) {
             $divide = round($divide / self::HOUR);
-            return $divide.' h.';
-        }
-        elseif($divide < self::HOUR && $divide > self::MINUTE )
-        {
+            return $divide . ' h.';
+
+        } elseif ($divide < self::HOUR && $divide > self::MINUTE) {
             $divide = round($divide / self::MINUTE);
-            return $divide.' min.';
-        }
-        elseif ($divide < self::MINUTE)
-        {
-            return $divide.' sec.';
+            return $divide . ' min.';
+
+        } elseif ($divide < self::MINUTE) {
+            return $divide . ' sec.';
         }
 
+    }
+
+    public static function lessThanTwoMinutes ($message) {
+
+        if (time() - strtotime($message->created_at) <= 3600) {
+
+            return true;
+        } else {
+            return false;
+        }
     }
 }

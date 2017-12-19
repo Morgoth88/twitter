@@ -25,6 +25,7 @@
     width: 600px;
     margin: 10px auto;
     padding: 3px 7px;
+    position: relative;
 }
 .tweet-name{
     font-weight: bold;
@@ -42,4 +43,14 @@
     margin-left: 10px;
     font-size: 12px;
     font-weight: lighter;
+}
+.tweet-icons{
+
+}
+.up-del-links{
+    position: absolute;
+    right: 10px;
+}
+.comment-link{
+
 }
