@@ -75,4 +75,9 @@ class TimeHelper
         }
     }
 
+    public static function updated ($message) {
+
+        return $message->updated_at != $message->created_at;
+
+    }
 }

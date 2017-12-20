@@ -39,7 +39,8 @@ class Activity_log extends Model
 
         if (TimeHelper::weekPassed($oldestLogTime)) {
 
-            $logs = Activity_log::where('created_at', '>=', Activity_log::min('created_at'))->delete();
+            $logs = Activity_log::where('created_at', '>=', Activity_log::min('created_at'))
+                ->delete();
         }
     }
 }

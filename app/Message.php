@@ -14,16 +14,14 @@ class Message extends Model
     protected $table = 'message';
 
 
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'text', 'old_id', 'user_id',
+        'text', 'old_id', 'user_id', 'old', 'created_at',
     ];
-
 
 
     /**

@@ -28,8 +28,7 @@ class messageController extends Controller
     public function create (Request $request) {
 
         $this->validate($request, [
-            'tweet' => 'required|string'
-        ],
+            'tweet' => 'required|string'],
             ['Tweet is empty!']);
 
         $msgModel = new Message();
@@ -49,7 +48,7 @@ class messageController extends Controller
      */
     public function read () {
 
-        $tweets = Message::orderBy('created_at', 'desc')->paginate(20);
+        $tweets = Message::where('old', 0)->orderBy('created_at','desc')->paginate(20);
 
         return view('home')->with('tweets', $tweets);
     }
@@ -74,13 +73,17 @@ class messageController extends Controller
             if (TimeHelper::lessThanTwoMinutes($originalMessage)) {
 
                 $this->validate($request, [
-                    'tweet' => 'required|string'
-                ]);
+                    'tweet' => 'required|string'],
+                    ['Tweet is empty!']);
 
                 $newMessage= $request->user()->message()->create([
                     'text' => $request->tweet,
-                    'old_id' =>  $originalMessage->id
+                    'old_id' =>  $originalMessage->id,
+                    'created_at' => $originalMessage->created_at
                 ]);
+
+                $originalMessage->old = 1;
+                $originalMessage->save();
 
                 $request->session()->flash('status','Tweet has been successfully updated');
                 return redirect(route('readTweet'));

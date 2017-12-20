@@ -14,7 +14,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         Tweets:
-                        <button id="tweetBtn" class="btn btn-primary">
+                        <button id="tweetBtn" class="btn btn-primary" onclick="createForm()">
                             <i class="fa fa-commenting-o fa-2x" aria-hidden="true"></i>
 
                         </button>
@@ -40,8 +40,11 @@
                                 <div class="tweet">
                                     <div class="tweet-name">{{$tweet->user->name}}
                                         <span class="tweet-time">{{\App\TimeHelper::passedTime($tweet->created_at)}}</span>
+                                        @if(\App\TimeHelper::updated($tweet))
+                                        <span class="tweet-updtTime">updated</span>
+                                        @endif
                                     </div>
-                                    <div class="tweet-text">{{$tweet->text}}</div>
+                                    <div class="tweet-text" data-id="{{$tweet->id}}">{{$tweet->text}}</div>
 
                                     <div class="tweet-icons">
                                         <span class="comment-link">
@@ -50,14 +53,14 @@
 
                                         @if(Auth::user()->id===$tweet->user->id && \App\TimeHelper::lessThanTwoMinutes($tweet))
                                             <span class="up-del-links">
-                                                <button id="msgUpdtBtn" type="submit"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+
+                                                    <button id="msgUpdtBtn" onclick="updateForm({{$tweet->id}})"><i class="fa fa-pencil" aria-hidden="true"></i></button>
 
                                                 <form method="POST" action="tweet/{{$tweet->id}}">
                                                     {{method_field('DELETE')}}
                                                     {{csrf_field()}}
                                                     <button id="msgDltBtn" type="submit"><i class='fa fa-times' aria-hidden='true'></i></button>
                                                 </form>
-
                                             </span>
                                         @endif
                                     </div>
