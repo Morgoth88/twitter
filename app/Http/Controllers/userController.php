@@ -22,6 +22,8 @@ class userController extends Controller
 
 
     /**
+     * Show account update form with current user data
+     *
      * @param Request $request
      * @return $this
      */
@@ -33,6 +35,8 @@ class userController extends Controller
 
 
     /**
+     * User's account update and activity log
+     *
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */

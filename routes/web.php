@@ -11,6 +11,9 @@
 |
 */
 
+/**
+ *welcome page route
+ ************************************************************************************/
 Route::get('/', function () {
     \App\Activity_log::periodic_log_delete();
     return view('welcome');
@@ -19,24 +22,29 @@ Route::get('/', function () {
 
 Route::prefix('api/v1')->group(function () {
 
+    /**
+     *Authentication routes
+     ************************************************************************************/
     Auth::routes();
 
     /**
      * Account updates routes
-     */
+     ************************************************************************************/
     //Acount update form route
     Route::get('/account', 'userController@showAccountUpdateForm')->name('accountUpdateForm');
     //Acount update route
     Route::put('/account', 'userController@update')->name('accountUpdate');
 
-
     /**
      * tweet routes
-     */
+     ************************************************************************************/
+    //Create message
     Route::post('/tweet','messageController@create')->name('createTweet');
-
+    //Read messages
     Route::get('/tweet','messageController@read')->name('readTweet');
-
-    Route::put('/tweet','messageController@update')->name('updateTweet');
+    //update message
+    Route::put('/tweet/{id}','messageController@update')->name('updateTweet');
+    //delete message
+    Route::delete('/tweet/{id}','messageController@delete')->name('deleteTweet');
 
 });

@@ -39,7 +39,7 @@
                             @foreach($tweets as $tweet)
                                 <div class="tweet">
                                     <div class="tweet-name">{{$tweet->user->name}}
-                                        <span class="tweet-time">{{\App\Message::passedTime($tweet->created_at)}}</span>
+                                        <span class="tweet-time">{{\App\TimeHelper::passedTime($tweet->created_at)}}</span>
                                     </div>
                                     <div class="tweet-text">{{$tweet->text}}</div>
 
@@ -48,10 +48,16 @@
                                             <i class="fa fa-comments" aria-hidden="true"></i>
                                         </span>
 
-                                        @if(Auth::user()->id===$tweet->user->id && \App\Message::lessThanTwoMinutes($tweet))
+                                        @if(Auth::user()->id===$tweet->user->id && \App\TimeHelper::lessThanTwoMinutes($tweet))
                                             <span class="up-del-links">
-                                                <i class="fa fa-pencil" aria-hidden="true"></i>
-                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                                <button id="msgUpdtBtn" type="submit"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+
+                                                <form method="POST" action="tweet/{{$tweet->id}}">
+                                                    {{method_field('DELETE')}}
+                                                    {{csrf_field()}}
+                                                    <button id="msgDltBtn" type="submit"><i class='fa fa-times' aria-hidden='true'></i></button>
+                                                </form>
+
                                             </span>
                                         @endif
                                     </div>

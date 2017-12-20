@@ -3,11 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\TimeHelper;
 
 class Activity_log extends Model
 {
 
-    const WEEK = 3600*24*7;
 
     /**
      * @var string
@@ -35,9 +35,9 @@ class Activity_log extends Model
      */
     public static function periodic_log_delete () {
 
-        $oldestLog = strtotime(Activity_log::min('created_at'));
+        $oldestLogTime = Activity_log::min('created_at');
 
-        if ((time() - $oldestLog) >= self::WEEK) {
+        if (TimeHelper::weekPassed($oldestLogTime)) {
 
             $logs = Activity_log::where('created_at', '>=', Activity_log::min('created_at'))->delete();
         }
