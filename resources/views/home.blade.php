@@ -23,8 +23,6 @@
                         @if (count($errors) > 0)
 
                             <div class="alert alert-danger">
-                                <strong>Whoops! Something went wrong!</strong>
-                                <br><br>
                                 <ul>
                                     @foreach ($errors->all() as $error)
                                         <li>{{ $error }}</li>
@@ -43,6 +41,18 @@
                                         @if(\App\TimeHelper::updated($tweet))
                                         <span class="tweet-updtTime">updated</span>
                                         @endif
+
+                                        @if(Auth::user()->id===$tweet->user->id && \App\TimeHelper::lessThanTwoMinutes($tweet))
+                                            <span class="up-del-links">
+                                                <button id="msgUpdtBtn" onclick="updateForm({{$tweet->id}})"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+                                                <form method="POST" action="tweet/{{$tweet->id}}">
+                                                    {{method_field('DELETE')}}
+                                                    {{csrf_field()}}
+                                                    <button id="msgDltBtn" type="submit"><i class='fa fa-times' aria-hidden='true'></i></button>
+                                                </form>
+                                            </span>
+                                        @endif
+
                                     </div>
                                     <div class="tweet-text" data-id="{{$tweet->id}}">{{$tweet->text}}</div>
 
@@ -51,24 +61,24 @@
                                             <button id="cmntBtn" onclick="commentForm({{$tweet->id}})">
                                             <i class="fa fa-comments" aria-hidden="true"></i>
                                             </button>
+                                        </span>
                                             @if(count($tweet->comment) > 0)
                                                {{count($tweet->comment)}}
                                                 <button id="cmntShowBtn">comments</button>
+                                                <br>
+                                                <br>
+                                            <div class="comments-container">
+                                                @foreach($tweet->comment as $comment)
+                                                    <div class="comment-name">{{$comment->user->name}}
+                                                        <span class="comment-time">{{\App\TimeHelper::passedTime($comment->created_at)}}</span>
+                                                        @if(\App\TimeHelper::updated($comment))
+                                                            <span class="comment-updtTime">updated</span>
+                                                        @endif
+                                                    </div>
+                                                    <div class="comment-text" data-id="{{$comment->id}}">{{$comment->text}}</div>
+                                                @endforeach
+                                            </div>
                                             @endif
-                                        </span>
-
-                                        @if(Auth::user()->id===$tweet->user->id && \App\TimeHelper::lessThanTwoMinutes($tweet))
-                                            <span class="up-del-links">
-
-                                                    <button id="msgUpdtBtn" onclick="updateForm({{$tweet->id}})"><i class="fa fa-pencil" aria-hidden="true"></i></button>
-
-                                                <form method="POST" action="tweet/{{$tweet->id}}">
-                                                    {{method_field('DELETE')}}
-                                                    {{csrf_field()}}
-                                                    <button id="msgDltBtn" type="submit"><i class='fa fa-times' aria-hidden='true'></i></button>
-                                                </form>
-                                            </span>
-                                        @endif
                                     </div>
                                 </div>
                             @endforeach

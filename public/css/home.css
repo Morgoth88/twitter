@@ -31,12 +31,13 @@
     font-weight: bold;
     font-size: 14px;
     color: black;
+    border-bottom: 1px solid #d3e0e9;;
+    margin: 5px 5px;
 }
 .tweet-text{
-    font-size: 12px;
-    margin: 3px 10px;
+    font-size: 14px;
+    margin: 15px 15px 5px 15px;
     max-width: 550px;
-    margin: 5px auto;
     word-wrap: break-word;
 }
 .tweet-time{
@@ -52,9 +53,10 @@
 .tweet-icons{
 
 }
-.up-del-links{
+.up-del-links {
+    display: inline-flex;
     position: absolute;
-    right: 10px;
+    right: 5px;
 }
 .comment-link{
 
@@ -62,17 +64,11 @@
 #msgDltBtn{
     border: none;
     background: none;
-    position: absolute;
-    right: -5px;
-    bottom: -23px;
     color: red;
 }
 #msgUpdtBtn{
     border: none;
     background: none;
-    position: absolute;
-    right: -5px;
-    bottom: -3px;
     color: dodgerblue;
 }
 #cmntBtn{
@@ -88,4 +84,31 @@
 #cmntShowBtn:hover{
     color: green;
     font-weight: bold;
+}
+.comment-name{
+    font-weight: bold;
+    font-size: 12px;
+    color: black;
+}
+.comment-time{
+    margin-left: 10px;
+    font-size: 12px;
+    font-weight: lighter;
+}
+.comment-updtTime{
+    margin-left: 10px;
+    font-size: 11px;
+    font-weight: lighter;
+}
+.comment-text{
+    font-size: 12px;
+    margin: 3px 5px;
+    max-width: 450px;
+    word-wrap: break-word;
+}
+.comments-container{
+    border-top: 1px solid #d3e0e9;
+    margin: 7px 7px;
+    padding: 10px;
+
 }

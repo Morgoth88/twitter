@@ -1,6 +1,10 @@
 function createForm() {
 
     if (!$('#tweetForm').length) {
+        var label = $('<div></div>');
+        label.attr('id','formLabel');
+        label.html('<strong>New tweet</strong>');
+
         var form = $('<form></form>');
         form.attr('method', 'POST');
         form.attr('id', 'tweetForm');
@@ -19,6 +23,7 @@ function createForm() {
 
         form.prepend(csrfInput);
         form.prepend(textarea);
+        form.prepend(label);
 
         var buttonsDiv = $('<div></div>');
         buttonsDiv.attr('id', 'buttons-div');
