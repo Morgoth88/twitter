@@ -65,7 +65,7 @@
     position: absolute;
     right: -5px;
     bottom: -23px;
-
+    color: red;
 }
 #msgUpdtBtn{
     border: none;
@@ -73,5 +73,19 @@
     position: absolute;
     right: -5px;
     bottom: -3px;
+    color: dodgerblue;
 }
-
+#cmntBtn{
+    border: none;
+    background: none;
+    color: green;
+}
+#cmntShowBtn{
+    border: none;
+    background: none;
+    color: darkslategray;
+}
+#cmntShowBtn:hover{
+    color: green;
+    font-weight: bold;
+}

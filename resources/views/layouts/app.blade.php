@@ -88,5 +88,6 @@
             integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
             crossorigin="anonymous"></script>
     <script src="{{ asset('js/messageForm.js') }}"></script>
+    <script src="{{ asset('js/commentForm.js') }}"></script>
 </body>
 </html>

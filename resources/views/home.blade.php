@@ -48,7 +48,13 @@
 
                                     <div class="tweet-icons">
                                         <span class="comment-link">
+                                            <button id="cmntBtn" onclick="commentForm({{$tweet->id}})">
                                             <i class="fa fa-comments" aria-hidden="true"></i>
+                                            </button>
+                                            @if(count($tweet->comment) > 0)
+                                               {{count($tweet->comment)}}
+                                                <button id="cmntShowBtn">comments</button>
+                                            @endif
                                         </span>
 
                                         @if(Auth::user()->id===$tweet->user->id && \App\TimeHelper::lessThanTwoMinutes($tweet))
@@ -66,6 +72,7 @@
                                     </div>
                                 </div>
                             @endforeach
+                            {{$tweets->links()}}
                         @endif
                     </div>
                 </div>

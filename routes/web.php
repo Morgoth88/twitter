@@ -36,15 +36,20 @@ Route::prefix('api/v1')->group(function () {
     Route::put('/account', 'userController@update')->name('accountUpdate');
 
     /**
-     * tweet routes
+     * Tweet routes
      ************************************************************************************/
     //Create message
     Route::post('/tweet','messageController@create')->name('createTweet');
     //Read messages
     Route::get('/tweet','messageController@read')->name('readTweet');
     //update message
-    Route::put('/tweet/{id}','messageController@update')->name('updateTweet');
+    Route::put('/tweet/{message}','messageController@update')->name('updateTweet');
     //delete message
-    Route::delete('/tweet/{id}','messageController@delete')->name('deleteTweet');
+    Route::delete('/tweet/{message}','messageController@delete')->name('deleteTweet');
 
+    /**
+     * Comment routes
+     ************************************************************************************/
+    //Create comment
+    Route::post('/tweet/{message}/comment','commentController@create')->name('createComment');
 });

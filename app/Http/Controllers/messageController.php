@@ -3,21 +3,22 @@
 namespace App\Http\Controllers;
 
 
+use App\User;
+use App\Interfaces\MessageInterface;
 use Illuminate\Http\Request;
 use App\Message;
 use App\TimeHelper;
 
-class messageController extends Controller
+class messageController extends Controller implements MessageInterface
 {
 
     /**
-     * userController constructor.
+     * messageController constructor.
      */
     public function __construct () {
 
         $this->middleware('auth');
     }
-
 
     /**
      * create message
@@ -31,14 +32,12 @@ class messageController extends Controller
             'tweet' => 'required|string'],
             ['Tweet is empty!']);
 
-        $msgModel = new Message();
-
         $tweet = $request->user()->message()->create([
             'text' => $request->tweet
         ]);
 
-        $request->session()->flash('status','Tweet has been successfully created');
-        return response(redirect(route('readTweet')), 201);
+        $request->session()->flash('status', 'Tweet has been successfully created');
+        return redirect(route('readTweet')) ;
     }
 
     /**
@@ -48,9 +47,9 @@ class messageController extends Controller
      */
     public function read () {
 
-        $tweets = Message::where('old', 0)->orderBy('created_at','desc')->paginate(20);
+        $messages = Message::where('old', 0)->orderBy('created_at', 'desc')->paginate(10);
 
-        return view('home')->with('tweets', $tweets);
+        return view('home')->with('tweets', $messages);
     }
 
 
@@ -58,71 +57,56 @@ class messageController extends Controller
      * update message
      *
      * @param Request $request
-     * @param $id
+     * @param Message $Message
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function update (Request $request, $id) {
+    public function update (Request $request, Message $Message) {
 
-        $originalMessage = Message::where('id', $id)->first();
+        $this->authorize('update_delete', $Message);
 
+        if (TimeHelper::lessThanTwoMinutes($Message)) {
 
-        if ($originalMessage) {
+            $this->validate($request, [
+                'tweet' => 'required|string'],
+                ['Tweet is empty!']);
 
-            $this->authorize('update_delete', $originalMessage);
+            $newMessage = $request->user()->message()->create([
+                'text' => $request->tweet,
+                'old_id' => $Message->id,
+                'created_at' => $Message->created_at
+            ]);
 
-            if (TimeHelper::lessThanTwoMinutes($originalMessage)) {
+            $Message->old = 1;
+            $Message->save();
 
-                $this->validate($request, [
-                    'tweet' => 'required|string'],
-                    ['Tweet is empty!']);
-
-                $newMessage= $request->user()->message()->create([
-                    'text' => $request->tweet,
-                    'old_id' =>  $originalMessage->id,
-                    'created_at' => $originalMessage->created_at
-                ]);
-
-                $originalMessage->old = 1;
-                $originalMessage->save();
-
-                $request->session()->flash('status','Tweet has been successfully updated');
-                return redirect(route('readTweet'));
-            }
-            else
-            {
-                $request->session()->flash('status','Sorry, time to update has expired');
-                return redirect(route('readTweet'));
-            }
+            $request->session()->flash('status', 'Tweet has been successfully updated');
+            return redirect(route('readTweet'));
+        } else {
+            $request->session()->flash('status', 'Sorry, time to update has expired');
+            return redirect(route('readTweet'));
         }
-
     }
+
 
     /**
      * Delete message
      *
      * @param Request $request
-     * @param $id
+     * @param Message $message
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function delete(Request $request,$id){
-        $message = Message::where('id', $id)->first();
+    public function delete (Request $request, Message $message) {
 
-        if($message) {
+        $this->authorize('update_delete', $message);
 
-            $this->authorize('update_delete', $message);
+        if (TimeHelper::lessThanTwoMinutes($message)) {
 
-            if (TimeHelper::lessThanTwoMinutes($message)) {
+            $message->delete();
 
-                $message->delete();
-
-                $request->session()->flash('status', 'Tweet was successfully deleted');
-                return redirect(route('readTweet'));
-            }else{
-                $request->session()->flash('status', 'Sorry, time limit expired!');
-                return redirect(route('readTweet'));
-            }
-        }else{
-            $request->session()->flash('status', 'Unknown tweet id');
+            $request->session()->flash('status', 'Tweet was successfully deleted');
+            return redirect(route('readTweet'));
+        } else {
+            $request->session()->flash('status', 'Sorry, time limit expired!');
             return redirect(route('readTweet'));
         }
     }

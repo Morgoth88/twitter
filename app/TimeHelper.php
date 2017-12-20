@@ -16,7 +16,7 @@ class TimeHelper
         DAY = 3600 * 24,
         HOUR = 3600,
         MINUTE = 60,
-        TWO_MINUTES = 120,
+        TWO_MINUTES = 120*100000,
         WEEK = 3600 * 24 * 7;
 
 
@@ -33,7 +33,7 @@ class TimeHelper
         $divide = round((time() - $time));
 
         if ($divide > self::DAY) {
-            return $dateTime;
+            return date('H:i:s / d.m.y ',$time);
 
         } elseif ($divide > self::HOUR) {
             $divide = round($divide / self::HOUR);

@@ -35,28 +35,28 @@ class User extends Authenticatable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function comment(){
+    public function comment () {
         return $this->hasMany(Comment::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function message(){
+    public function message () {
         return $this->hasMany(Message::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function activity_log(){
+    public function activity_log () {
         return $this->hasMany(Activity_log::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function role(){
+    public function role () {
         return $this->hasOne(Role::class);
     }
 }

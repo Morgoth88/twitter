@@ -20,7 +20,7 @@ class Message extends Model
      * @var array
      */
     protected $fillable = [
-        'text', 'old_id', 'user_id', 'old', 'created_at',
+        'text', 'old_id', 'old', 'created_at',
     ];
 
 
@@ -38,6 +38,5 @@ class Message extends Model
     public function comment () {
         return $this->hasMany(Comment::class);
     }
-
 
 }
