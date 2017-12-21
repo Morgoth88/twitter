@@ -20,6 +20,7 @@ class CreateCommentTable extends Migration
             $table->unsignedInteger('user_id')->index();
             $table->unsignedInteger('message_id')->index();
             $table->integer('old_id')->unique();
+            $table->tinyInteger('old');
             $table->text('text');
             $table->timestamps();
         });

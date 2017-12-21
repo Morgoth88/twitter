@@ -52,4 +52,6 @@ Route::prefix('api/v1')->group(function () {
      ************************************************************************************/
     //Create comment
     Route::post('/tweet/{message}/comment','commentController@create')->name('createComment');
+    //Read comment
+    Route::get('/tweet/{message}/comment','commentController@read')->name('readComment');
 });

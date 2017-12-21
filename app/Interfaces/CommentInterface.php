@@ -14,7 +14,7 @@ use App\Comment;
 
 interface CommentInterface
 {
-    public function read();
+    public function read(Message $message);
     public function create(Message $message, Request $request);
     public function delete(Request $request, Comment $comment);
     public function update(Request $request, Comment $comment);

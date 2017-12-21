@@ -19,6 +19,7 @@ class CreateMessageTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id')->index();
             $table->integer('old_id')->unique();
+            $table->tinyInteger('old');
             $table->text('text');
             $table->timestamps();
         });

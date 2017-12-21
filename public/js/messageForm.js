@@ -61,6 +61,10 @@ function updateForm(id) {
 
     if (!$('#tweetForm').length) {
 
+        var label = $('<div></div>');
+        label.attr('id','formLabel');
+        label.html('<strong>Update tweet</strong>');
+
         var form = $('<form></form>');
         form.attr('method', 'POST');
         form.attr('id', 'tweetForm');
@@ -87,6 +91,7 @@ function updateForm(id) {
         form.prepend(csrfInput);
         form.prepend(methodInput);
         form.prepend(textarea);
+        form.prepend(label);
 
         var buttonsDiv = $('<div></div>');
         buttonsDiv.attr('id', 'buttons-div');

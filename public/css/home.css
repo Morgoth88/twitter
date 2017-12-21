@@ -31,8 +31,7 @@
     font-weight: bold;
     font-size: 14px;
     color: black;
-    border-bottom: 1px solid #d3e0e9;;
-    margin: 5px 5px;
+    margin: 5px 5px 0 5px;
 }
 .tweet-text{
     font-size: 14px;
@@ -41,9 +40,12 @@
     word-wrap: break-word;
 }
 .tweet-time{
-    margin-left: 10px;
     font-size: 12px;
     font-weight: lighter;
+}
+.tweet-time-div{
+    margin: 0px 5px 0px 5px;
+    border-bottom: 1px solid #d3e0e9;;
 }
 .tweet-updtTime{
     margin-left: 10px;
@@ -110,5 +112,8 @@
     border-top: 1px solid #d3e0e9;
     margin: 7px 7px;
     padding: 10px;
-
+}
+.btn-warning a{
+    text-decoration: none;
+    color: white;
 }

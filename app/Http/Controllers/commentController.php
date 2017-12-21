@@ -6,11 +6,13 @@ use App\Comment;
 use App\Message;
 use Illuminate\Http\Request;
 use App\Interfaces\CommentInterface;
+use App\TimeHelper;
 
 class commentController extends Controller implements CommentInterface
 {
-    public function read () {
-        // TODO: Implement read() method.
+    public function read (Message $message) {
+
+        return view('message-comment')->with('tweet', $message);
     }
 
     public function create (Message $message, Request $request) {
@@ -26,7 +28,7 @@ class commentController extends Controller implements CommentInterface
             ]);
 
         $request->session()->flash('status', 'Comment has been successfully created');
-        return redirect(route('readTweet')) ;
+        return redirect(route('readTweet'));
     }
 
     public function update (Request $request, Comment $comment) {
