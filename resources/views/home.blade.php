@@ -52,7 +52,7 @@
                                                             class="fa fa-pencil" aria-hidden="true"></i>
                                                 </button>
                                                 <!--delete button with form-->
-                                                <form method="POST" action="tweet/{{$tweet->id}}">
+                                                <form method="POST" action="{{route('deleteTweet',['message'=> $tweet->id])}}">
                                                     {{method_field('DELETE')}}
                                                     {{csrf_field()}}
                                                     <button id="msgDltBtn" type="submit"><i class='fa fa-times' aria-hidden='true'></i></button>

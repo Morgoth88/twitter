@@ -8,6 +8,7 @@ use App\Interfaces\MessageInterface;
 use Illuminate\Http\Request;
 use App\Message;
 use App\TimeHelper;
+use Illuminate\Support\Facades\DB;
 
 class messageController extends Controller implements MessageInterface
 {
@@ -19,6 +20,23 @@ class messageController extends Controller implements MessageInterface
 
         $this->middleware('auth');
     }
+
+
+
+    /**
+     * Read all messages...20 per page
+     *
+     * @return $this
+     */
+    public function read () {
+
+        $messages = Message::where('old', 0)->orderBy('created_at', 'desc')->paginate(10);
+
+        //$messages = $messages->sortByDesc('.message.comment.created_at');
+        return view('home')->with('tweets', $messages);
+    }
+
+
 
     /**
      * create message
@@ -40,17 +58,6 @@ class messageController extends Controller implements MessageInterface
         return redirect(route('readTweet')) ;
     }
 
-    /**
-     * Read all messages...20 per page
-     *
-     * @return $this
-     */
-    public function read () {
-
-        $messages = Message::where('old', 0)->orderBy('created_at', 'desc')->paginate(10);
-
-        return view('home')->with('tweets', $messages);
-    }
 
 
     /**

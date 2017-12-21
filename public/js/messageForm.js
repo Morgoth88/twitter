@@ -49,6 +49,7 @@ function createForm() {
         cancelBtn.click(function () {
             $('#tweetForm').remove();
         });
+
     }
     else {
         $('#tweetForm').remove();
@@ -112,7 +113,16 @@ function updateForm(id) {
 
         form.append(buttonsDiv);
 
-        $('#tweet-form').prepend(form);
+        var tweet_up_form_div = $('<div></div>');
+        tweet_up_form_div.attr('id','tweet-update-form');
+
+
+        tweet_up_form_div.prepend(form);
+
+        $('div[data-id=' + id + ']').closest('.tweet').append(tweet_up_form_div);
+
+
+
 
         cancelBtn.click(function () {
             $('#tweetForm').remove();

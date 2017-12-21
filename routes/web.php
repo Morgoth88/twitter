@@ -54,4 +54,8 @@ Route::prefix('api/v1')->group(function () {
     Route::post('/tweet/{message}/comment','commentController@create')->name('createComment');
     //Read comment
     Route::get('/tweet/{message}/comment','commentController@read')->name('readComment');
+    //Update comment
+    Route::put('/tweet/{message}/comment/{comment}','commentController@update')->name('updateComment');
+    //Delete comment
+    Route::delete('/tweet/{message}/comment/{comment}','commentController@delete')->name('deleteComment');
 });

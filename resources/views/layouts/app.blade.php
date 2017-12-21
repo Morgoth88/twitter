@@ -89,6 +89,5 @@
             crossorigin="anonymous"></script>
     <script src="{{ asset('js/messageForm.js') }}"></script>
     <script src="{{ asset('js/commentForm.js') }}"></script>
-    <script src="{{ asset('js/showComments.js') }}"></script>
 </body>
 </html>

@@ -45,7 +45,12 @@ function commentForm(id) {
 
         form.append(buttonsDiv);
 
-        $('#tweet-form').prepend(form);
+        var comment_form_div = $('<div></div>');
+        comment_form_div.attr('id','comment-form');
+
+        comment_form_div.prepend(form);
+
+        $('div[data-id=' + id + ']').closest('.tweet').append(comment_form_div);
 
         cancelBtn.click(function () {
             $('#tweetForm').remove();

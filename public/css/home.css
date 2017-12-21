@@ -117,3 +117,6 @@
     text-decoration: none;
     color: white;
 }
+#comment-form, #tweet-update-form{
+    text-align: center;
+}
