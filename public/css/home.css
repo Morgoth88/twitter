@@ -18,12 +18,13 @@
     margin: 3px;
 }
 .tweet{
-    border-left: 1px solid #d3e0e9;
-    border-bottom: 1px solid #d3e0e9;
+    border-top: 1px solid #d1ecff;
+    border-left: 1px solid #d1ecff;
+    border-bottom: 1px solid #8dc2e6;
     border-radius: 3px;
-    box-shadow: 2px 2px 3px #d3e0e9;
+    box-shadow: 2px 2px 3px #c7d5de;
     width: 600px;
-    margin: 10px auto;
+    margin: 10px auto 30px auto;
     padding: 3px 7px;
     position: relative;
 }
@@ -38,6 +39,9 @@
     margin: 15px 15px 5px 15px;
     max-width: 550px;
     word-wrap: break-word;
+    border: 1px solid #8dc2e6;
+    border-radius: 5px;
+    padding: 10px;
 }
 .tweet-time{
     font-size: 12px;
@@ -45,7 +49,7 @@
 }
 .tweet-time-div{
     margin: 0px 5px 0px 5px;
-    border-bottom: 1px solid #d3e0e9;;
+    border-bottom: 1px solid #8dc2e6;;
 }
 .tweet-updtTime{
     margin-left: 10px;
@@ -107,9 +111,9 @@
     margin: 3px 5px;
     max-width: 450px;
     word-wrap: break-word;
+    border-bottom: 1px solid #8dc2e6;
 }
 .comments-container{
-    border-top: 1px solid #d3e0e9;
     margin: 7px 7px;
     padding: 10px;
 }

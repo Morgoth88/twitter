@@ -119,7 +119,7 @@ function updateForm(id) {
 
         tweet_up_form_div.prepend(form);
 
-        $('div[data-id=' + id + ']').closest('.tweet').append(tweet_up_form_div);
+        $('div[data-id=' + id + ']').closest('.tweet-text').prepend(tweet_up_form_div);
 
 
 

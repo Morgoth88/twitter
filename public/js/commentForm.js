@@ -50,7 +50,7 @@ function commentForm(id) {
 
         comment_form_div.prepend(form);
 
-        $('div[data-id=' + id + ']').closest('.tweet').append(comment_form_div);
+        $('div[data-id=' + id + ']').parent('.tweet').children('.tweet-icons').append(comment_form_div);
 
         cancelBtn.click(function () {
             $('#tweetForm').remove();

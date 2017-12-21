@@ -35,16 +35,16 @@
                                 </ul>
                             </div>
                         @endif
-                        <!--tweet form-->
+                    <!--tweet form-->
                         <div id="tweet-form"></div>
                         <!--tweets display-->
                         @if(isset($tweets))
                             @foreach($tweets as $tweet)
-                                <!--tweet-->
+                            <!--tweet-->
                                 <div class="tweet">
                                     <!--tweet name-->
                                     <div class="tweet-name">{{$tweet->user->name}}
-                                        <!--tweet delete and update icons-->
+                                    <!--tweet delete and update icons-->
                                         @if(Auth::user()->id===$tweet->user->id && \App\TimeHelper::lessThanTwoMinutes($tweet))
                                             <span class="up-del-links">
                                                 <!--update button-->
@@ -52,10 +52,12 @@
                                                             class="fa fa-pencil" aria-hidden="true"></i>
                                                 </button>
                                                 <!--delete button with form-->
-                                                <form method="POST" action="{{route('deleteTweet',['message'=> $tweet->id])}}">
+                                                <form method="POST"
+                                                      action="{{route('deleteTweet',['message'=> $tweet->id])}}">
                                                     {{method_field('DELETE')}}
                                                     {{csrf_field()}}
-                                                    <button id="msgDltBtn" type="submit"><i class='fa fa-times' aria-hidden='true'></i></button>
+                                                    <button id="msgDltBtn" type="submit"><i class='fa fa-times'
+                                                                                            aria-hidden='true'></i></button>
                                                 </form>
                                             </span>
                                         @endif
@@ -73,19 +75,60 @@
                                     <!--comment icon-->
                                     <div class="tweet-icons">
                                         <span class="comment-link">
+                                            <!--Comment create button-->
                                             <button id="cmntBtn" onclick="commentForm({{$tweet->id}})">
                                             <i class="fa fa-comments" aria-hidden="true"></i>
                                             </button>
                                         </span>
-                                        @if(count($tweet->comment) > 0)
-                                            {{count($tweet->comment)}}
-                                            <!--comment link-->
-                                            <a id="cmntShowBtn" href="tweet/{{$tweet->id}}/comment">comments</a>
+                                    @if(count($tweet->comment) > 0)
+                                        {{count($tweet->comment)}}
+                                        <!--comment link-->
+                                            comments
                                         @endif
                                     </div>
+                                    @if(count($tweet->comment) > 0)
+                                        <div class="comments-container">
+                                        @foreach($tweet->comment as $comment)
+                                            <!--if count of comments is greater than 3 display only 3-->
+                                                @if($loop->iteration > 3)
+                                                    <a href="{{route('readComment',['message' => $tweet->id])}}">all comments</a>
+                                                    @break
+                                                @endif
+                                            <!--comment user name-->
+                                                <div class="comment-name">{{$comment->user->name}}
+                                                    @if(Auth::user()->id===$comment->user->id && \App\TimeHelper::lessThanTwoMinutes($comment))
+                                                        <span class="up-del-links">
+                                                            <!--comment update button-->
+                                                            <button id="msgUpdtBtn"
+                                                                    onclick="updateForm({{$comment->id}})"><i
+                                                                        class="fa fa-pencil" aria-hidden="true"></i>
+                                                            </button>
+                                                            <!--comment delete button with form-->
+                                                            <form method="POST"
+                                                                  action="{{route('deleteComment',['message' => $tweet->id, 'comment' => $comment->id])}}">
+                                                                {{method_field('DELETE')}}
+                                                                {{csrf_field()}}
+                                                                <button id="msgDltBtn" type="submit"><i
+                                                                            class='fa fa-times'
+                                                                            aria-hidden='true'></i></button>
+                                                            </form>
+                                                        </span>
+                                                    @endif
+                                                <!--comment passed time-->
+                                                    <span class="comment-time">{{\App\TimeHelper::passedTime($comment->created_at)}}</span>
+                                                    @if(\App\TimeHelper::updated($comment))
+                                                        <span class="comment-updtTime">updated</span>
+                                                    @endif
+                                                </div>
+                                                <!--comment text-->
+                                                <div class="comment-text"
+                                                     data-comment-id="{{$comment->id}}">{{$comment->text}}</div>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 </div>
                             @endforeach
-                            <!--tweet pagination-->
+                        <!--tweet pagination-->
                             {{$tweets->links()}}
                         @endif
                     </div>

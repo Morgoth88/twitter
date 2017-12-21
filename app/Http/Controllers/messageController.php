@@ -32,7 +32,9 @@ class messageController extends Controller implements MessageInterface
 
         $messages = Message::where('old', 0)->orderBy('created_at', 'desc')->paginate(10);
 
-        //$messages = $messages->sortByDesc('.message.comment.created_at');
+        foreach ($messages as &$message){
+            $message->comment = $message->comment->sortByDesc('created_at');
+        }
         return view('home')->with('tweets', $messages);
     }
 
