@@ -55,7 +55,8 @@
                                                             class="fa fa-pencil" aria-hidden="true"></i>
                                                 </button>
                                             <!--delete button with form-->
-                                                <form method="POST" action="tweet/{{$tweet->id}}">
+                                                <form method="POST"
+                                                      action="{{route('deleteTweet',['message'=> $tweet->id])}}">
                                                     {{method_field('DELETE')}}
                                                     {{csrf_field()}}
                                                     <button id="msgDltBtn" type="submit"><i class='fa fa-times'
@@ -84,14 +85,17 @@
                                     <!--comment-->
                                     @if(count($tweet->comment) > 0)
                                         {{count($tweet->comment)}}
+                                            comments
                                         <div class="comments-container">
                                             @foreach($tweet->comment as $comment)
+                                                @if($comment->old !=1)
+                                                    <div class="comment">
                                                 <!--comment user name-->
                                                 <div class="comment-name">{{$comment->user->name}}
                                                     @if(Auth::user()->id===$comment->user->id && \App\TimeHelper::lessThanTwoMinutes($comment))
                                                         <span class="up-del-links">
                                                             <!--comment update button-->
-                                                            <button id="msgUpdtBtn" onclick="updateForm({{$comment->id}})"><i
+                                                            <button id="msgUpdtBtn" onclick="commentUpdateForm({{$comment->id}})"><i
                                                                 class="fa fa-pencil" aria-hidden="true"></i>
                                                             </button>
                                                             <!--comment delete button with form-->
@@ -107,8 +111,10 @@
                                                     <span class="comment-time">{{\App\TimeHelper::passedTime($comment->created_at)}}</span>
                                                 </div>
                                                     <!--comment text-->
-                                                <div class="comment-text"
-                                                     data-id="{{$comment->id}}">{{$comment->text}}</div>
+                                                    <div class="comment-text"
+                                                         data-tweet-id ="{{$tweet->id}}" data-comment-id="{{$comment->id}}">{{$comment->text}}</div>
+                                                    </div>
+                                                @endif
                                             @endforeach
                                         </div>
                                     @endif

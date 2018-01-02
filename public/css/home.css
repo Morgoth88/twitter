@@ -22,11 +22,11 @@ body{
     margin: 3px;
 }
 .tweet{
-    border-top: 1px solid #d1ecff;
-    border-left: 1px solid #d1ecff;
-    border-bottom: 1px solid #8dc2e6;
+    border-top: 1px solid #c7e8ff;
+    border-left: 1px solid #4cb5ff;
+    border-bottom: 1px solid #4cb5ff;
     border-radius: 3px;
-    box-shadow: 2px 2px 3px #c7d5de;
+    box-shadow: 2px 2px 3px #b9b9b9;
     width: 600px;
     margin: 10px auto 30px auto;
     padding: 3px 7px;
@@ -54,7 +54,7 @@ body{
 }
 .tweet-time-div{
     margin: 0px 5px 0px 5px;
-    border-bottom: 1px solid #8dc2e6;;
+    border-bottom: 2px solid #8dc2e6;;
 }
 .tweet-updtTime{
     margin-left: 10px;

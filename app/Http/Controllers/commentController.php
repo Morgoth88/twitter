@@ -20,7 +20,7 @@ class commentController extends Controller implements CommentInterface
      */
     public function read (Message $message) {
 
-        $message->comment = $message->comment->sortByDesc('created_at');
+        $message->comment = $message->comment->where('old',0)->sortByDesc('created_at');
 
         return view('message-comment')->with('tweet', $message);
     }
@@ -46,14 +46,16 @@ class commentController extends Controller implements CommentInterface
                 'message_id' => $message->id
             ]);
 
+        $message->updated_at = now();
+        $message->save();
+
         $request->session()->flash('status', 'Comment has been successfully created');
         return redirect(route('readTweet'));
     }
 
 
     public function update (Request $request,Message $message, Comment $comment) {
-             
-             
+
              
                  if (TimeHelper::lessThanTwoMinutes($comment)) {
                           

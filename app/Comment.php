@@ -15,7 +15,7 @@ class Comment extends Model
      * @var array
      */
     protected $fillable = [
-        'text', 'old_id', 'old', 'created_at','message_id'];
+        'text', 'old_id', 'old', 'created_at','message_id','updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

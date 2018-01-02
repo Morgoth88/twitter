@@ -8,7 +8,6 @@ use App\Interfaces\MessageInterface;
 use Illuminate\Http\Request;
 use App\Message;
 use App\TimeHelper;
-use Illuminate\Support\Facades\DB;
 
 class messageController extends Controller implements MessageInterface
 {
@@ -22,7 +21,6 @@ class messageController extends Controller implements MessageInterface
     }
 
 
-
     /**
      * Read all messages...20 per page
      *
@@ -30,14 +28,15 @@ class messageController extends Controller implements MessageInterface
      */
     public function read () {
 
-       $messages = Message::where('old', 0)->orderBy('created_at', 'desc')->paginate(10);
+        $messages = Message::with(['comment' => function($q){
+            $q->where('old', 0)->orderBy('created_at','desc');
+        }])->where('old', 0)
+            ->orderBy('updated_at', 'desc')
+            ->paginate(10);
 
-        foreach ($messages as &$message){
-            $message->comment = $message->comment->sortByDesc('created_at');
-        }
+
         return view('home')->with('tweets', $messages);
     }
-
 
 
     /**
@@ -57,9 +56,8 @@ class messageController extends Controller implements MessageInterface
         ]);
 
         $request->session()->flash('status', 'Tweet has been successfully created');
-        return redirect(route('readTweet')) ;
+        return redirect(route('readTweet'));
     }
-
 
 
     /**
@@ -85,11 +83,11 @@ class messageController extends Controller implements MessageInterface
                 'created_at' => $Message->created_at
             ]);
 
-             foreach ($Message->comment as &$comment){
-                      $comment->message_id = $newMessage->id;
-                      $comment->save();
-             }
-            
+            foreach ($Message->comment as &$comment) {
+                $comment->message_id = $newMessage->id;
+                $comment->save();
+            }
+
             $Message->old = 1;
             $Message->save();
 

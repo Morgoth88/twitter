@@ -9,7 +9,7 @@ function commentForm(id) {
         var form = $('<form></form>');
         form.attr('method', 'POST');
         form.attr('id', 'tweetForm');
-        form.attr('action', 'tweet/' + id + '/comment');
+        form.attr('action', '/api/v1/tweet/' + id + '/comment');
 
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
@@ -76,7 +76,7 @@ function commentUpdateForm(id) {
         var form = $('<form></form>');
         form.attr('method', 'POST');
         form.attr('id', 'tweetForm');
-        form.attr('action', 'tweet/' + tweetId + '/comment/' + id);
+        form.attr('action', '/api/v1/tweet/' + tweetId + '/comment/' + id);
 
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
 

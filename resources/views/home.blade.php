@@ -37,6 +37,7 @@
                         @endif
                     <!--tweet form-->
                         <div id="tweet-form"></div>
+
                         <!--tweets display-->
                         @if(isset($tweets))
                             @foreach($tweets as $tweet)
@@ -65,10 +66,6 @@
                                     <div class="tweet-time-div">
                                         <!--tweet created at-->
                                         <span class="tweet-time">{{\App\TimeHelper::passedTime($tweet->created_at)}}</span>
-                                        <!--if tweet was updated-->
-                                        @if(\App\TimeHelper::updated($tweet))
-                                            <span class="tweet-updtTime">updated</span>
-                                        @endif
                                     </div>
                                     <!--tweet message-->
                                     <div class="tweet-text" data-id="{{$tweet->id}}">{{$tweet->text}}</div>
