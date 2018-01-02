@@ -62,7 +62,7 @@ body{
     font-weight: lighter;
 }
 .tweet-icons{
-
+    margin-left: 10px;
 }
 .up-del-links {
     display: inline-flex;
@@ -95,6 +95,11 @@ body{
 #cmntShowBtn:hover{
     color: green;
     font-weight: bold;
+}
+#banUserBtn, #banCommBtn, #banMessBtn{
+    border: none;
+    background: none;
+    color: saddlebrown;
 }
 .comment-name{
     font-weight: bold;
