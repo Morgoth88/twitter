@@ -33,8 +33,7 @@ class messageController extends Controller implements MessageInterface
         }])->where('old', 0)
             ->orderBy('updated_at', 'desc')
             ->paginate(10);
-
-
+        
         return view('home')->with('tweets', $messages);
     }
 
@@ -94,7 +93,7 @@ class messageController extends Controller implements MessageInterface
             $request->session()->flash('status', 'Tweet has been successfully updated');
             return redirect(route('readTweet'));
         } else {
-            $request->session()->flash('status', 'Sorry, time to update has expired');
+            $request->session()->flash('error', 'Sorry, time to update has expired');
             return redirect(route('readTweet'));
         }
     }
@@ -118,7 +117,7 @@ class messageController extends Controller implements MessageInterface
             $request->session()->flash('status', 'Tweet was successfully deleted');
             return redirect(route('readTweet'));
         } else {
-            $request->session()->flash('status', 'Sorry, time limit expired!');
+            $request->session()->flash('error', 'Sorry, time limit expired!');
             return redirect(route('readTweet'));
         }
     }

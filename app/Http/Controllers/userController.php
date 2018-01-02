@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Activity_log;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -65,8 +66,7 @@ class userController extends Controller
             $activity_log->user_id = $request->user()->id;
             $activity_log->activity = 'Account settings update';
             $activity_log->save();
-
-
+            
             $request->session()->flash('status','Account has been successfully updated');
             return redirect(route('readTweet'));
         }
@@ -76,5 +76,41 @@ class userController extends Controller
             return redirect(route('accountUpdateForm'));
         }
 
+    }
+
+    /**
+     * ban selected user
+     *
+     * @param User $user
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function ban(User $user, Request $request){
+        if($request->user()->role_id == 1 && $user->role_id != 1){
+            foreach ($user->message as &$message){
+                $message->text = 'The user was banned, this post disappears within two minutes!';
+                $message->save();
+            }
+            foreach ($user->comment as & $comment) {
+                $comment->text = 'The user was banned, this post disappears within two minutes!';
+                $comment->save();
+            }
+
+            $user->ban = 1;
+            $user->save();
+
+            $activity_log = new Activity_log();
+
+            $activity_log->user_id = $request->user()->id;
+            $activity_log->activity = 'Ban user: '.$user->id;
+            $activity_log->save();
+
+            $request->session()->flash('status','User was successfully banned');
+            return redirect(route('readTweet'));
+        }
+        else{
+            $request->session()->flash('error','User is admin');
+            return redirect(route('readTweet'));
+        }
     }
 }

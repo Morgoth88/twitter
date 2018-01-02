@@ -35,6 +35,12 @@ Route::prefix('api/v1')->group(function () {
     //Acount update route
     Route::put('/account', 'userController@update')->name('accountUpdate');
 
+
+    /**
+     * Ban routes
+     ************************************************************************************/
+    Route::get('/ban/user/{user}', 'userController@ban')->name('userBan');
+
     /**
      * Tweet routes
      ************************************************************************************/

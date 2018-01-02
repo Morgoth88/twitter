@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->unsignedTinyInteger('role_id')->default(0);
             $table->rememberToken();
             $table->timestamps();
+            $table->unsignedTinyInteger('ban')->default(0);
         });
     }
 

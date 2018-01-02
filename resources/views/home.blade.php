@@ -10,6 +10,11 @@
                 {{ session('status') }}
             </div>
     @endif
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+    @endif
     <!--main container-->
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
@@ -49,7 +54,7 @@
                                         <!--if admin/ ban button-->
                                         @if(Auth::user()->role_id == 1)
                                             <button id="banUserBtn">
-                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                <a href="{{route('userBan',['user' => $tweet->user->id])}}"><i class="fa fa-ban" aria-hidden="true"></i></a>
                                             </button>
                                         @endif
                                         <span class="up-del-links">

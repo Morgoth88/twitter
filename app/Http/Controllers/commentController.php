@@ -20,11 +20,10 @@ class commentController extends Controller implements CommentInterface
      */
     public function read (Message $message) {
 
-        $message->comment = $message->comment->where('old',0)->sortByDesc('created_at');
+        $message->comment = $message->comment->where('old', 0)->sortByDesc('created_at');
 
         return view('message-comment')->with('tweet', $message);
     }
-
 
 
     /**
@@ -54,30 +53,30 @@ class commentController extends Controller implements CommentInterface
     }
 
 
-    public function update (Request $request,Message $message, Comment $comment) {
+    public function update (Request $request, Message $message, Comment $comment) {
 
-             
-                 if (TimeHelper::lessThanTwoMinutes($comment)) {
-                          
-               $this->validate($request, [
-            'comment' => 'required|string'],
-            ['Comment is empty!']);
-                        
-             $newComment = $request->user()->comment()->create([
-                 'text' => $request->comment,
-                 'old_id' => $comment->id,
-                 'created_at' => $comment->created_at,
-                 'message_id'  => $message->id            ]);
-             
-             $comment->old = 1;
-             $comment->save();
-             
-             $request->session()->flash('status', 'Comment was successfully updated');
+
+        if (TimeHelper::lessThanTwoMinutes($comment)) {
+
+            $this->validate($request, [
+                'comment' => 'required|string'],
+                ['Comment is empty!']);
+
+            $newComment = $request->user()->comment()->create([
+                'text' => $request->comment,
+                'old_id' => $comment->id,
+                'created_at' => $comment->created_at,
+                'message_id' => $message->id]);
+
+            $comment->old = 1;
+            $comment->save();
+
+            $request->session()->flash('status', 'Comment was successfully updated');
             return redirect(route('readTweet'));
-                 } else {
-            $request->session()->flash('status', 'Sorry, time to update has expired');
+        } else {
+            $request->session()->flash('error', 'Sorry, time to update has expired');
             return redirect(route('readTweet'));
-    }
+        }
     }
 
 
@@ -85,11 +84,14 @@ class commentController extends Controller implements CommentInterface
 
         $this->authorize('update_delete_comm', $comment);
 
-        if(TimeHelper::lessThanTwoMinutes($comment)){
+        if (TimeHelper::lessThanTwoMinutes($comment)) {
 
             $comment->delete();
 
             $request->session()->flash('status', 'Comment was successfully deleted');
+            return redirect(route('readTweet'));
+        } else {
+            $request->session()->flash('error', 'Sorry, time limit expired!');
             return redirect(route('readTweet'));
         }
     }
