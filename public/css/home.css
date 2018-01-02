@@ -1,3 +1,7 @@
+body{
+    background: #2a6e94;
+    font-family: 'Muli', sans-serif;
+}
 #tweetTextarea{
     border-radius: 5px;
     border: 2px solid #d3e0e9;
@@ -27,6 +31,7 @@
     margin: 10px auto 30px auto;
     padding: 3px 7px;
     position: relative;
+    background: #3097d105;
 }
 .tweet-name{
     font-weight: bold;
@@ -98,7 +103,7 @@
 }
 .comment-time{
     margin-left: 10px;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: lighter;
 }
 .comment-updtTime{

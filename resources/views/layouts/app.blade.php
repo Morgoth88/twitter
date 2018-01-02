@@ -14,6 +14,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/home.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('css/font-awesome-4.7.0/css/font-awesome.min.css')}}" >
+    <link href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,700,700i|Source+Sans+Pro:300,300i,400,400i,600,600i,700&amp;subset=latin-ext" rel="stylesheet">
 </head>
 <body>
     <div id="app">

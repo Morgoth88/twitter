@@ -105,9 +105,6 @@
                                                     @endif
                                                     <!--comment passed time-->
                                                     <span class="comment-time">{{\App\TimeHelper::passedTime($comment->created_at)}}</span>
-                                                    @if(\App\TimeHelper::updated($comment))
-                                                        <span class="comment-updtTime">updated</span>
-                                                    @endif
                                                 </div>
                                                     <!--comment text-->
                                                 <div class="comment-text"

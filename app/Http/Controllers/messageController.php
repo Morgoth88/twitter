@@ -30,7 +30,7 @@ class messageController extends Controller implements MessageInterface
      */
     public function read () {
 
-        $messages = Message::where('old', 0)->orderBy('created_at', 'desc')->paginate(10);
+       $messages = Message::where('old', 0)->orderBy('created_at', 'desc')->paginate(10);
 
         foreach ($messages as &$message){
             $message->comment = $message->comment->sortByDesc('created_at');
@@ -85,6 +85,11 @@ class messageController extends Controller implements MessageInterface
                 'created_at' => $Message->created_at
             ]);
 
+             foreach ($Message->comment as &$comment){
+                      $comment->message_id = $newMessage->id;
+                      $comment->save();
+             }
+            
             $Message->old = 1;
             $Message->save();
 

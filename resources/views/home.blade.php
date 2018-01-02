@@ -89,18 +89,20 @@
                                     @if(count($tweet->comment) > 0)
                                         <div class="comments-container">
                                         @foreach($tweet->comment as $comment)
+                                        @if($comment->old !=1)
                                             <!--if count of comments is greater than 3 display only 3-->
                                                 @if($loop->iteration > 3)
                                                     <a href="{{route('readComment',['message' => $tweet->id])}}">all comments</a>
                                                     @break
                                                 @endif
+                                                <div class="comment">
                                             <!--comment user name-->
                                                 <div class="comment-name">{{$comment->user->name}}
                                                     @if(Auth::user()->id===$comment->user->id && \App\TimeHelper::lessThanTwoMinutes($comment))
                                                         <span class="up-del-links">
                                                             <!--comment update button-->
                                                             <button id="msgUpdtBtn"
-                                                                    onclick="updateForm({{$comment->id}})"><i
+                                                                    onclick="commentUpdateForm({{$comment->id}})"><i
                                                                         class="fa fa-pencil" aria-hidden="true"></i>
                                                             </button>
                                                             <!--comment delete button with form-->
@@ -116,13 +118,12 @@
                                                     @endif
                                                 <!--comment passed time-->
                                                     <span class="comment-time">{{\App\TimeHelper::passedTime($comment->created_at)}}</span>
-                                                    @if(\App\TimeHelper::updated($comment))
-                                                        <span class="comment-updtTime">updated</span>
-                                                    @endif
                                                 </div>
                                                 <!--comment text-->
                                                 <div class="comment-text"
-                                                     data-comment-id="{{$comment->id}}">{{$comment->text}}</div>
+                                                     data-tweet-id ="{{$tweet->id}}" data-comment-id="{{$comment->id}}">{{$comment->text}}</div>
+                                                </div >
+                                                @endif
                                             @endforeach
                                         </div>
                                     @endif

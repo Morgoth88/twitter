@@ -52,7 +52,30 @@ class commentController extends Controller implements CommentInterface
 
 
     public function update (Request $request,Message $message, Comment $comment) {
-        // TODO: Implement update() method.
+             
+             
+             
+                 if (TimeHelper::lessThanTwoMinutes($comment)) {
+                          
+               $this->validate($request, [
+            'comment' => 'required|string'],
+            ['Comment is empty!']);
+                        
+             $newComment = $request->user()->comment()->create([
+                 'text' => $request->comment,
+                 'old_id' => $comment->id,
+                 'created_at' => $comment->created_at,
+                 'message_id'  => $message->id            ]);
+             
+             $comment->old = 1;
+             $comment->save();
+             
+             $request->session()->flash('status', 'Comment was successfully updated');
+            return redirect(route('readTweet'));
+                 } else {
+            $request->session()->flash('status', 'Sorry, time to update has expired');
+            return redirect(route('readTweet'));
+    }
     }
 
 
@@ -65,7 +88,7 @@ class commentController extends Controller implements CommentInterface
             $comment->delete();
 
             $request->session()->flash('status', 'Comment was successfully deleted');
-            return redirect(route('readComment',['message' => $message->id]));
+            return redirect(route('readTweet'));
         }
     }
 }
