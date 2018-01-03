@@ -6,6 +6,7 @@ use App\Activity_log;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -66,7 +67,7 @@ class userController extends Controller
             $activity_log->user_id = $request->user()->id;
             $activity_log->activity = 'Account settings update';
             $activity_log->save();
-            
+
             $request->session()->flash('status','Account has been successfully updated');
             return redirect(route('readTweet'));
         }
@@ -86,21 +87,26 @@ class userController extends Controller
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function ban(User $user, Request $request){
-        if($request->user()->role_id == 1 && $user->role_id != 1){
+
+        if($request->user()->role_id == 1 && $user->role_id != 1)
+        {
             foreach ($user->message as &$message){
-                $message->text = 'The user was banned, this post disappears within two minutes!';
+                $message->text = 'The user was banned!';
+                $message->old = 1;
                 $message->save();
             }
             foreach ($user->comment as & $comment) {
-                $comment->text = 'The user was banned, this post disappears within two minutes!';
+                $comment->text = 'The user was banned!';
+                $comment->old = 1;
                 $comment->save();
             }
+
+            DB::table('sessions')->where('user_id', $user->id)->delete();
 
             $user->ban = 1;
             $user->save();
 
             $activity_log = new Activity_log();
-
             $activity_log->user_id = $request->user()->id;
             $activity_log->activity = 'Ban user: '.$user->id;
             $activity_log->save();

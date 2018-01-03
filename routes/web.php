@@ -27,6 +27,9 @@ Route::prefix('api/v1')->group(function () {
      ************************************************************************************/
     Auth::routes();
 
+    // override login route with middleware checkIfBanned
+    Route::post('/login','Auth\LoginController@login')->middleware('checkIfBanned');
+
     /**
      * Account updates routes
      ************************************************************************************/

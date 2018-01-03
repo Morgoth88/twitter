@@ -40,6 +40,13 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+
+    /**
+     * Log if authenticated
+     *
+     * @param Request $request
+     * @param $user
+     */
     public function authenticated (Request $request, $user) {
 
         $activity_log = new Activity_log();
@@ -51,6 +58,12 @@ class LoginController extends Controller
         $request->session()->flash('status','You are logged in!');
     }
 
+    /**
+     * Log if logout
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function logout (Request $request) {
         $activity_log = new Activity_log();
 
