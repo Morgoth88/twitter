@@ -16,6 +16,7 @@
  ************************************************************************************/
 Route::get('/', function () {
     \App\Activity_log::periodic_log_delete();
+    \App\Ban::periodicBanInDbClean();
     return view('welcome');
 })->name('welcome');
 
@@ -40,10 +41,16 @@ Route::prefix('api/v1')->group(function () {
 
 
     /**
+     * User info page for Admin
+     ************************************************************************************/
+    Route::get('/user/{user}','userController@showUser')->name('showUser');
+
+    /**
      * Ban routes
      ************************************************************************************/
     Route::get('/ban/user/{user}', 'userController@ban')->name('userBan');
     Route::get('/ban/message/{message}','messageController@ban')->name('messageBan');
+    Route::get('/ban/message/{message}/comment/{comment}','commentController@ban')->name('commentBan');
 
 
     /**

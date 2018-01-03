@@ -7,6 +7,9 @@ use Closure;
 
 class checkIfBanned
 {
+    const BAN_MSG = 'Your account has been banned!';
+
+
     /**
      * Handle an incoming request.
      * Check if user has been banned before login
@@ -20,7 +23,7 @@ class checkIfBanned
         $user = User::where('email', $request->email)->first();
 
         if($user->ban == 1){
-            $request->session()->flash('status', 'Your account has been banned!');
+            $request->session()->flash('status', self::BAN_MSG);
             return redirect(route('welcome'));
         }
         return $next($request);

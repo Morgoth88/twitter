@@ -22,11 +22,12 @@ body{
     margin: 3px;
 }
 .tweet{
-    border-top: 1px solid #c7e8ff;
-    border-left: 1px solid #4cb5ff;
-    border-bottom: 1px solid #4cb5ff;
+    border-top: 1px solid #8dc2e6;
+    border-left: 1px solid #8dc2e6;
+    border-bottom: 1px solid #cecece;
+    border-right: 1px solid #cecece;
     border-radius: 3px;
-    box-shadow: 2px 2px 3px #b9b9b9;
+    box-shadow: 7px 5px 7px #d4d4d4;
     width: 600px;
     margin: 10px auto 30px auto;
     padding: 3px 7px;
@@ -75,17 +76,17 @@ body{
 #msgDltBtn{
     border: none;
     background: none;
-    color: red;
+    color: #ff6969;
 }
 #msgUpdtBtn{
     border: none;
     background: none;
-    color: dodgerblue;
+    color: #41a1ff
 }
 #cmntBtn{
     border: none;
     background: none;
-    color: green;
+    color: #4ca24c
 }
 #cmntShowBtn{
     border: none;

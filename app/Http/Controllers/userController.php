@@ -9,10 +9,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use App\Ban;
 
 
 class userController extends Controller
 {
+
+    const SUCC_ACC_UPDT = 'Account has been successfully updated',
+            PASS_ERR_MATCH ='password does not match',
+            SUCC_USR_BAN ='User was successfully banned',
+            UNAUTH = 'Unauthorized action';
 
     /**
      * userController constructor.
@@ -22,6 +28,17 @@ class userController extends Controller
         $this->middleware('auth');
     }
 
+    public function showUser(User $user, Request $request){
+
+        if($request->user()->role_id == 1)
+        {
+            return view('user')->with('user', $user);
+        }
+        else{
+            $request->session()->flash('error', self::UNAUTH);
+            return redirect(route('readTweet'));
+        }
+    }
 
     /**
      * Show account update form with current user data
@@ -68,12 +85,12 @@ class userController extends Controller
             $activity_log->activity = 'Account settings update';
             $activity_log->save();
 
-            $request->session()->flash('status','Account has been successfully updated');
+            $request->session()->flash('status', self::SUCC_ACC_UPDT);
             return redirect(route('readTweet'));
         }
         else{
 
-            $request->session()->flash('error','password does not match');
+            $request->session()->flash('error', self::PASS_ERR_MATCH);
             return redirect(route('accountUpdateForm'));
         }
 
@@ -90,15 +107,15 @@ class userController extends Controller
 
         if($request->user()->role_id == 1 && $user->role_id != 1)
         {
+            $ban = new Ban();
+
             foreach ($user->message as &$message){
-                $message->text = 'The user was banned!';
-                $message->old = 1;
-                $message->save();
+
+                $ban->banPost($message);
             }
             foreach ($user->comment as & $comment) {
-                $comment->text = 'The user was banned!';
-                $comment->old = 1;
-                $comment->save();
+
+                $ban->banPost($comment);
             }
 
             DB::table('sessions')->where('user_id', $user->id)->delete();
@@ -107,15 +124,15 @@ class userController extends Controller
             $user->save();
 
             $activity_log = new Activity_log();
-            $activity_log->user_id = $request->user()->id;
-            $activity_log->activity = 'Ban user: '.$user->id;
+            $activity_log->user_id = $user->id;
+            $activity_log->activity = 'Banned by: '.$request->user()->email;
             $activity_log->save();
 
-            $request->session()->flash('status','User was successfully banned');
+            $request->session()->flash('status', self::SUCC_USR_BAN);
             return redirect(route('readTweet'));
         }
         else{
-            $request->session()->flash('error','Unauthorized action');
+            $request->session()->flash('error', self::UNAUTH);
             return redirect(route('readTweet'));
         }
     }

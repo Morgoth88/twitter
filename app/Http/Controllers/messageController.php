@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Ban;
 use App\User;
 use App\Interfaces\MessageInterface;
 use Illuminate\Http\Request;
@@ -11,6 +12,13 @@ use App\TimeHelper;
 
 class messageController extends Controller implements MessageInterface
 {
+
+    const SUCC_TW_CRT = 'Tweet has been successfully created',
+        SUCC_TW_UPDT = 'Tweet has been successfully updated',
+        TIME_EXP = 'Sorry, time limit expired!',
+        SUCC_TW_DEL = 'Tweet was successfully deleted',
+        SUCC_TW_BAN = 'Message was successfully banned',
+        UNAUTH = 'Unauthorized action';
 
     /**
      * messageController constructor.
@@ -28,12 +36,12 @@ class messageController extends Controller implements MessageInterface
      */
     public function read () {
 
-        $messages = Message::with(['comment' => function($q){
-            $q->where('old', 0)->orderBy('created_at','desc');
+        $messages = Message::with(['comment' => function ($q) {
+            $q->where('old', 0)->orderBy('created_at', 'desc');
         }])->where('old', 0)
             ->orderBy('updated_at', 'desc')
             ->paginate(10);
-        
+
         return view('home')->with('tweets', $messages);
     }
 
@@ -54,7 +62,7 @@ class messageController extends Controller implements MessageInterface
             'text' => $request->tweet
         ]);
 
-        $request->session()->flash('status', 'Tweet has been successfully created');
+        $request->session()->flash('status', self::SUCC_TW_CRT);
         return redirect(route('readTweet'));
     }
 
@@ -90,10 +98,11 @@ class messageController extends Controller implements MessageInterface
             $Message->old = 1;
             $Message->save();
 
-            $request->session()->flash('status', 'Tweet has been successfully updated');
+            $request->session()->flash('status', self::SUCC_TW_UPDT);
             return redirect(route('readTweet'));
+
         } else {
-            $request->session()->flash('error', 'Sorry, time to update has expired');
+            $request->session()->flash('error', self::TIME_EXP);
             return redirect(route('readTweet'));
         }
     }
@@ -114,30 +123,34 @@ class messageController extends Controller implements MessageInterface
 
             $message->delete();
 
-            $request->session()->flash('status', 'Tweet was successfully deleted');
+            $request->session()->flash('status', self::SUCC_TW_DEL);
             return redirect(route('readTweet'));
         } else {
-            $request->session()->flash('error', 'Sorry, time limit expired!');
+            $request->session()->flash('error', self::TIME_EXP);
             return redirect(route('readTweet'));
         }
     }
 
 
-    public function ban(Message $message, Request $request){
+    /**
+     * ban message
+     *
+     * @param Message $message
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function ban (Message $message, Request $request) {
 
         $user = User::where('id', $message->user_id)->first();
+        $ban = new Ban();
 
-        if($request->user()->role_id == 1 && $user->role_id != 1)
-        {
-            $message->text = 'Message was banned!';
-            $message->old = 1;
-            $message->save();
+        if ($request->user()->role_id == 1 && $user->role_id != 1) {
+            $ban->banPost($message);
 
-            $request->session()->flash('status','Message was successfully banned');
+            $request->session()->flash('status', self::SUCC_TW_BAN);
             return redirect(route('readTweet'));
-        }
-        else{
-            $request->session()->flash('error','Unauthorized action');
+        } else {
+            $request->session()->flash('error', self::UNAUTH);
             return redirect(route('readTweet'));
         }
 

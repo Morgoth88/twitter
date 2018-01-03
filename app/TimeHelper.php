@@ -16,7 +16,7 @@ class TimeHelper
         DAY = 3600 * 24,
         HOUR = 3600,
         MINUTE = 60,
-        TWO_MINUTES = 3600*24*7*52,
+        TWO_MINUTES = 120*120*120,
         WEEK = 3600 * 24 * 7;
 
 
@@ -64,6 +64,10 @@ class TimeHelper
         }
     }
 
+    /**
+     * @param $time
+     * @return bool
+     */
     public static function weekPassed ($time) {
 
         $time = strtotime($time);
@@ -75,6 +79,10 @@ class TimeHelper
         }
     }
 
+    /**
+     * @param $message
+     * @return bool
+     */
     public static function updated ($message) {
 
         return $message->updated_at != $message->created_at;
