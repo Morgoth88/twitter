@@ -115,7 +115,7 @@ class userController extends Controller
             return redirect(route('readTweet'));
         }
         else{
-            $request->session()->flash('error','User is admin');
+            $request->session()->flash('error','Unauthorized action');
             return redirect(route('readTweet'));
         }
     }

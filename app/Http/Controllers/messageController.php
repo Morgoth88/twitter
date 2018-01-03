@@ -121,4 +121,25 @@ class messageController extends Controller implements MessageInterface
             return redirect(route('readTweet'));
         }
     }
+
+
+    public function ban(Message $message, Request $request){
+
+        $user = User::where('id', $message->user_id)->first();
+
+        if($request->user()->role_id == 1 && $user->role_id != 1)
+        {
+            $message->text = 'Message was banned!';
+            $message->old = 1;
+            $message->save();
+
+            $request->session()->flash('status','Message was successfully banned');
+            return redirect(route('readTweet'));
+        }
+        else{
+            $request->session()->flash('error','Unauthorized action');
+            return redirect(route('readTweet'));
+        }
+
+    }
 }

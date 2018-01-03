@@ -61,7 +61,7 @@
                                             <!--if admin/ ban button-->
                                             @if(Auth::user()->role_id == 1)
                                                 <button id="banMessBtn">
-                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                    <a href="{{route('messageBan',['message' => $tweet->id])}}"><i class="fa fa-ban" aria-hidden="true"></i></a>
                                             </button>
                                             @endif
                                             @if(Auth::user()->id===$tweet->user->id && \App\TimeHelper::lessThanTwoMinutes($tweet))
@@ -119,14 +119,14 @@
                                                         <!--if admin/ ban button-->
                                                             @if(Auth::user()->role_id == 1)
                                                                 <button id="banUserBtn">
-                                                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                                                    <a href="{{route('userBan',['user' => $tweet->user->id])}}"><i class="fa fa-ban" aria-hidden="true"></i></a>
                                                                 </button>
                                                             @endif
                                                             <span class="up-del-links">
                                                          <!--if admin/ ban button-->
                                                                 @if(Auth::user()->role_id == 1)
                                                                     <button id="banCommBtn">
-                                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                                                        <a href="{{route('commentBan',['message' => $tweet->id, 'comment' => $comment->id])}}"><i class="fa fa-ban" aria-hidden="true"></i></a>
                                                         </button>
                                                                 @endif
                                                                 @if(Auth::user()->id===$comment->user->id && \App\TimeHelper::lessThanTwoMinutes($comment))

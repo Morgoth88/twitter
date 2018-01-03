@@ -101,6 +101,10 @@ body{
     background: none;
     color: saddlebrown;
 }
+#banUserBtn a, #banCommBtn a, #banMessBtn a{
+    text-decoration: none;
+    color: saddlebrown;
+}
 .comment-name{
     font-weight: bold;
     font-size: 12px;

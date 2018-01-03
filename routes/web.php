@@ -26,9 +26,9 @@ Route::prefix('api/v1')->group(function () {
      *Authentication routes
      ************************************************************************************/
     Auth::routes();
-
     // override login route with middleware checkIfBanned
     Route::post('/login','Auth\LoginController@login')->middleware('checkIfBanned');
+
 
     /**
      * Account updates routes
@@ -43,6 +43,8 @@ Route::prefix('api/v1')->group(function () {
      * Ban routes
      ************************************************************************************/
     Route::get('/ban/user/{user}', 'userController@ban')->name('userBan');
+    Route::get('/ban/message/{message}','messageController@ban')->name('messageBan');
+
 
     /**
      * Tweet routes
@@ -55,6 +57,7 @@ Route::prefix('api/v1')->group(function () {
     Route::put('/tweet/{message}','messageController@update')->name('updateTweet');
     //delete message
     Route::delete('/tweet/{message}','messageController@delete')->name('deleteTweet');
+
 
     /**
      * Comment routes
