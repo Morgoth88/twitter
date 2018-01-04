@@ -21,18 +21,22 @@ body{
 #submitBtn, #cancelBtn{
     margin: 3px;
 }
+.panel-body {
+    padding: 15px;
+    background: #dee7ec;
+}
 .tweet{
     border-top: 1px solid #8dc2e6;
     border-left: 1px solid #8dc2e6;
     border-bottom: 1px solid #cecece;
     border-right: 1px solid #cecece;
-    border-radius: 3px;
-    box-shadow: 7px 5px 7px #d4d4d4;
+    border-radius: 15px;
+    box-shadow: 7px 5px 7px #98b8c5;
     width: 600px;
-    margin: 10px auto 30px auto;
+    margin: 10px auto 20px auto;
     padding: 3px 7px;
     position: relative;
-    background: #3097d105;
+    background: white;
 }
 .tweet-name{
     font-weight: bold;

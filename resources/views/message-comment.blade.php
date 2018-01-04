@@ -125,7 +125,7 @@
                                         {{count($tweet->comment)}}
                                         comments
                                     @endif
-
+                                </div>
                                         <div class="comments-container">
                                             @foreach($tweet->comment as $comment)
                                                 @if($comment->old !=1)
