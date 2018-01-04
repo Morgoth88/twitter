@@ -26,10 +26,7 @@ body{
     background: #dee7ec;
 }
 .tweet{
-    border-top: 1px solid #8dc2e6;
-    border-left: 1px solid #8dc2e6;
-    border-bottom: 1px solid #cecece;
-    border-right: 1px solid #cecece;
+    border: 1px solid #c5c5c5;
     border-radius: 15px;
     box-shadow: 7px 5px 7px #98b8c5;
     width: 600px;

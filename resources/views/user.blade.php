@@ -21,6 +21,7 @@
                     @if(isset($user))
                         <table class="table">
                             <tr><td>User ID: </td><td>{{$user->id}}</td></tr>
+                            <tr><td>User role: </td><td>{{\App\Role::where('id',$user->role_id)->first()->name}}</td></tr>
                             <tr><td>User name: </td><td>{{$user->name}}</td></tr>
                             <tr><td>User email: </td><td>{{$user->email}}</td></tr>
                             <tr><td>Registered:</td><td>{{\App\TimeHelper::passedTime($user->created_at)}}</td></tr>
