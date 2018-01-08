@@ -44,7 +44,11 @@ function createForm() {
 
         form.append(buttonsDiv);
 
-        $('#tweet-form').prepend(form);
+        var tweet_form = $('<div id="tweet-form"></div>');
+
+        tweet_form.prepend(form);
+
+        $('.panel-body').prepend(tweet_form);
 
         cancelBtn.click(function () {
             $('#tweetForm').remove();

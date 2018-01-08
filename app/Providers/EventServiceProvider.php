@@ -13,8 +13,11 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Event' => [
-            'App\Listeners\EventListener',
+        'App\Events\newMessageCreated' => [
+            'App\Listeners\newMessageListener',
+        ],
+        'App\Events\MessageDeleted' => [
+            'App\Listeners\messageDeleteListener',
         ],
     ];
 

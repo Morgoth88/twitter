@@ -45,15 +45,12 @@
                             </div>
                         @endif
 
-                    <!--tweet form-->
-                        <div id="tweet-form"></div>
-
                         <!--tweets display-->
                         @if(isset($tweets))
                             @foreach($tweets as $tweet)
 
                             <!--tweet-->
-                                <div class="tweet">
+                                <div class="tweet" data-id="{{$tweet->id}}">
 
                                     <!--tweet name-->
                                     <div class="tweet-name">
@@ -67,7 +64,7 @@
                                     <!--tweet delete and update icons-->
 
                                         <!--if admin/ ban button-->
-                                        @if(Auth::user()->role_id == 1)
+                                        @if(Auth::user()->role_id == 1 && $tweet->user->role_id != 1)
                                             <button id="banUserBtn">
                                                 <a href="{{route('userBan',['user' => $tweet->user->id])}}"><i
                                                             class="fa fa-ban" aria-hidden="true"></i></a>
@@ -76,7 +73,7 @@
 
                                         <span class="up-del-links">
                                             <!--if admin/ ban button-->
-                                            @if(Auth::user()->role_id == 1)
+                                            @if(Auth::user()->role_id == 1 && $tweet->user->role_id != 1)
                                                 <button id="banMessBtn">
                                                     <a href="{{route('messageBan',['message' => $tweet->id])}}">
                                                         <i class="fa fa-ban" aria-hidden="true"></i>
@@ -119,7 +116,7 @@
                                             <i class="fa fa-comments" aria-hidden="true"></i>
                                             </button>
                                         </span>
-
+<!--TODO-->
                                     @if(count($tweet->comment) > 0 && count($tweet->comment) < 2)
                                         {{count($tweet->comment)}}
 
@@ -154,7 +151,7 @@
                                                             @endif
 
                                                         <!--if admin/ ban button-->
-                                                            @if(Auth::user()->role_id == 1)
+                                                            @if(Auth::user()->role_id == 1 && $comment->user->role_id != 1)
                                                                 <button id="banUserBtn">
                                                                     <a href="{{route('userBan',['user' => $comment->user_id])}}">
                                                                         <i class="fa fa-ban" aria-hidden="true"></i>
@@ -164,7 +161,7 @@
 
                                                             <span class="up-del-links">
                                                          <!--if admin/ ban button-->
-                                                                @if(Auth::user()->role_id == 1)
+                                                                @if(Auth::user()->role_id == 1 && $comment->user->role_id != 1)
                                                                     <button id="banCommBtn">
                                                                         <a href="{{route('commentBan',['message' => $tweet->id, 'comment' => $comment->id])}}">
                                                                             <i class="fa fa-ban" aria-hidden="true"></i>
@@ -216,4 +213,10 @@
             </div>
         </div>
     </div>
+    <script>
+        var authUserId = "{{\Illuminate\Support\Facades\Auth::user()->id}}";
+        var authUserRole = "{{\Illuminate\Support\Facades\Auth::user()->role_id}}";
+    </script>
+    <script src="{{asset('js/WSnewMsg.js')}}"></script>
+    <script src="{{asset('js/WSDltMsg.js')}}"></script>
 @endsection

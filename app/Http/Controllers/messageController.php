@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 
 use App\Ban;
+use App\Events\MessageDeleted;
+use App\Events\newMessageCreated;
 use App\User;
 use App\Interfaces\MessageInterface;
 use Illuminate\Http\Request;
@@ -62,6 +64,8 @@ class messageController extends Controller implements MessageInterface
             'text' => $request->tweet
         ]);
 
+        event(new newMessageCreated($tweet, $tweet->user, $request->user()));
+
         $request->session()->flash('status', self::SUCC_TW_CRT);
         return redirect(route('readTweet'));
     }
@@ -117,11 +121,15 @@ class messageController extends Controller implements MessageInterface
      */
     public function delete (Request $request, Message $message) {
 
+        $msgId = $message->id;
+
         $this->authorize('update_delete', $message);
 
         if (TimeHelper::lessThanTwoMinutes($message)) {
 
             $message->delete();
+
+            event(new MessageDeleted($msgId));
 
             $request->session()->flash('status', self::SUCC_TW_DEL);
             return redirect(route('readTweet'));
