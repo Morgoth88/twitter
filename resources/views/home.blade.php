@@ -213,10 +213,14 @@
             </div>
         </div>
     </div>
+
     <script>
         var authUserId = "{{\Illuminate\Support\Facades\Auth::user()->id}}";
         var authUserRole = "{{\Illuminate\Support\Facades\Auth::user()->role_id}}";
     </script>
     <script src="{{asset('js/WSnewMsg.js')}}"></script>
     <script src="{{asset('js/WSDltMsg.js')}}"></script>
+    <script src="{{asset('js/WSUpdtMsg.js')}}"></script>
+    <script src="{{asset('js/WSbanMsg.js')}}"></script>
+
 @endsection

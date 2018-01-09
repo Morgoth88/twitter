@@ -87,8 +87,6 @@ function createTweet(data) {
 
 /****************************************************************************************/
 
-var csrfToken = $('meta[name=csrf-token]').attr('content');
-
 var pusher = new Pusher('4ddf59eb5af2754e89f0', {
     cluster: 'eu',
     encrypted: true

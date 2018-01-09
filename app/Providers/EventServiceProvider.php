@@ -19,6 +19,12 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\MessageDeleted' => [
             'App\Listeners\messageDeleteListener',
         ],
+        'App\Events\MessageUpdated' => [
+            'App\Listeners\messageUpdateListener',
+        ],
+        'App\Events\MessageBanned' => [
+            'App\Listeners\messageBannedListener',
+        ],
     ];
 
     /**
@@ -26,8 +32,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
+    public function boot () {
         parent::boot();
 
         //
