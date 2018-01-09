@@ -25,7 +25,7 @@ function formatDate(timeString) {
 var csrfToken = $('meta[name=csrf-token]').attr('content');
 
 
-function createTweet(data) {
+function createComment(data) {
 
     var userName = (authUserRole == 0 )
         ? data.user['userName']
@@ -40,21 +40,21 @@ function createTweet(data) {
 
     var msgBan = (authUserRole == 0 )
         ? ''
-        : '<button id="banMessBtn">' +
-        '<a href="/api/v1/ban/message/' + data.message['id'] + '">' +
+        : '<button id="banCommBtn">' +
+        '<a href="/api/v1/ban/message/' + data.comment['message_id'] + '/comment/'+ data.comment['id'] +'">' +
         '<i class="fa fa-ban" aria-hidden="true"></i></a>' +
         '</button>';
 
     //doimplementovat odpocet dvou minut
     var updtBtn = (authUserId == data.user['user_id'])
-        ? '<button id="msgUpdtBtn" onclick="updateForm(' + data.message['id'] + ')">' +
+        ? '<button id="msgUpdtBtn" onclick="commentUpdateForm(' + data.comment['id'] + ')">' +
         '<i class="fa fa-pencil" aria-hidden="true"></i>' +
         '</button>'
         : '';
 
     //doimplementovat odpocet dvou minut
     var dltBtn = (authUserId == data.user['user_id'])
-        ? '<form method="POST" action="/api/v1/tweet/'+ data.message['id'] +'">' +
+        ? '<form method="POST" action="/api/v1/tweet/'+ data.comment['message_id'] +'/comment/'+ data.comment['id'] +'">' +
         '<input type="hidden"  name="_token" value="'+ csrfToken +'">'+
         '<input type="hidden" name="_method" value="DELETE">'+
         '<button id="msgDltBtn" type="submit">' +
@@ -65,23 +65,16 @@ function createTweet(data) {
 
 
     var html =
-        '<div class="tweet" data-id="' + data.message['id'] + '"> ' +
-        '<div class="tweet-name">' + userName + '' + banBtn +
-        '<span class="up-del-links">' + msgBan + updtBtn + dltBtn +
-        '</span>' +
-        '</div>' +
-        '<div class="tweet-time-div"><span class="tweet-time">' + formatDate(data.message['created_at']['date']) + '</span></div>' +
-        '<div class="tweet-text" data-id="' + data.message['id'] + '">' + data.message['text'] + '</div>' +
-        '<div class="tweet-icons">'+
-        '<span class="comment-link">' +
-        '<button id="cmntBtn" onclick="commentForm('+ data.message['id'] +')">' +
-        '<i class="fa fa-comments" aria-hidden="true"></i>' +
-        '</button>' +
-        '</span>' +
-        '</div>'+
+        '<div class="comment" data-id="' + data.comment['id'] + '"> ' +
+            '<div class="comment-name">' + userName + '' + banBtn +
+                '<span class="up-del-links">' + msgBan + updtBtn + dltBtn + '</span>' +
+                '<span class="comment-time">' + formatDate(data.comment['created_at']['date']) + '</span>' +
+            '</div>' +
+            '<div class="comment-text" data-comment-id="' + data.comment['id'] + '" data-tweet-id="'+ data.comment['message_id'] +'">' +
+            data.comment['text'] + '</div>' +
         '</div>';
 
-    $('.panel-body').prepend(html);
+    $('.tweet[data-id='+ data.comment['message_id'] +']').children('.comments-container').prepend(html);
 }
 
 
@@ -92,11 +85,11 @@ var pusher = new Pusher('4ddf59eb5af2754e89f0', {
     encrypted: true
 });
 
-var channel = pusher.subscribe('message');
-channel.bind('newMessage', function (data) {
+var channel = pusher.subscribe('comment');
+channel.bind('newComment', function (data) {
 
     if (csrfToken != data.csrfTok) {
-        createTweet(data);
+        createComment(data);
     }
 
 });

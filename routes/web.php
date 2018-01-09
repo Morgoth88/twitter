@@ -57,7 +57,7 @@ Route::prefix('api/v1')->group(function () {
      * Tweet routes
      ************************************************************************************/
     //Create message
-    Route::post('/tweet','messageController@create')->name('createTweet');
+    Route::post('/tweet','messageController@create')->name('createComment');
     //Read messages
     Route::get('/tweet','messageController@read')->name('readTweet');
     //update message

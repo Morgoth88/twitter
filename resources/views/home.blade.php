@@ -141,7 +141,7 @@
                                                         @break
                                                     @endif
 
-                                                    <div class="comment">
+                                                    <div class="comment" data-id="{{$comment->id}}">
                                                         <!--comment user name-->
                                                         <div class="comment-name">
                                                             @if(Auth::user()->role_id == 1)
@@ -218,9 +218,13 @@
         var authUserId = "{{\Illuminate\Support\Facades\Auth::user()->id}}";
         var authUserRole = "{{\Illuminate\Support\Facades\Auth::user()->role_id}}";
     </script>
-    <script src="{{asset('js/WSnewMsg.js')}}"></script>
-    <script src="{{asset('js/WSDltMsg.js')}}"></script>
-    <script src="{{asset('js/WSUpdtMsg.js')}}"></script>
-    <script src="{{asset('js/WSbanMsg.js')}}"></script>
+    <script src="{{asset('js/WSscripts/messagesScripts/WSnewMsg.js')}}"></script>
+    <script src="{{asset('js/WSscripts/messagesScripts/WSDltMsg.js')}}"></script>
+    <script src="{{asset('js/WSscripts/messagesScripts/WSUpdtMsg.js')}}"></script>
+    <script src="{{asset('js/WSscripts/messagesScripts/WSbanMsg.js')}}"></script>
+    <script src="{{asset('js/WSscripts/commentsScripts/WSnewCmnt.js')}}"></script>
+    <script src="{{asset('js/WSscripts/commentsScripts/WSupdtCmnt.js')}}"></script>
+    <script src="{{asset('js/WSscripts/commentsScripts/WSdltCmnt.js')}}"></script>
+    <script src="{{asset('js/WSscripts/commentsScripts/WSbanCmnt.js')}}"></script>
 
 @endsection

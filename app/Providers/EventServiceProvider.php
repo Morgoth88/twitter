@@ -25,6 +25,18 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\MessageBanned' => [
             'App\Listeners\messageBannedListener',
         ],
+        'App\Events\newCommentCreated' => [
+            'App\Listeners\newCommentListener',
+        ],
+        'App\Events\CommentDeleted' => [
+            'App\Listeners\commentDeleteListener',
+        ],
+        'App\Events\CommentBanned' => [
+            'App\Listeners\commentBannedListener',
+        ],
+        'App\Events\CommentUpdated' => [
+            'App\Listeners\commentUpdateListener',
+        ],
     ];
 
     /**

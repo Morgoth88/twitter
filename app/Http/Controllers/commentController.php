@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Comment;
+use App\Events\CommentBanned;
+use App\Events\CommentDeleted;
+use App\Events\CommentUpdated;
+use App\Events\newCommentCreated;
 use App\Message;
 use Illuminate\Http\Request;
 use App\Interfaces\CommentInterface;
@@ -56,6 +60,8 @@ class commentController extends Controller implements CommentInterface
         $message->updated_at = now();
         $message->save();
 
+        event(new newCommentCreated($comment, $comment->user));
+
         $request->session()->flash('status', self::SUCC_COM_CRT);
         return redirect(route('readTweet'));
     }
@@ -87,6 +93,8 @@ class commentController extends Controller implements CommentInterface
             $comment->old = 1;
             $comment->save();
 
+            event(new CommentUpdated($newComment, $newComment->user));
+
             $request->session()->flash('status', self::SUCC_COM_UPDT);
             return redirect(route('readTweet'));
         } else {
@@ -109,6 +117,8 @@ class commentController extends Controller implements CommentInterface
         $this->authorize('update_delete_comm', $comment);
 
         if (TimeHelper::lessThanTwoMinutes($comment)) {
+
+            event(new CommentDeleted($comment));
 
             $comment->delete();
 
@@ -137,6 +147,8 @@ class commentController extends Controller implements CommentInterface
         if($request->user()->role_id == 1 && $user->role_id != 1){
 
             $ban->banPost($comment);
+
+            event(new CommentBanned($comment));
 
             $request->session()->flash('status',self::SUCC_COM_BAN);
             return redirect(route('readTweet'));
