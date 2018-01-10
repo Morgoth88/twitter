@@ -70,7 +70,7 @@ function createTweet(data) {
                 '<span class="up-del-links">' + msgBan + updtBtn + dltBtn + '</span>' +
             '</div>' +
             '<div class="tweet-time-div">' +
-                '<span class="tweet-time">' + formatDate(data.message['created_at']['date']) + '</span>' +
+                '<span class="tweet-time">' + moment().startOf(data.message['created_at']).fromNow() + '</span>' +
             '</div>' +
             '<div class="tweet-text" data-id="' + data.message['id'] + '">' + data.message['text'] + '</div>' +
             '<div class="tweet-icons">'+
@@ -78,9 +78,8 @@ function createTweet(data) {
                     '<button id="cmntBtn" onclick="commentForm('+ data.message['id'] +')">' +
                         '<i class="fa fa-comments" aria-hidden="true"></i>' +
                     '</button>' +
-                '</span>' +
+                '</span>'+
             '</div>'+
-            '<div class="comments-container"></div>'+
         '</div>';
 
     $('.panel-body').prepend(html);
@@ -94,11 +93,10 @@ var pusher = new Pusher('4ddf59eb5af2754e89f0', {
     encrypted: true
 });
 
+
 var channel = pusher.subscribe('message');
 channel.bind('newMessage', function (data) {
-
-    if (csrfToken != data.csrfTok) {
+    if(authUserId != data.user['user_id']) {
         createTweet(data);
     }
-
 });

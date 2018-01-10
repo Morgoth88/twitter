@@ -227,4 +227,5 @@
     <script src="{{asset('js/WSscripts/commentsScripts/WSdltCmnt.js')}}"></script>
     <script src="{{asset('js/WSscripts/commentsScripts/WSbanCmnt.js')}}"></script>
 
+
 @endsection

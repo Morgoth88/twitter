@@ -54,8 +54,7 @@ class newMessageCreated implements ShouldBroadcast
                 'user_id' => $this->user->id,
                 'userName' => $this->user->name,
                 'userRole' => $this->user->role_id,
-            ],
-            'csrfTok' => csrf_token()
+            ]
         ];
     }
 }

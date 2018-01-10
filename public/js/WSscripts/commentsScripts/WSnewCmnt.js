@@ -18,9 +18,7 @@ function formatDate(timeString) {
 
     return formatedDate;
 }
-
 /****************************************************************************************/
-
 
 var csrfToken = $('meta[name=csrf-token]').attr('content');
 
@@ -63,18 +61,22 @@ function createComment(data) {
         '</form>'
         : '';
 
+    if($('.tweet[data-id='+ data.comment['message_id'] +']').children('.comments-container').length < 1){
+
+        $('.tweet[data-id='+ data.comment['message_id'] +']').append('<div class="comments-container"></div>')
+    }
 
     var html =
         '<div class="comment" data-id="' + data.comment['id'] + '"> ' +
             '<div class="comment-name">' + userName + '' + banBtn +
                 '<span class="up-del-links">' + msgBan + updtBtn + dltBtn + '</span>' +
-                '<span class="comment-time">' + formatDate(data.comment['created_at']['date']) + '</span>' +
+                '<span class="comment-time">'+ moment().startOf(data.comment['created_at']).fromNow() +'</span>' +
             '</div>' +
             '<div class="comment-text" data-comment-id="' + data.comment['id'] + '" data-tweet-id="'+ data.comment['message_id'] +'">' +
             data.comment['text'] + '</div>' +
         '</div>';
 
-    $('.tweet[data-id='+ data.comment['message_id'] +']').children('.comments-container').prepend(html);
+    $('.tweet[data-id='+ data.comment['message_id'] +']').children('.comments-container').html(html);
 }
 
 
@@ -88,8 +90,8 @@ var pusher = new Pusher('4ddf59eb5af2754e89f0', {
 var channel = pusher.subscribe('comment');
 channel.bind('newComment', function (data) {
 
-    if (csrfToken != data.csrfTok) {
+    if(authUserId != data.user['user_id']) {
         createComment(data);
     }
-
 });
+

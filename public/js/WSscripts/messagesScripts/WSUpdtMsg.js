@@ -43,8 +43,6 @@ var pusher = new Pusher('4ddf59eb5af2754e89f0', {
 var channel = pusher.subscribe('messageUpdate');
 channel.bind('msgUpdt', function (data) {
 
-    if (csrfToken != data.csrfTok) {
         updateTweet(data);
-    }
 
 });

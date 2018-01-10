@@ -39,8 +39,6 @@ var pusher = new Pusher('4ddf59eb5af2754e89f0', {
 var channel = pusher.subscribe('commentUpdate');
 channel.bind('cmntUpdt', function (data) {
 
-    if (csrfToken != data.csrfTok) {
         updateComment(data);
-    }
 
 });

@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="{{asset('css/font-awesome-4.7.0/css/font-awesome.min.css')}}" >
     <link href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,700,700i|Source+Sans+Pro:300,300i,400,400i,600,600i,700&amp;subset=latin-ext" rel="stylesheet">
 
-    <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
     <!-- Scripts -->
+    <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script
             src="https://code.jquery.com/jquery-3.2.1.js"
@@ -25,6 +25,8 @@
             crossorigin="anonymous"></script>
     <script src="{{ asset('js/messageForm.js') }}"></script>
     <script src="{{ asset('js/commentForm.js') }}"></script>
+    <script src="{{ asset('js/moment.js') }}"></script>
+
 
 </head>
 <body>
