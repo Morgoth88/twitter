@@ -13,6 +13,7 @@ use App\Interfaces\MessageInterface;
 use Illuminate\Http\Request;
 use App\Message;
 use App\TimeHelper;
+use App\Models\messageModel;
 
 class messageController extends Controller implements MessageInterface
 {
@@ -40,11 +41,8 @@ class messageController extends Controller implements MessageInterface
      */
     public function read () {
 
-        $messages = Message::with(['comment' => function ($q) {
-            $q->where('old', 0)->orderBy('created_at', 'desc');
-        }])->where('old', 0)
-            ->orderBy('updated_at', 'desc')
-            ->paginate(10);
+        $messageModel = new messageModel();
+        $messages = $messageModel->getMessages();
 
         return view('home')->with('tweets', $messages);
     }
@@ -62,9 +60,8 @@ class messageController extends Controller implements MessageInterface
             'tweet' => 'required|string'],
             ['Tweet is empty!']);
 
-        $tweet = $request->user()->message()->create([
-            'text' => $request->tweet
-        ]);
+        $messageModel = new messageModel();
+        $tweet = $messageModel->createMessage($request);
 
         event(new newMessageCreated($tweet, $tweet->user, $request->user()));
 
@@ -90,19 +87,8 @@ class messageController extends Controller implements MessageInterface
                 'tweet' => 'required|string'],
                 ['Tweet is empty!']);
 
-            $newMessage = $request->user()->message()->create([
-                'text' => $request->tweet,
-                'old_id' => $Message->id,
-                'created_at' => $Message->created_at
-            ]);
-
-            foreach ($Message->comment as &$comment) {
-                $comment->message_id = $newMessage->id;
-                $comment->save();
-            }
-
-            $Message->old = 1;
-            $Message->save();
+            $messageModel = new messageModel();
+            $newMessage =  $messageModel->updateMessage($request, $Message);
 
             event(new MessageUpdated($newMessage, $newMessage->user));
 

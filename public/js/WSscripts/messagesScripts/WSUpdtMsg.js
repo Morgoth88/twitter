@@ -1,7 +1,6 @@
 
 var csrfToken = $('meta[name=csrf-token]').attr('content');
 
-
 function updateTweet(data) {
 
     var oldTweet = $('.tweet[data-id='+ data.message['old_id'] +']');
@@ -35,14 +34,8 @@ function updateTweet(data) {
 
 /****************************************************************************************/
 
-var pusher = new Pusher('4ddf59eb5af2754e89f0', {
-    cluster: 'eu',
-    encrypted: true
-});
 
-var channel = pusher.subscribe('messageUpdate');
-channel.bind('msgUpdt', function (data) {
-
+Echo.private('messageUpdate')
+    .listen('.msgUpdt', (data) => {
         updateTweet(data);
-
-});
+    });

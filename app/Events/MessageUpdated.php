@@ -35,7 +35,7 @@ class MessageUpdated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('messageUpdate');
+        return new PrivateChannel('messageUpdate');
     }
 
     public function broadcastAs () {

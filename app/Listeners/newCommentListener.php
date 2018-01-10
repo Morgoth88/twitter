@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\newCommentCreated;
+use Illuminate\Http\Request;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 

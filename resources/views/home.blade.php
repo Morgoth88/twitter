@@ -118,13 +118,13 @@
                                         </span>
 <!--TODO-->
                                     @if(count($tweet->comment) > 0 && count($tweet->comment) < 2)
-                                        {{count($tweet->comment)}}
+                                        <span class="comment-count">{{count($tweet->comment)}}
 
                                         <!--comment link-->
-                                            comment
+                                            comment</span>
                                         @elseif(count($tweet->comment) >= 2)
-                                            {{count($tweet->comment)}}
-                                            comments
+                                            <span class="comment-count">{{count($tweet->comment)}}
+                                                comments</span>
                                         @endif
                                     </div>
 

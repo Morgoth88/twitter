@@ -32,7 +32,7 @@ class MessageBanned implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('messageBanned');
+        return new PrivateChannel('messageBanned');
     }
 
     public function broadcastAs () {

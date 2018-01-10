@@ -13,6 +13,7 @@ use App\Interfaces\CommentInterface;
 use App\TimeHelper;
 use App\User;
 use App\Ban;
+use App\Models\commentModel;
 
 class commentController extends Controller implements CommentInterface
 {
@@ -24,6 +25,15 @@ class commentController extends Controller implements CommentInterface
         SUCC_COM_BAN = 'Comment was successfully banned',
         UNAUTH = 'Unauthorized action';
 
+
+    /**
+     * messageController constructor.
+     */
+    public function __construct () {
+
+        $this->middleware('auth');
+    }
+
     /**
      * Show message with comments
      *
@@ -32,7 +42,8 @@ class commentController extends Controller implements CommentInterface
      */
     public function read (Message $message) {
 
-        $message->comment = $message->comment->where('old', 0)->sortByDesc('created_at');
+        $commentModel = new commentModel();
+        $message = $commentModel->getAllComments($message);
 
         return view('message-comment')->with('tweet', $message);
     }
@@ -47,20 +58,17 @@ class commentController extends Controller implements CommentInterface
      */
     public function create (Message $message, Request $request) {
 
+        $commentModel = new commentModel();
+
         $this->validate($request, [
             'comment' => 'required|string'],
             ['Comment is empty!']);
 
-        $comment = $request->user()->comment()
-            ->create([
-                'text' => $request->comment,
-                'message_id' => $message->id
-            ]);
+        $comment = $commentModel->createComment($request, $message);
 
-        $message->updated_at = now();
-        $message->save();
+        $commentCount = $message->comment()->where('old','0')->count();
 
-        event(new newCommentCreated($comment, $comment->user));
+        event(new newCommentCreated($comment, $comment->user, $commentCount));
 
         $request->session()->flash('status', self::SUCC_COM_CRT);
         return redirect(route('readTweet'));
@@ -77,21 +85,15 @@ class commentController extends Controller implements CommentInterface
      */
     public function update (Request $request, Message $message, Comment $comment) {
 
-
         if (TimeHelper::lessThanTwoMinutes($comment)) {
+
+            $commentModel = new commentModel();
 
             $this->validate($request, [
                 'comment' => 'required|string'],
                 ['Comment is empty!']);
 
-            $newComment = $request->user()->comment()->create([
-                'text' => $request->comment,
-                'old_id' => $comment->id,
-                'created_at' => $comment->created_at,
-                'message_id' => $message->id]);
-
-            $comment->old = 1;
-            $comment->save();
+            $newComment = $commentModel->updateComment($request, $comment, $message);
 
             event(new CommentUpdated($newComment, $newComment->user));
 
@@ -118,7 +120,9 @@ class commentController extends Controller implements CommentInterface
 
         if (TimeHelper::lessThanTwoMinutes($comment)) {
 
-            event(new CommentDeleted($comment));
+            $commentCount = $message->comment()->where('old','0')->count();
+
+            event(new CommentDeleted($comment, $commentCount - 1));
 
             $comment->delete();
 
@@ -148,7 +152,9 @@ class commentController extends Controller implements CommentInterface
 
             $ban->banPost($comment);
 
-            event(new CommentBanned($comment));
+            $commentCount = $message->comment()->where('old','0')->count();
+
+            event(new CommentBanned($comment, $commentCount));
 
             $request->session()->flash('status',self::SUCC_COM_BAN);
             return redirect(route('readTweet'));

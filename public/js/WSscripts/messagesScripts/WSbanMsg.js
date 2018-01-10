@@ -4,14 +4,8 @@ function banMessage(data) {
     tweet.remove();
 }
 
-var pusher = new Pusher('4ddf59eb5af2754e89f0', {
-    cluster: 'eu',
-    encrypted: true
-});
 
-var channel = pusher.subscribe('messageBanned');
-channel.bind('msgBan', function (data) {
-
-   banMessage(data);
-
-});
+Echo.private('messageBanned')
+    .listen('.msgBan', (data) => {
+        banMessage(data);
+    });

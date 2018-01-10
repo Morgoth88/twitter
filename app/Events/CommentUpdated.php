@@ -36,7 +36,7 @@ class CommentUpdated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('commentUpdate');
+        return new PrivateChannel('commentUpdate');
     }
 
     public function broadcastAs () {

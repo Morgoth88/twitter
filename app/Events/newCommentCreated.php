@@ -16,16 +16,18 @@ class newCommentCreated implements ShouldBroadcast
 
     public $comment;
     public $user;
+    public $commentCount;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($comment, $user)
+    public function __construct($comment, $user, $commentCount)
     {
         $this->comment = $comment;
         $this->user = $user;
+        $this->commentCount = $commentCount;
     }
 
     /**
@@ -35,13 +37,19 @@ class newCommentCreated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('comment');
+        return new PrivateChannel('comment');
     }
 
+    /**
+     * @return string
+     */
     public function broadcastAs () {
         return 'newComment';
     }
 
+    /**
+     * @return array
+     */
     public function broadcastWith () {
         return [
             'comment' => [
@@ -56,7 +64,8 @@ class newCommentCreated implements ShouldBroadcast
                 'user_id' => $this->user->id,
                 'userName' => $this->user->name,
                 'userRole' => $this->user->role_id,
-            ]
+            ],
+            'commentCount' => $this->commentCount
         ];
     }
 }

@@ -32,7 +32,7 @@ class MessageDeleted implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('messageDelete');
+        return new PrivateChannel('messageDelete');
     }
 
     public function broadcastAs () {

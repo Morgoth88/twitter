@@ -31,14 +31,8 @@ function updateComment(data) {
 
 /****************************************************************************************/
 
-var pusher = new Pusher('4ddf59eb5af2754e89f0', {
-    cluster: 'eu',
-    encrypted: true
-});
 
-var channel = pusher.subscribe('commentUpdate');
-channel.bind('cmntUpdt', function (data) {
-
+Echo.private('commentUpdate')
+    .listen('.cmntUpdt', (data) => {
         updateComment(data);
-
-});
+    });

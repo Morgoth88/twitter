@@ -1,29 +1,4 @@
-/**
- * Date format for DisplayTasks method
- * @param timeString
- * @returns {string}
- */
-function formatDate(timeString) {
-
-    var date = new Date(timeString);
-    var day = date.getDate();
-    var month = date.getUTCMonth() + 1;
-    var year = date.getUTCFullYear();
-
-    var hour = date.getHours();
-    var minutes = (date.getMinutes() < 10 ) ? '0' + date.getMinutes() : date.getMinutes();
-    var seconds = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
-
-    var formatedDate = hour + ':' + minutes + ':' + seconds + ' / ' + day + '.' + month + '.' + year;
-
-    return formatedDate;
-}
-
-/****************************************************************************************/
-
-
 var csrfToken = $('meta[name=csrf-token]').attr('content');
-
 
 function createTweet(data) {
 
@@ -79,6 +54,7 @@ function createTweet(data) {
                         '<i class="fa fa-comments" aria-hidden="true"></i>' +
                     '</button>' +
                 '</span>'+
+                '<span class="comment-count"></span>'+
             '</div>'+
         '</div>';
 
@@ -88,15 +64,10 @@ function createTweet(data) {
 
 /****************************************************************************************/
 
-var pusher = new Pusher('4ddf59eb5af2754e89f0', {
-    cluster: 'eu',
-    encrypted: true
-});
+Echo.private('message')
+    .listen('.newMessage', (data) => {
+        if(authUserId != data.user['user_id']) {
+            createTweet(data);
+        }
+    });
 
-
-var channel = pusher.subscribe('message');
-channel.bind('newMessage', function (data) {
-    if(authUserId != data.user['user_id']) {
-        createTweet(data);
-    }
-});

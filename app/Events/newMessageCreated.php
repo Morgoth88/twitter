@@ -34,7 +34,7 @@ class newMessageCreated implements ShouldBroadcast
      * @return \Illuminate\Broadcasting\Channel|array
      */
     public function broadcastOn () {
-        return new Channel('message');
+        return new PrivateChannel('message');
     }
 
     public function broadcastAs () {

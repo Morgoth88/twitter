@@ -16,15 +16,17 @@ class CommentDeleted implements ShouldBroadcast
 
 
     public $comment;
+    public $commentCount;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($comment)
+    public function __construct($comment, $commentCount)
     {
         $this->comment = $comment;
+        $this->commentCount = $commentCount;
     }
 
     /**
@@ -34,18 +36,26 @@ class CommentDeleted implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('commentDelete');
+        return new PrivateChannel('commentDelete');
     }
 
+    /**
+     * @return string
+     */
     public function broadcastAs () {
         return 'cmntDel';
     }
 
+    /**
+     * @return array
+     */
     public function broadcastWith () {
         return [
             'comment' => [
-                'id' => $this->comment->id
-            ]
+                'id' => $this->comment->id,
+                'message_id' => $this->comment->message_id
+            ],
+            'commentCount' => $this->commentCount
         ];
     }
 }
