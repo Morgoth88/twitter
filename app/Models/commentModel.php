@@ -18,7 +18,7 @@ class commentModel extends Model
     public function createComment ($request, $message) {
         $comment = $request->user()->comment()
             ->create([
-                'text' => $request->comment,
+                'text' => htmlspecialchars($request->comment,ENT_QUOTES),
                 'message_id' => $message->id
             ]);
 
@@ -53,7 +53,7 @@ class commentModel extends Model
     public function updateComment($request, $comment, $message)
     {
         $newComment = $request->user()->comment()->create([
-            'text' => $request->comment,
+            'text' => htmlspecialchars($request->comment,ENT_QUOTES),
             'old_id' => $comment->id,
             'created_at' => $comment->created_at,
             'message_id' => $message->id]);

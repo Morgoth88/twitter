@@ -1,5 +1,8 @@
 <?php
 
+use App\Activity_log;
+use App\Ban;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,8 +18,8 @@
  *welcome page route
  ************************************************************************************/
 Route::get('/', function () {
-    \App\Activity_log::periodic_log_delete();
-    \App\Ban::periodicBanInDbClean();
+    Activity_log::periodic_log_delete();
+    Ban::periodicBanInDbClean();
     return view('welcome');
 })->name('welcome');
 
@@ -27,9 +30,6 @@ Route::prefix('api/v1')->group(function () {
      *Authentication routes
      ************************************************************************************/
     Auth::routes();
-    // override login route with middleware checkIfBanned
-    Route::post('/login','Auth\LoginController@login')->middleware('checkIfBanned');
-
 
     /**
      * Account updates routes

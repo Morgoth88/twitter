@@ -32,7 +32,7 @@ class messageModel extends Model
     public function createMessage ($request) {
 
         $tweet = $request->user()->message()->create([
-            'text' => $request->tweet
+            'text' => htmlspecialchars($request->tweet, ENT_QUOTES)
         ]);
 
         return $tweet;
@@ -49,7 +49,7 @@ class messageModel extends Model
     public function updateMessage($request, $message){
 
         $newMessage = $request->user()->message()->create([
-            'text' => $request->tweet,
+            'text' => htmlspecialchars($request->tweet,ENT_QUOTES),
             'old_id' => $message->id,
             'created_at' => $message->created_at
         ]);

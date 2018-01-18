@@ -14,18 +14,21 @@ class checkIfBanned
      * Handle an incoming request.
      * Check if user has been banned before login
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next){
+    public function handle ($request, Closure $next) {
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('id', $request->user()->id)->first();
+        if ($user) {
 
-        if($user->ban == 1){
-            $request->session()->flash('status', self::BAN_MSG);
-            return redirect(route('welcome'));
+            if ($user->ban == 1) {
+                $request->session()->flash('status', self::BAN_MSG);
+                return redirect(route('welcome'));
+            }
+            return $next($request);
+
         }
-        return $next($request);
     }
 }
