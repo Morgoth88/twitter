@@ -218,14 +218,9 @@
         var authUserId = "{{\Illuminate\Support\Facades\Auth::user()->id}}";
         var authUserRole = "{{\Illuminate\Support\Facades\Auth::user()->role_id}}";
     </script>
-    <script src="{{asset('js/WSscripts/messagesScripts/WSnewMsg.js')}}"></script>
-    <script src="{{asset('js/WSscripts/messagesScripts/WSDltMsg.js')}}"></script>
-    <script src="{{asset('js/WSscripts/messagesScripts/WSUpdtMsg.js')}}"></script>
-    <script src="{{asset('js/WSscripts/messagesScripts/WSbanMsg.js')}}"></script>
-    <script src="{{asset('js/WSscripts/commentsScripts/WSnewCmnt.js')}}"></script>
-    <script src="{{asset('js/WSscripts/commentsScripts/WSupdtCmnt.js')}}"></script>
-    <script src="{{asset('js/WSscripts/commentsScripts/WSdltCmnt.js')}}"></script>
-    <script src="{{asset('js/WSscripts/commentsScripts/WSbanCmnt.js')}}"></script>
-
+    <script src="{{ asset('js/ajax.js') }}"></script>
+    <script src="{{asset('js/WSscripts/WScomment.js')}}"></script>
+    <script src="{{asset('js/WSscripts/WSmessage.js')}}"></script>
+    <script src="{{asset('js/WSscripts/WSUserBan.js')}}"></script>
 
 @endsection

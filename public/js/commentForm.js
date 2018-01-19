@@ -52,6 +52,30 @@ function commentForm(id) {
 
         $('div[data-id=' + id + ']').parent('.tweet').children('.tweet-icons').append(comment_form_div);
 
+        submitBtn.click(function (event) {
+            event.preventDefault();
+
+            var newComment = textarea.val()
+
+            var data = {
+                comment: newComment
+            }
+
+            $.ajax({
+                url: '/api/v1/tweet/'+ id +'/comment',
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(data)
+            }).done(function (data) {
+                comment_form_div.remove();
+            });
+
+        });
+
         cancelBtn.click(function () {
             $('#tweetForm').remove();
         });
@@ -128,6 +152,30 @@ function commentUpdateForm(id) {
 
         $('.comment-text[data-comment-id=' + id + ']').parent('.comment').prepend(tweet_up_form_div);
 
+        submitBtn.click(function (event) {
+            event.preventDefault();
+
+            var newComment = textarea.val()
+            var data = {
+                comment: newComment,
+                id: id
+            }
+
+            $.ajax({
+                url: '/api/v1/tweet/'+ tweetId +'/comment/'+ id,
+                method: 'PUT',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(data)
+            }).done(function (data) {
+
+                tweet_up_form_div.remove();
+            });
+
+        });
         cancelBtn.click(function () {
             $('#tweetForm').remove();
         });

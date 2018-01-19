@@ -37,6 +37,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\CommentUpdated' => [
             'App\Listeners\commentUpdateListener',
         ],
+        'App\Events\Userbanned' => [
+            'App\Listeners\userBannedListener',
+        ],
     ];
 
     /**

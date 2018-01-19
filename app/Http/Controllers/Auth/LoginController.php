@@ -28,7 +28,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = 'api/v1/tweet';
+    protected $redirectTo = 'api/v1/home';
 
     /**
      * Create a new controller instance.

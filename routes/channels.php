@@ -39,3 +39,6 @@ Broadcast::channel('commentDelete', function () {
 Broadcast::channel('commentBanned', function () {
     return \Illuminate\Support\Facades\Auth::check();
 });
+Broadcast::channel('user', function () {
+    return \Illuminate\Support\Facades\Auth::check();
+});

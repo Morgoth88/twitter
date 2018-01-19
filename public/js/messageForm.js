@@ -2,7 +2,7 @@ function createForm() {
 
     if (!$('#tweetForm').length) {
         var label = $('<div></div>');
-        label.attr('id','formLabel');
+        label.attr('id', 'formLabel');
         label.html('<strong>New tweet</strong>');
 
         var form = $('<form></form>');
@@ -50,6 +50,31 @@ function createForm() {
 
         $('.panel-body').prepend(tweet_form);
 
+        submitBtn.click(function (event) {
+            event.preventDefault();
+
+            var newTweet = textarea.val()
+
+            var data = {
+                tweet: newTweet
+            }
+
+            $.ajax({
+                url: '/api/v1/tweet',
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(data)
+            }).done(function (data) {
+
+                tweet_form.remove();
+            });
+
+        });
+
         cancelBtn.click(function () {
             $('#tweetForm').remove();
         });
@@ -67,7 +92,7 @@ function updateForm(id) {
     if (!$('#tweetForm').length) {
 
         var label = $('<div></div>');
-        label.attr('id','formLabel');
+        label.attr('id', 'formLabel');
         label.html('<strong>Update tweet</strong>');
 
         var form = $('<form></form>');
@@ -118,14 +143,37 @@ function updateForm(id) {
         form.append(buttonsDiv);
 
         var tweet_up_form_div = $('<div></div>');
-        tweet_up_form_div.attr('id','tweet-update-form');
+        tweet_up_form_div.attr('id', 'tweet-update-form');
 
 
         tweet_up_form_div.prepend(form);
 
         $('div[data-id=' + id + ']').closest('.tweet-text').prepend(tweet_up_form_div);
 
+        submitBtn.click(function (event) {
+            event.preventDefault();
 
+            var newTweet = textarea.val()
+            var data = {
+                tweet: newTweet,
+                id: id
+            }
+
+            $.ajax({
+                url: '/api/v1/tweet/' + id,
+                method: 'PUT',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(data)
+            }).done(function (data) {
+
+                tweet_up_form_div.remove();
+            });
+
+        });
 
 
         cancelBtn.click(function () {

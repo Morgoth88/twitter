@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Activity_log;
+use App\Events\Userbanned;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +37,7 @@ class userController extends Controller
         }
         else{
             $request->session()->flash('error', self::UNAUTH);
-            return redirect(route('readTweet'));
+            return redirect(route('index'));
         }
     }
 
@@ -86,7 +87,7 @@ class userController extends Controller
             $activity_log->save();
 
             $request->session()->flash('status', self::SUCC_ACC_UPDT);
-            return redirect(route('readTweet'));
+            return redirect(route('index'));
         }
         else{
 
@@ -128,12 +129,14 @@ class userController extends Controller
             $activity_log->activity = 'Banned by: '.$request->user()->email;
             $activity_log->save();
 
-            $request->session()->flash('status', self::SUCC_USR_BAN);
-            return redirect(route('readTweet'));
+            event(new Userbanned($user));
+
+            return response(json_encode("message : user $user->id was banned ") , 200)
+                ->header('Content-Type', 'application/json');
         }
         else{
-            $request->session()->flash('error', self::UNAUTH);
-            return redirect(route('readTweet'));
+            return response(json_encode('message : Unauthorized action') , 401)
+                ->header('Content-Type', 'application/json');;
         }
     }
 }

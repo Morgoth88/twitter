@@ -33,6 +33,16 @@ class messageController extends Controller implements MessageInterface
         $this->middleware('auth');
     }
 
+    /**
+     * Read all messages...20 per page
+     *
+     * @return $this
+     */
+    public function index () {
+
+        return view('home');
+    }
+
 
     /**
      * Read all messages...20 per page
@@ -44,7 +54,8 @@ class messageController extends Controller implements MessageInterface
         $messageModel = new messageModel();
         $messages = $messageModel->getMessages();
 
-        return view('home')->with('tweets', $messages);
+        return response($messages->toJson() , 200)
+            ->header('Content-Type', 'application/json');
     }
 
 
@@ -65,8 +76,8 @@ class messageController extends Controller implements MessageInterface
 
         event(new newMessageCreated($tweet, $tweet->user, $request->user()));
 
-        $request->session()->flash('status', self::SUCC_TW_CRT);
-        return redirect(route('readTweet'));
+        return response($tweet->toJson() , 201)
+            ->header('Content-Type', 'application/json');
     }
 
 
@@ -92,12 +103,12 @@ class messageController extends Controller implements MessageInterface
 
             event(new MessageUpdated($newMessage, $newMessage->user));
 
-            $request->session()->flash('status', self::SUCC_TW_UPDT);
-            return redirect(route('readTweet'));
+            return response($newMessage->toJson() , 200)
+                ->header('Content-Type', 'application/json');
 
         } else {
-            $request->session()->flash('error', self::TIME_EXP);
-            return redirect(route('readTweet'));
+            return response(json_encode('message : Time limit to update expired') , 401)
+                ->header('Content-Type', 'application/json');
         }
     }
 
@@ -117,13 +128,15 @@ class messageController extends Controller implements MessageInterface
 
             event(new MessageDeleted($message->id));
 
+            $id = $message->id;
             $message->delete();
 
-            $request->session()->flash('status', self::SUCC_TW_DEL);
-            return redirect(route('readTweet'));
+            return response(json_encode("message : Tweet $id was deleted"), 200)
+                ->header('Content-Type', 'application/json');
+
         } else {
-            $request->session()->flash('error', self::TIME_EXP);
-            return redirect(route('readTweet'));
+            return response(json_encode('message : Time limit to update expired') , 401)
+                ->header('Content-Type', 'application/json');
         }
     }
 
@@ -145,11 +158,12 @@ class messageController extends Controller implements MessageInterface
 
             event(new MessageBanned($message));
 
-            $request->session()->flash('status', self::SUCC_TW_BAN);
-            return redirect(route('readTweet'));
+            return response(json_encode("message : Tweet $message->id was banned"), 200)
+                ->header('Content-Type', 'application/json');
+
         } else {
-            $request->session()->flash('error', self::UNAUTH);
-            return redirect(route('readTweet'));
+            return response(json_encode('message : Unauthorized action') , 401)
+                ->header('Content-Type', 'application/json');
         }
 
     }

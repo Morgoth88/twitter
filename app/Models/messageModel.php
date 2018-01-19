@@ -15,9 +15,10 @@ class messageModel extends Model
      */
     public function getMessages () {
         $messages = Message::with(['comment' => function ($q) {
-            $q->where('old', 0)->orderBy('created_at', 'desc');
+            $q->where('old', 0)->with('user')->orderBy('created_at', 'asc');
         }])->where('old', 0)
-            ->orderBy('updated_at', 'desc')
+            ->with('user')
+            ->orderBy('updated_at', 'asc')
             ->paginate(10);
 
         return $messages;

@@ -70,8 +70,8 @@ class commentController extends Controller implements CommentInterface
 
         event(new newCommentCreated($comment, $comment->user, $commentCount));
 
-        $request->session()->flash('status', self::SUCC_COM_CRT);
-        return redirect(route('readTweet'));
+        return response($comment->toJson() , 201)
+            ->header('Content-Type', 'application/json');
     }
 
 
@@ -97,11 +97,12 @@ class commentController extends Controller implements CommentInterface
 
             event(new CommentUpdated($newComment, $newComment->user));
 
-            $request->session()->flash('status', self::SUCC_COM_UPDT);
-            return redirect(route('readTweet'));
+            return response($newComment->toJson() , 200)
+                ->header('Content-Type', 'application/json');
+
         } else {
-            $request->session()->flash('error', self::TIME_EXP);
-            return redirect(route('readTweet'));
+            return response(json_encode('message : Time limit to update expired') , 401)
+                ->header('Content-Type', 'application/json');
         }
     }
 
@@ -124,13 +125,15 @@ class commentController extends Controller implements CommentInterface
 
             event(new CommentDeleted($comment, $commentCount - 1));
 
+            $id = $comment->id;
             $comment->delete();
 
-            $request->session()->flash('status', self::SUCC_COM_DEL);
-            return redirect(route('readTweet'));
+            return response(json_encode("message : Tweet $id was deleted"), 200)
+                ->header('Content-Type', 'application/json');
+
         } else {
-            $request->session()->flash('error', self::TIME_EXP);
-            return redirect(route('readTweet'));
+            return response(json_encode('message : Time limit to update expired') , 401)
+                ->header('Content-Type', 'application/json');
         }
     }
 
@@ -156,12 +159,12 @@ class commentController extends Controller implements CommentInterface
 
             event(new CommentBanned($comment, $commentCount));
 
-            $request->session()->flash('status',self::SUCC_COM_BAN);
-            return redirect(route('readTweet'));
-        }
-        else{
-            $request->session()->flash('error',self::UNAUTH);
-            return redirect(route('readTweet'));
+            return response(json_encode("message : Tweet $comment->id was banned"), 200)
+                ->header('Content-Type', 'application/json');
+
+        } else {
+            return response(json_encode('message : Unauthorized action') , 401)
+                ->header('Content-Type', 'application/json');
         }
 
     }

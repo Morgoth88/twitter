@@ -45,12 +45,19 @@ Route::prefix('api/v1')->group(function () {
      ************************************************************************************/
     Route::get('/user/{user}','userController@showUser')->name('showUser');
 
+
     /**
      * Ban routes
      ************************************************************************************/
     Route::get('/ban/user/{user}', 'userController@ban')->name('userBan');
     Route::get('/ban/message/{message}','messageController@ban')->name('messageBan');
     Route::get('/ban/message/{message}/comment/{comment}','commentController@ban')->name('commentBan');
+
+
+    /**
+     * Tweet routes
+     ************************************************************************************/
+    Route::get('/home','messageController@index')->name('index');
 
 
     /**

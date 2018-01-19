@@ -81,7 +81,7 @@
         <div class="links">
             @if (Route::has('login'))
                 @auth
-                    <a href="{{route('readTweet') }}">Home</a>
+                    <a href="{{route('index') }}">Home</a>
                     @else
                         <a href="{{ route('login') }}">Login</a>
                         <a href="{{ route('register') }}">Register</a>

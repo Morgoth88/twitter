@@ -9,7 +9,7 @@
 
                 <div class="panel-heading">
                     <center><h3>User info</h3></center>
-                    <a href="{{route('readTweet')}}">
+                    <a href="{{route('index')}}">
                         <button class="btn btn-warning">
                             Back
                         </button>

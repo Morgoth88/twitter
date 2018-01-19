@@ -18,7 +18,7 @@
 
                     <!--panel header-->
                     <div class="panel-heading">
-                        <a href="{{route('readTweet')}}">
+                        <a href="{{route('index')}}">
                         <button class="btn btn-warning">
                             Back
                         </button>

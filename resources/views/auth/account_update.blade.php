@@ -84,7 +84,7 @@
                                     </button>
 
                                     <button class="btn btn-warning">
-                                        <a href="{{route('readTweet')}}"
+                                        <a href="{{route('index')}}"
                                            style="text-decoration: none; color: white;">Cancel</a>
                                     </button>
                                 </div>
