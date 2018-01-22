@@ -15,7 +15,7 @@ class messageModel extends Model
      */
     public function getMessages () {
         $messages = Message::with(['comment' => function ($q) {
-            $q->where('old', 0)->with('user')->orderBy('created_at', 'asc');
+            $q->where('old', 0)->with('user')->orderBy('created_at', 'desc');
         }])->where('old', 0)
             ->with('user')
             ->orderBy('updated_at', 'asc')
@@ -64,5 +64,39 @@ class messageModel extends Model
         $message->save();
 
         return $newMessage;
+    }
+
+
+    /**
+     * clean old messages and comments from DB
+     * every week
+     */
+    public static function periodicDbClean () {
+
+        $oldestMess = Message::where('old', 1)
+            ->min('message.updated_at');
+
+        $oldestComm = Comment::where('old', 1)
+            ->min('comment.updated_at');;
+
+        if (!is_null($oldestMess) && TimeHelper::weekPassed($oldestMess)) {
+
+            $messages = Message::where('old', 1)
+                ->get();
+
+            $messages->each(function ($mess, $key) {
+                $mess->delete();
+            });
+        }
+
+        if (!is_null($oldestComm) && TimeHelper::weekPassed($oldestComm)) {
+
+            $comment = Comment::where('old', 1)
+                ->get();
+
+            $comment->each(function ($comm, $key) {
+                $comm->delete();
+            });
+        }
     }
 }

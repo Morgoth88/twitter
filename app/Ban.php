@@ -17,45 +17,26 @@ class Ban extends Model
      * ban post
      * @param $post
      */
-    public function banPost ($post) {
+    public function banCmnt ($post) {
 
         $post->text = self::BAN_POST_TEXT;
         $post->old = 1;
         $post->save();;
     }
 
-
     /**
-     * clean banned comments and messages from DB every week
+     * @param $post
      */
-    public static function periodicBanInDbClean () {
+    public function banMsg($post) {
 
-        $oldestBannedMess = Message::where('old', 1)->where('text', self::BAN_POST_TEXT)
-            ->min('message.updated_at');
-
-        $oldestBannedComm = Comment::where('old', 1)->where('text', self::BAN_POST_TEXT)
-            ->min('comment.updated_at');;
-
-        if (!is_null($oldestBannedMess) && TimeHelper::weekPassed($oldestBannedMess)) {
-
-            $messages = Message::where('old', 1)
-                ->where('text', self::BAN_POST_TEXT)
-                ->get();
-
-            $messages->each(function ($mess, $key) {
-                $mess->delete();
-            });
+        $post->text = self::BAN_POST_TEXT;
+        $post->old = 1;
+        foreach ($post->comment as &$comm)
+        {
+            $comm->old = 1;
+            $comm->save();
         }
-
-        if (!is_null($oldestBannedComm) && TimeHelper::weekPassed($oldestBannedComm)) {
-
-            $comment = Comment::where('old', 1)
-                ->where('text', self::BAN_POST_TEXT)
-                ->get();
-
-            $comment->each(function ($comm, $key) {
-                $comm->delete();
-            });
-        }
+        $post->save();;
     }
+
 }

@@ -16,7 +16,7 @@ class TimeHelper
         DAY = 3600 * 24,
         HOUR = 3600,
         MINUTE = 60,
-        TWO_MINUTES = 120*120*120,
+        TWO_MINUTES = 120,
         WEEK = 3600 * 24 * 7;
 
 

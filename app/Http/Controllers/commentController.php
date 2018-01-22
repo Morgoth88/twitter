@@ -18,13 +18,6 @@ use App\Models\commentModel;
 class commentController extends Controller implements CommentInterface
 {
 
-    const SUCC_COM_CRT = 'Comment has been successfully created',
-        SUCC_COM_UPDT = 'Comment has been successfully updated',
-        TIME_EXP = 'Sorry, time limit expired!',
-        SUCC_COM_DEL = 'Comment was successfully deleted',
-        SUCC_COM_BAN = 'Comment was successfully banned',
-        UNAUTH = 'Unauthorized action';
-
 
     /**
      * messageController constructor.
@@ -153,7 +146,7 @@ class commentController extends Controller implements CommentInterface
 
         if($request->user()->role_id == 1 && $user->role_id != 1){
 
-            $ban->banPost($comment);
+            $ban->banCmnt($comment);
 
             $commentCount = $message->comment()->where('old','0')->count();
 

@@ -2,6 +2,7 @@
 
 use App\Activity_log;
 use App\Ban;
+use App\Models\messageModel;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,7 @@ use App\Ban;
  ************************************************************************************/
 Route::get('/', function () {
     Activity_log::periodic_log_delete();
-    Ban::periodicBanInDbClean();
+    messageModel::periodicDbClean();
     return view('welcome');
 })->name('welcome');
 

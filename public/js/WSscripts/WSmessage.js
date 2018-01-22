@@ -6,26 +6,48 @@ function createTweet(data) {
         ? data.user['userName']
         : '<a href="/api/v1/user/' + data.user['user_id'] + '">' + data.user['userName'] + '</a>';
 
-    var banBtn = (authUserRole == 0 )
-        ? ''
-        : '<button id="banUserBtn" onclick="banUser('+ data.user['user_id'] +')">' +
-        '<i class="fa fa-ban" aria-hidden="true"></i>' +
-        '</button>';
 
-    var msgBan = (authUserRole == 0 )
-        ? ''
-        : '<button id="banMessBtn" onclick="banTweet('+ data.message['id'] +')">' +
-        '<i class="fa fa-ban" aria-hidden="true"></i>' +
-        '</button>';
+    if((authUserRole == 0)) {
+        var banBtn = '';
+    }
+    else
+    {
+        if (data.user['userRole'] == 1) {
+            var banBtn = '';
+        }
+        else
+        {
+            var banBtn =  '<button id="banUserBtn" onclick="banUser('+  data.user['user_id'] +')">' +
+                '<i class="fa fa-ban" aria-hidden="true"></i>' +
+                '</button>';
+        }
+    }
 
-    //doimplementovat odpocet dvou minut
+
+    if((authUserRole == 0)) {
+        var msgBan = '';
+    }
+    else
+    {
+        if (data.user['userRole']  == 1) {
+            var msgBan = '';
+        }
+        else
+        {
+            var msgBan =  '<button id="banMessBtn" onclick="banTweet('+ data.message['id']  +')">' +
+                '<i class="fa fa-ban" aria-hidden="true"></i>' +
+                '</button>';
+        }
+    }
+
+
     var updtBtn = (authUserId == data.user['user_id'])
         ? '<button id="msgUpdtBtn" onclick="updateForm(' + data.message['id'] + ')">' +
         '<i class="fa fa-pencil" aria-hidden="true"></i>' +
         '</button>'
         : '';
 
-    //doimplementovat odpocet dvou minut
+
     var dltBtn = (authUserId == data.user['user_id'])
         ? '<button id="msgDltBtn" onclick="deleteTweet('+ data.message['id'] +')">' +
         '<i class="fa fa-times" aria-hidden="true"></i>' +
@@ -39,7 +61,7 @@ function createTweet(data) {
         '<span class="up-del-links">' + msgBan + updtBtn + dltBtn + '</span>' +
         '</div>' +
         '<div class="tweet-time-div">' +
-        '<span class="tweet-time" data-time="'+ data.message['created_at'] +'"></span>' +
+        '<span class="tweet-time" data-time="'+ data.message['created_at'].date +'"></span>' +
         '</div>' +
         '<div class="tweet-text" data-id="' + data.message['id'] + '">' + data.message['text'] + '</div>' +
         '<div class="tweet-icons">'+
@@ -52,7 +74,9 @@ function createTweet(data) {
         '</div>'+
         '</div>';
 
+
     $('.panel-body').prepend(html);
+
 
     $('.tweet-time').each(function () {
         var time = $(this).attr('data-time');
@@ -62,6 +86,7 @@ function createTweet(data) {
         var time = $(this).attr('data-time');
         $(this).text(moment(time).fromNow());
     });
+
 
     setInterval(function () {
         $('.tweet-time').each(function () {
@@ -73,6 +98,12 @@ function createTweet(data) {
             $(this).text(moment(time).fromNow());
         });
     },60000);
+
+
+    setTimeout(function () {
+        $('.tweet[data-id='+  data.message['id'] +']').children('.tweet-name').children('.up-del-links').children('#msgDltBtn').hide();
+        $('.tweet[data-id='+  data.message['id'] +']').children('.tweet-name').children('.up-del-links').children('#msgUpdtBtn').hide();
+    },120000)
 }
 
 

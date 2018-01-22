@@ -6,28 +6,51 @@ function createComment(data) {
         ? data.user['userName']
         : '<a href="/api/v1/user/' + data.user['user_id'] + '">' + data.user['userName'] + '</a>';
 
-    var banBtn = (authUserRole == 0 )
-        ? ''
-        : '<button id="banUserBtn" onclick="banUser('+ data.user['user_id'] +')">' +
-        '<i class="fa fa-ban" aria-hidden="true"></i>' +
-        '</button>';
 
-    var msgBan = (authUserRole == 0 )
-        ? ''
-        : '<button id="banCommBtn" onclick="banCmnt('+ data.comment['id'] +')">' +
-        '<i class="fa fa-ban" aria-hidden="true"></i>' +
-        '</button>';
 
-    //doimplementovat odpocet dvou minut
+    if((authUserRole == 0)) {
+        var banBtn = '';
+    }
+    else
+    {
+        if (data.user['userRole'] == 1) {
+            var banBtn = '';
+        }
+        else
+        {
+            var banBtn =  '<button id="banUserBtn" onclick="banUser(' + data.user['user_id'] + ')">' +
+                '<i class="fa fa-ban" aria-hidden="true"></i>' +
+                '</button>';
+        }
+    }
+
+
+    if((authUserRole == 0)) {
+        var msgBan = '';
+    }
+    else
+    {
+        if (data.user['userRole']  == 1) {
+            var msgBan = '';
+        }
+        else
+        {
+            var msgBan =  '<button id="banCommBtn" onclick="banCmnt(' + data.comment['id'] + ')">' +
+                '<i class="fa fa-ban" aria-hidden="true"></i>' +
+                '</button>';
+        }
+    }
+
+
     var updtBtn = (authUserId == data.user['user_id'])
         ? '<button id="msgUpdtBtn" onclick="commentUpdateForm(' + data.comment['id'] + ')">' +
         '<i class="fa fa-pencil" aria-hidden="true"></i>' +
         '</button>'
         : '';
 
-    //doimplementovat odpocet dvou minut
+
     var dltBtn = (authUserId == data.user['user_id'])
-        ? '<button id="msgDltBtn" onclick="deleteCmnt('+ data.comment['id'] +')">' +
+        ? '<button id="msgDltBtn" onclick="deleteCmnt(' + data.comment['id'] + ')">' +
         '<i class="fa fa-times" aria-hidden="true"></i>' +
         '</button>'
         : '';
@@ -41,7 +64,7 @@ function createComment(data) {
         '<div class="comment" data-id="' + data.comment['id'] + '"> ' +
         '<div class="comment-name">' + userName + '' + banBtn +
         '<span class="up-del-links">' + msgBan + updtBtn + dltBtn + '</span>' +
-        '<span class="comment-time" data-time="'+ data.comment['created_at'] +'"></span>' +
+        '<span class="comment-time" data-time="' + data.comment['created_at'].date + '"></span>' +
         '</div>' +
         '<div class="comment-text" data-comment-id="' + data.comment['id'] + '" data-tweet-id="' + data.comment['message_id'] + '">' +
         data.comment['text'] + '</div>' +
@@ -72,7 +95,13 @@ function createComment(data) {
             var time = $(this).attr('data-time');
             $(this).text(moment(time).fromNow());
         });
-    },60000);
+    }, 60000);
+
+    setTimeout(function () {
+        $('.comment[data-id='+  data.comment['id'] +']').children('.comment-name').children('.up-del-links').children('#msgDltBtn').hide();
+        $('.comment[data-id='+  data.comment['id'] +']').children('.comment-name').children('.up-del-links').children('#msgUpdtBtn').hide();
+    },120000)
+
 }
 /****************************************************************************************/
 
@@ -104,7 +133,7 @@ Echo.private('comment')
         var commentCount = $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.comment').length;
 
 
-        if(commentCount <= 4) {
+        if(commentCount <= 2) {
             createComment(data);
         }else {
             allCommentsLinkCreate(data);

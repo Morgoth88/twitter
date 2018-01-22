@@ -14,31 +14,58 @@ function getTweets() {
 
         for(i in data.data) {
 
+            var c = new Date(data.data[i].created_at);
+            var d = new Date();
+            var passed = (d.getTime()-c.getTime())/1000/60;
+
+
+
             var userName = (authUserRole == 0 )
                 ? data.data[i].user['name']
                 : '<a href="/api/v1/user/' + data.data[i].user['id'] + '">' + data.data[i].user['name'] + '</a>';
 
-            var banBtn = (authUserRole == 0 )
-                ? ''
-                : '<button id="banUserBtn" onclick="banUser('+  data.data[i].user['id'] +')">' +
-                '<i class="fa fa-ban" aria-hidden="true"></i>' +
-                '</button>';
 
-            var msgBan = (authUserRole == 0 )
-                ? ''
-                : '<button id="banMessBtn" onclick="banTweet('+ data.data[i].id  +')">' +
-                '<i class="fa fa-ban" aria-hidden="true"></i>' +
-                '</button>';
+            if((authUserRole == 0)) {
+                var banBtn = '';
+            }
+            else
+            {
+                if (data.data[i].user['role_id'] == 1) {
+                    var banBtn = '';
+                }
+                else
+                {
+                    var banBtn =  '<button id="banUserBtn" onclick="banUser('+  data.data[i].user['id'] +')">' +
+                    '<i class="fa fa-ban" aria-hidden="true"></i>' +
+                    '</button>';
+                }
+            }
 
-            //doimplementovat odpocet dvou minut
-            var updtBtn = (authUserId == data.data[i].user['id'])
+
+            if((authUserRole == 0)) {
+                var msgBan = '';
+            }
+            else
+            {
+                if (data.data[i].user['role_id'] == 1) {
+                    var msgBan = '';
+                }
+                else
+                {
+                    var msgBan =  '<button id="banMessBtn" onclick="banTweet('+ data.data[i].id  +')">' +
+                        '<i class="fa fa-ban" aria-hidden="true"></i>' +
+                        '</button>';
+                }
+            }
+
+            var updtBtn = (authUserId == data.data[i].user['id'] && passed <= 2)
                 ? '<button id="msgUpdtBtn" onclick="updateForm(' + data.data[i].id + ')">' +
                 '<i class="fa fa-pencil" aria-hidden="true"></i>' +
                 '</button>'
                 : '';
 
-            //doimplementovat odpocet dvou minut
-            var dltBtn = (authUserId == data.data[i].user['id'])
+
+            var dltBtn = (authUserId == data.data[i].user['id'] && passed <= 2)
                 ? '<button id="msgDltBtn" onclick="deleteTweet(' + data.data[i].id + ')">' +
                 '<i class="fa fa-times" aria-hidden="true"></i>' +
                 '</button>'
@@ -86,32 +113,55 @@ function getTweets() {
                 var msgId = data.data[i].id;
                 var CmntId = data.data[i].comment[x].id;
 
+                var c = new Date(data.data[i].comment[x].created_at);
+                var passed = (d.getTime()-c.getTime())/1000/60;
+
 
                 var CmntUserName = (authUserRole == 0 )
                     ? data.data[i].comment[x].user['name']
                     : '<a href="/api/v1/user/' + data.data[i].comment[x].user['id'] + '">' + data.data[i].comment[x].user['name'] + '</a>';
 
-                var CommentUserBanBtn = (authUserRole == 0 )
-                    ? ''
-                    : '<button id="banUserBtn" onclick="banUser('+ data.data[i].comment[x].user['id'] +')">' +
-                    '<i class="fa fa-ban" aria-hidden="true"></i>' +
-                    '</button>';
 
-                var CommentBan = (authUserRole == 0 )
-                    ? ''
-                    : '<button id="banCommBtn" onclick="banCmnt('+ CmntId+')">' +
-                    '<i class="fa fa-ban" aria-hidden="true"></i>' +
-                    '</button>';
+                if((authUserRole == 0)) {
+                    var CommentUserBanBtn = '';
+                }
+                else
+                {
+                    if (data.data[i].comment[x].user['role_id'] == 1) {
+                        var CommentUserBanBtn = '';
+                    }
+                    else
+                    {
+                        var CommentUserBanBtn =  '<button id="banUserBtn" onclick="banUser('+ data.data[i].comment[x].user['id'] +')">' +
+                            '<i class="fa fa-ban" aria-hidden="true"></i>' +
+                            '</button>';
+                    }
+                }
 
-                //doimplementovat odpocet dvou minut
-                var CommentUpdtBtn = (authUserId == data.data[i].comment[x].user['id'] )
+                if((authUserRole == 0)) {
+                    var CommentBan = '';
+                }
+                else
+                {
+                    if (data.data[i].comment[x].user['role_id'] == 1) {
+                        var CommentBan = '';
+                    }
+                    else
+                    {
+                        var CommentBan =  '<button id="banCommBtn" onclick="banCmnt('+ CmntId+')">' +
+                            '<i class="fa fa-ban" aria-hidden="true"></i>' +
+                            '</button>';
+                    }
+                }
+
+                var CommentUpdtBtn = (authUserId == data.data[i].comment[x].user['id'] && passed <= 2)
                     ? '<button id="msgUpdtBtn" onclick="commentUpdateForm(' + data.data[i].comment[x].id + ')">' +
                     '<i class="fa fa-pencil" aria-hidden="true"></i>' +
                     '</button>'
                     : '';
 
-                //doimplementovat odpocet dvou minut
-                var CommentDltBtn = (authUserId == data.data[i].comment[x].user['id'])
+
+                var CommentDltBtn = (authUserId == data.data[i].comment[x].user['id'] && passed <= 2)
                     ? '<button id="msgDltBtn" onclick="deleteCmnt('+ CmntId +')">' +
                     '<i class="fa fa-times" aria-hidden="true"></i>' +
                     '</button>'
@@ -132,7 +182,7 @@ function getTweets() {
                     data.data[i].comment[x].text + '</div>' +
                     '</div>';
 
-                $('.tweet[data-id=' + msgId + ']').children('.comments-container').prepend(CmntHtml);
+                $('.tweet[data-id=' + msgId + ']').children('.comments-container').append(CmntHtml);
 
                 var commentCount = data.data[i].comment.length;
                 var commentCounter = (commentCount == 1) ? commentCount + ' comment' : commentCount + ' comments';
@@ -154,15 +204,27 @@ function getTweets() {
         setInterval(function () {
             $('.tweet-time').each(function () {
                 var time = $(this).attr('data-time');
+                var timestamp = new Date(time);
+
                 $(this).text(moment(time).fromNow());
             });
             $('.comment-time').each(function () {
                 var time = $(this).attr('data-time');
+                var timestamp = new Date(time);
+
                 $(this).text(moment(time).fromNow());
             });
         },60000);
 
+        setTimeout(function () {
+            $('.up-del-links').each(function () {
+                $(this).children('#msgDltBtn').hide();
+                $(this).children('#msgUpdtBtn').hide();
+            })
+        },120000)
+
     });
+
 }
 
 

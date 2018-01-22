@@ -18,12 +18,6 @@ use App\Models\messageModel;
 class messageController extends Controller implements MessageInterface
 {
 
-    const SUCC_TW_CRT = 'Tweet has been successfully created',
-        SUCC_TW_UPDT = 'Tweet has been successfully updated',
-        TIME_EXP = 'Sorry, time limit expired!',
-        SUCC_TW_DEL = 'Tweet was successfully deleted',
-        SUCC_TW_BAN = 'Message was successfully banned',
-        UNAUTH = 'Unauthorized action';
 
     /**
      * messageController constructor.
@@ -154,7 +148,7 @@ class messageController extends Controller implements MessageInterface
         $ban = new Ban();
 
         if ($request->user()->role_id == 1 && $user->role_id != 1) {
-            $ban->banPost($message);
+            $ban->banMsg($message);
 
             event(new MessageBanned($message));
 

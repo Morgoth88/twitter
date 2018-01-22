@@ -23,6 +23,8 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
+    const BAN_MSG = 'Your account was banned!';
+
     /**
      * Where to redirect users after login.
      *
@@ -42,20 +44,28 @@ class LoginController extends Controller
 
 
     /**
-     * Log if authenticated
-     *
      * @param Request $request
      * @param $user
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function authenticated (Request $request, $user) {
+        if($user->ban == 1)
+        {
+            Auth::logout();
+            $request->session()->flash('status', self::BAN_MSG);
+            return redirect(route('welcome'));
 
-        $activity_log = new Activity_log();
+        }
+        else {
 
-        $activity_log->user_id = $user->id;
-        $activity_log->activity = 'User login';
-        $activity_log->save();
+            $activity_log = new Activity_log();
 
-        $request->session()->flash('status','You are logged in!');
+            $activity_log->user_id = $user->id;
+            $activity_log->activity = 'User login';
+            $activity_log->save();
+
+            $request->session()->flash('status', 'You are logged in!');
+        }
     }
 
     /**
