@@ -38,7 +38,8 @@ class commentController extends Controller implements CommentInterface
         $commentModel = new commentModel();
         $message = $commentModel->getAllComments($message);
 
-        return view('message-comment')->with('tweet', $message);
+        return response($message->toJson(),200)
+            ->header('Content-Type', 'application/json');
     }
 
 

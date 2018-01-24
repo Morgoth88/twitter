@@ -44,7 +44,8 @@ Route::prefix('api/v1')->group(function () {
     /**
      * User info page for Admin
      ************************************************************************************/
-    Route::get('/user/{user}','userController@showUser')->name('showUser');
+    Route::get('/user/{user}/get','userController@showUser')->name('getUser');
+    Route::get('/user/{user}','userController@index')->name('showUser');
 
 
     /**
@@ -79,8 +80,8 @@ Route::prefix('api/v1')->group(function () {
      ************************************************************************************/
     //Create comment
     Route::post('/tweet/{message}/comment','commentController@create')->name('createComment');
-    //Read comment
-    Route::get('/tweet/{message}/comment','commentController@read')->name('readComment');
+    //get all comments
+    Route::get('/tweet/{message}/comment','commentController@read')->name('getComments');
     //Update comment
     Route::put('/tweet/{message}/comment/{comment}','commentController@update')->name('updateComment');
     //Delete comment

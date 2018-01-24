@@ -44,9 +44,8 @@
                                 </ul>
                             </div>
                         @endif
-
                     </div>
-
+                    <div class="pagination_buttons"></div>
                 </div>
             </div>
         </div>
@@ -55,6 +54,9 @@
     <script>
         var authUserId = "{{\Illuminate\Support\Facades\Auth::user()->id}}";
         var authUserRole = "{{\Illuminate\Support\Facades\Auth::user()->role_id}}";
+        setTimeout(function () {
+            $('.alert-success').hide();
+        },5000)
     </script>
     <script src="{{ asset('js/ajax.js') }}"></script>
     <script src="{{asset('js/WSscripts/WScomment.js')}}"></script>

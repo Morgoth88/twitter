@@ -29,16 +29,14 @@ function commentForm(id) {
         var buttonsDiv = $('<div></div>');
         buttonsDiv.attr('id', 'buttons-div');
 
-        var submitBtn = $('<button></button>');
+        var submitBtn = $('<button><i class="fa fa-check" aria-hidden="true" fa-3x></i></button>');
         submitBtn.attr('type', 'submit');
         submitBtn.attr('class', 'btn btn-success');
         submitBtn.attr('id', 'submitBtn');
-        submitBtn.text('Send');
 
-        var cancelBtn = $('<button></button>');
+        var cancelBtn = $('<button><i class="fa fa-undo" aria-hidden="true" fa-3x></i></button>');
         cancelBtn.attr('id', 'cancelBtn');
         cancelBtn.attr('class', 'btn btn-warning');
-        cancelBtn.text('Cancel');
 
         buttonsDiv.append(submitBtn);
         buttonsDiv.append(cancelBtn);
@@ -128,16 +126,14 @@ function commentUpdateForm(id) {
         var buttonsDiv = $('<div></div>');
         buttonsDiv.attr('id', 'buttons-div');
 
-        var submitBtn = $('<button></button>');
+        var submitBtn = $('<button><i class="fa fa-check" aria-hidden="true" fa-3x></i></button>');
         submitBtn.attr('type', 'submit');
         submitBtn.attr('class', 'btn btn-success');
         submitBtn.attr('id', 'submitBtn');
-        submitBtn.text('update');
 
-        var cancelBtn = $('<button></button>');
+        var cancelBtn = $('<button><i class="fa fa-undo" aria-hidden="true" fa-3x></i></button>');
         cancelBtn.attr('id', 'cancelBtn');
         cancelBtn.attr('class', 'btn btn-warning');
-        cancelBtn.text('Cancel');
 
         buttonsDiv.append(submitBtn);
         buttonsDiv.append(cancelBtn);

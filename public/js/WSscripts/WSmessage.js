@@ -67,7 +67,7 @@ function createTweet(data) {
         '<div class="tweet-icons">'+
         '<span class="comment-link">' +
         '<button id="cmntBtn" onclick="commentForm('+ data.message['id'] +')">' +
-        '<i class="fa fa-comments" aria-hidden="true"></i>' +
+        'new <i class="fa fa-comments" aria-hidden="true"></i>' +
         '</button>' +
         '</span>'+
         '<span class="comment-count"></span>'+
@@ -76,6 +76,26 @@ function createTweet(data) {
 
 
     $('.panel-body').prepend(html);
+
+
+    /*pagination*/
+    /*******************************************************************************************************************/
+    if ($('.tweet').length < 6) {
+        $('#next').remove();
+    }
+    else {
+
+        $('.tweet').eq(5).remove();
+
+        newPage = parseInt($('.panel-body').attr('data-page')) + 1;
+
+        if ($('#next').length == 0) {
+            var next = $('<button id="next" onclick="getTweets(' + newPage + ')">next</button>');
+            $('.pagination_buttons').append(next);
+        }
+    }
+
+    /*******************************************************************************************************************/
 
 
     $('.tweet-time').each(function () {

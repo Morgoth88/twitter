@@ -22,7 +22,7 @@ class Userbanned implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct ($user){
+    public function __construct ($user) {
         $this->user = $user;
     }
 
@@ -41,21 +41,25 @@ class Userbanned implements ShouldBroadcast
 
     public function broadcastWith () {
 
-        $result= [];
+        $result = [];
 
-        foreach ($this->user->comment as $comment){
-            $result['CmntIds'][] =$comment->id;
+        if (count($this->user->comment)> 0) {
+            foreach ($this->user->comment as $comment) {
+                $result['CmntIds'][] = $comment->id;
+            }
         }
 
-        foreach ($this->user->message as $message){
-            $result['msgIds'][] =$message->id;
+        if(count($this->user->message) > 0) {
+            foreach ($this->user->message as $message) {
+                $result['msgIds'][] = $message->id;
+            }
         }
 
         return [
             'user' => [
                 'user_id' => $this->user->id,
-                'messages' => $result['msgIds'],
-                'comments' => $result['CmntIds'],
+                'messages' => ($result['msgIds']) ? $result['msgIds'] : '' ,
+                'comments' => ($result['CmntIds']) ? $result['CmntIds'] : '',
             ]
         ];
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Comment;
 use Illuminate\Database\Eloquent\Model;
 
 
@@ -37,8 +38,8 @@ class commentModel extends Model
      */
     public function getAllComments($message)
     {
-        $message->comment = $message->comment->where('old', 0)->sortByDesc('created_at');
-        return $message;
+        $comms = Comment::with('user')->where([['message_id', $message->id],['old', 0 ]])->get();
+        return $comms;
     }
 
 

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Message;
+use App\Comment;
+use App\TimeHelper;
 
 class messageModel extends Model
 {
@@ -18,8 +20,8 @@ class messageModel extends Model
             $q->where('old', 0)->with('user')->orderBy('created_at', 'desc');
         }])->where('old', 0)
             ->with('user')
-            ->orderBy('updated_at', 'asc')
-            ->paginate(10);
+            ->orderBy('message.updated_at', 'desc')
+            ->paginate(5);
 
         return $messages;
     }

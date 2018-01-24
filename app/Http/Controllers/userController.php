@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use App\Ban;
+use App\Message;
+use App\Comment;
+use App\TimeHelper;
 
 
 class userController extends Controller
@@ -29,15 +32,29 @@ class userController extends Controller
         $this->middleware('auth');
     }
 
+    public function index(){
+
+        return view('user');
+    }
+
     public function showUser(User $user, Request $request){
 
         if($request->user()->role_id == 1)
         {
-            return view('user')->with('user', $user);
+
+            $result['MessCount'] = Message::where([['user_id', $user->id],['old' , 0 ]])->count();
+            $result['CommCount'] = Comment::where([['user_id', $user->id],['old' , 0 ]])->count();
+            $result['lastCreatMess'] = TimeHelper::passedTime(Message::where([['user_id', $user->id],['old' , 0 ]])->max('created_at'));
+            $result['lastCreatComm'] = TimeHelper::passedTime(Comment::where([['user_id', $user->id],['old' , 0 ]])->max('created_at'));
+            $result['user'] = $user;
+
+
+            return response(json_encode($result),200)
+                ->header('Content-Type', 'application/json');
         }
         else{
-            $request->session()->flash('error', self::UNAUTH);
-            return redirect(route('index'));
+            return response(json_encode('message : Unauthorized action'),401)
+                ->header('Content-Type', 'application/json');
         }
     }
 
@@ -112,11 +129,11 @@ class userController extends Controller
 
             foreach ($user->message as &$message){
 
-                $ban->banPost($message);
+                $ban->banMsg($message);
             }
             foreach ($user->comment as & $comment) {
 
-                $ban->banPost($comment);
+                $ban->banCmnt($comment);
             }
 
             DB::table('sessions')->where('user_id', $user->id)->delete();

@@ -114,15 +114,15 @@ function deleteLastComment(data) {
 /****************************************************************************************/
 
 function allCommentsLinkCreate(data) {
-    var html = '<a href="/api/v1/tweet/'+ data.comment['message_id'] +'/comment/">all comments</a>' ;
+    var html = '<span class="allLink" onclick="allComments('+  data.comment['message_id'] +')">all comments</span>' ;
 
-    var link = $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('a').length
+    var link = $('.tweet[data-id='+  data.comment['message_id'] +']').children('.comments-container').children('.allLink').length
 
     deleteLastComment(data);
     createComment(data);
 
     if(!link) {
-        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').append(html);
+        $('.tweet[data-id='+  data.comment['message_id'] +']').children('.comments-container').append(html);
     }
 }
 
@@ -132,16 +132,16 @@ Echo.private('comment')
     .listen('.newComment', (data) => {
         var commentCount = $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.comment').length;
 
-
-        if(commentCount <= 2) {
+        if($('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.allLink').text() == 'hide'  ){
             createComment(data);
-        }else {
+        }
+        if(commentCount > 2  && $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.allLink').text() != 'hide'){
             allCommentsLinkCreate(data);
         }
-
-
+        else {
+            createComment(data);
+        }
     });
-
 
 
 /****************************************************************************************/

@@ -27,7 +27,7 @@ body{
 }
 .tweet{
     border: 1px solid #c5c5c5;
-    border-radius: 15px;
+    border-radius: 8px;
     box-shadow: 7px 5px 7px #98b8c5;
     width: 600px;
     margin: 10px auto 20px auto;
@@ -77,12 +77,12 @@ body{
 #msgDltBtn{
     border: none;
     background: none;
-    color: #ff6969;
+    color: #a7a7a7;
 }
 #msgUpdtBtn{
     border: none;
     background: none;
-    color: #41a1ff
+    color: #a7a7a7
 }
 #cmntBtn{
     border: none;
@@ -101,11 +101,11 @@ body{
 #banUserBtn, #banCommBtn, #banMessBtn{
     border: none;
     background: none;
-    color: saddlebrown;
+    color: #ca0000;
 }
 #banUserBtn a, #banCommBtn a, #banMessBtn a{
     text-decoration: none;
-    color: saddlebrown;
+    color: #ca0000;
 }
 .comment-name{
     font-weight: bold;
@@ -139,4 +139,14 @@ body{
 }
 #comment-form, #tweet-update-form{
     text-align: center;
+}
+.comment-count{
+    margin-left: 400px;
+}
+.pagination_buttons{
+    text-align: center;
+}
+.allLink{
+    cursor: pointer;
+    margin-left: -10px;
 }
