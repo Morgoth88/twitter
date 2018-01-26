@@ -2,32 +2,30 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class CommentDeleted implements ShouldBroadcast
 {
+
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
 
     public $comment;
-    public $commentCount;
+
 
     /**
-     * Create a new event instance.
-     *
-     * @return void
+     * CommentDeleted constructor.
+     * @param $comment
      */
-    public function __construct($comment, $commentCount)
+    public function __construct($comment)
     {
         $this->comment = $comment;
-        $this->commentCount = $commentCount;
     }
+
 
     /**
      * Get the channels the event should broadcast on.
@@ -39,23 +37,26 @@ class CommentDeleted implements ShouldBroadcast
         return new PrivateChannel('commentDelete');
     }
 
+
     /**
      * @return string
      */
-    public function broadcastAs () {
+    public function broadcastAs()
+    {
         return 'cmntDel';
     }
+
 
     /**
      * @return array
      */
-    public function broadcastWith () {
+    public function broadcastWith()
+    {
         return [
             'comment' => [
                 'id' => $this->comment->id,
                 'message_id' => $this->comment->message_id
-            ],
-            'commentCount' => $this->commentCount
+            ]
         ];
     }
 }

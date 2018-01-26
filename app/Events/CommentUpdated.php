@@ -2,32 +2,35 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class CommentUpdated implements ShouldBroadcast
 {
+
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
 
     public $comment;
+
+
     public $user;
 
+
     /**
-     * Create a new event instance.
-     *
-     * @return void
+     * CommentUpdated constructor.
+     * @param $comment
+     * @param $user
      */
     public function __construct($comment, $user)
     {
         $this->comment = $comment;
         $this->user = $user;
     }
+
 
     /**
      * Get the channels the event should broadcast on.
@@ -39,11 +42,15 @@ class CommentUpdated implements ShouldBroadcast
         return new PrivateChannel('commentUpdate');
     }
 
-    public function broadcastAs () {
+
+    public function broadcastAs()
+    {
         return 'cmntUpdt';
     }
 
-    public function broadcastWith () {
+
+    public function broadcastWith()
+    {
         return [
             'comment' => [
                 'id' => $this->comment->id,

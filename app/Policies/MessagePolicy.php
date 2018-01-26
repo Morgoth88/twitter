@@ -6,19 +6,20 @@ use App\Message;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class messagePolicy
+class MessagePolicy
 {
+
     use HandlesAuthorization;
 
+
     /**
-     * Create a new policy instance.
-     *
-     * @return void
+     * MessagePolicy constructor.
      */
     public function __construct()
     {
         //
     }
+
 
     /**
      * Check if message belongs to user
@@ -27,7 +28,8 @@ class messagePolicy
      * @param Message $message
      * @return bool
      */
-    public function update_delete(User $user, Message $message){
+    public function updateDelete(User $user, Message $message)
+    {
         return $user->id === $message->user_id;
     }
 

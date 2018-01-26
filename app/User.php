@@ -7,7 +7,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
+
     use Notifiable;
+
 
     /**
      * The attributes that are mass assignable.
@@ -18,6 +20,7 @@ class User extends Authenticatable
         'name', 'email', 'password',
     ];
 
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -27,38 +30,56 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+
     /**
+     * The name of the DB table
+     *
      * @var string
      */
     protected $table = 'users';
 
+
     /**
+     * Sets relationship
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function comment () {
+    public function comment()
+    {
         return $this->hasMany(Comment::class);
     }
 
+
     /**
+     * Sets relationship
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function message () {
+    public function message()
+    {
         return $this->hasMany(Message::class);
     }
 
+
     /**
+     * Sets relationship
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function activity_log () {
-        return $this->hasMany(Activity_log::class);
+    public function activityLog()
+    {
+        return $this->hasMany(ActivityLog::class);
     }
+
 
     /**
+     * Sets relationship
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function role () {
-        return $this->hasOne(Role::class);
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
     }
-
 
 }

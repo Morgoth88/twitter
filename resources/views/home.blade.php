@@ -3,6 +3,7 @@
 @section('title','Home')
 
 @section('content')
+
     <div class="container">
         <!--display flash sessions messages-->
         @if (session('status'))
@@ -33,7 +34,6 @@
 
                     <!--panel body-->
                     <div class="panel-body">
-
                         <!--display errors-->
                         @if (count($errors) > 0)
                             <div class="alert alert-danger">
@@ -50,7 +50,7 @@
             </div>
         </div>
     </div>
-
+@section('scripts')
     <script>
         var authUserId = "{{\Illuminate\Support\Facades\Auth::user()->id}}";
         var authUserRole = "{{\Illuminate\Support\Facades\Auth::user()->role_id}}";
@@ -58,9 +58,15 @@
             $('.alert-success').hide();
         },5000)
     </script>
+
+    <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+    <script src="{{ asset('js/messageForm.js') }}"></script>
+    <script src="{{ asset('js/commentForm.js') }}"></script>
+    <script src="{{ asset('js/moment.js') }}"></script>
     <script src="{{ asset('js/ajax.js') }}"></script>
     <script src="{{asset('js/WSscripts/WScomment.js')}}"></script>
     <script src="{{asset('js/WSscripts/WSmessage.js')}}"></script>
     <script src="{{asset('js/WSscripts/WSUserBan.js')}}"></script>
+@endsection
 
 @endsection

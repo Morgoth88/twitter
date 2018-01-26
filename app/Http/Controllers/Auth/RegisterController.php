@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Repositories\UserDataRepository;
+use App\services\ValidatorService;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use App\Activity_log;
+use App\services\LogService;
 
 class RegisterController extends Controller
 {
+
     /*
     |--------------------------------------------------------------------------
     | Register Controller
@@ -24,6 +27,7 @@ class RegisterController extends Controller
 
     use RegistersUsers;
 
+
     /**
      * Where to redirect users after registration.
      *
@@ -31,53 +35,66 @@ class RegisterController extends Controller
      */
     protected $redirectTo = 'api/v1/home';
 
+
+    private $logService;
+
+
+    private $userRepo;
+
+
+    private $validatorService;
+
+
     /**
-     * Create a new controller instance.
-     *
-     * @return void
+     * RegisterController constructor.
+     * @param LogService $logService
+     * @param UserDataRepository $userRepo
+     * @param ValidatorService $validatorService
      */
-    public function __construct()
+    public function __construct(LogService $logService,
+                                UserDataRepository $userRepo,
+                                ValidatorService $validatorService)
     {
         $this->middleware('guest');
+        $this->logService = $logService;
+        $this->userRepo = $userRepo;
+        $this->validatorService = $validatorService;
     }
+
 
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+        return $this->validatorService->ValidateUserRegistration($data);
     }
+
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return \App\User
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
+        return $this->userRepo->createUser($data);
     }
 
-    public function registered (Request $request, $user) {
-        $activity_log = new Activity_log();
 
-        $activity_log->user_id = $user->id;
-        $activity_log->activity = 'User registration';
-        $activity_log->save();
-
+    /**
+     * log registration of user
+     *
+     * @param Request $request
+     * @param $user
+     */
+    public function registered(Request $request, $user)
+    {
+        $this->logService->log($user, 'User registered');
     }
 
 }

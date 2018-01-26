@@ -3,25 +3,24 @@
 namespace App\Listeners;
 
 use App\Events\CommentUpdated;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class commentUpdateListener
+
+class CommentUpdatedListener
 {
+
     /**
-     * Create the event listener.
-     *
-     * @return void
+     * commentUpdateListener constructor.
      */
     public function __construct()
     {
         //
     }
 
+
     /**
      * Handle the event.
      *
-     * @param  CommentUpdated  $event
+     * @param  CommentUpdated $event
      * @return void
      */
     public function handle(CommentUpdated $event)

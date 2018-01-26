@@ -3,25 +3,23 @@
 namespace App\Listeners;
 
 use App\Events\CommentBanned;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class commentBannedListener
+class CommentBannedListener
 {
+
     /**
-     * Create the event listener.
-     *
-     * @return void
+     * commentBannedListener constructor.
      */
     public function __construct()
     {
         //
     }
 
+
     /**
      * Handle the event.
      *
-     * @param  CommentBanned  $event
+     * @param  CommentBanned $event
      * @return void
      */
     public function handle(CommentBanned $event)

@@ -20,14 +20,15 @@ class Message extends Model
      * @var array
      */
     protected $fillable = [
-        'text', 'old_id', 'old', 'created_at','updated_at',
+        'text', 'old_id', 'old', 'created_at', 'updated_at',
     ];
 
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user () {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
@@ -35,7 +36,8 @@ class Message extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function comment () {
+    public function comment()
+    {
         return $this->hasMany(Comment::class);
     }
 

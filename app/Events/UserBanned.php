@@ -2,54 +2,60 @@
 
 namespace App\Events;
 
-
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class Userbanned implements ShouldBroadcast
+class UserBanned implements ShouldBroadcast
 {
+
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
 
     public $user;
 
+
     /**
-     * Create a new event instance.
-     *
-     * @return void
+     * UserBanned constructor.
+     * @param $user
      */
-    public function __construct ($user) {
+    public function __construct($user)
+    {
         $this->user = $user;
     }
+
 
     /**
      * Get the channels the event should broadcast on.
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn () {
+    public function broadcastOn()
+    {
         return new PrivateChannel('user');
     }
 
-    public function broadcastAs () {
+
+    public function broadcastAs()
+    {
         return 'userBan';
     }
 
-    public function broadcastWith () {
+
+    public function broadcastWith()
+    {
 
         $result = [];
 
-        if (count($this->user->comment)> 0) {
+        if (count($this->user->comment) > 0) {
             foreach ($this->user->comment as $comment) {
                 $result['CmntIds'][] = $comment->id;
             }
         }
 
-        if(count($this->user->message) > 0) {
+        if (count($this->user->message) > 0) {
             foreach ($this->user->message as $message) {
                 $result['msgIds'][] = $message->id;
             }
@@ -58,7 +64,7 @@ class Userbanned implements ShouldBroadcast
         return [
             'user' => [
                 'user_id' => $this->user->id,
-                'messages' => ($result['msgIds']) ? $result['msgIds'] : '' ,
+                'messages' => ($result['msgIds']) ? $result['msgIds'] : '',
                 'comments' => ($result['CmntIds']) ? $result['CmntIds'] : '',
             ]
         ];

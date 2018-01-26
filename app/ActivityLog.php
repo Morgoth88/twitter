@@ -4,20 +4,24 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model
+class ActivityLog extends Model
 {
+
 
     /**
      * @var string
      */
-    protected $table = 'comment';
+    protected $table = 'activity_log';
 
 
     /**
+     * The attributes that are mass assignable.
+     *
      * @var array
      */
     protected $fillable = [
-        'text', 'old_id', 'old', 'created_at', 'message_id', 'updated_at'];
+        'activity', 'user_id'
+    ];
 
 
     /**
@@ -28,12 +32,4 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function message()
-    {
-        return $this->belongsTo(Message::class);
-    }
 }

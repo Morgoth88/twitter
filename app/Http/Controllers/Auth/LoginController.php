@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\services\BanCheckerService;
+use App\services\LogService;
+use App\services\RedirectService;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use App\Activity_log;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -24,6 +27,8 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     const BAN_MSG = 'Your account was banned!';
+    const lOGOUT_MSG = 'You are logged out!';
+
 
     /**
      * Where to redirect users after login.
@@ -32,14 +37,29 @@ class LoginController extends Controller
      */
     protected $redirectTo = 'api/v1/home';
 
+
+    private $banChecker;
+
+
+    private $logService;
+
+
+    private $redirectService;
+
+
     /**
-     * Create a new controller instance.
-     *
-     * @return void
+     * LoginController constructor.
+     * @param BanCheckerService $banChecker
+     * @param LogService $logService
+     * @param RedirectService $redirectService
      */
-    public function __construct()
+    public function __construct(BanCheckerService $banChecker, LogService $logService,
+                                RedirectService $redirectService)
     {
         $this->middleware('guest')->except('logout');
+        $this->banChecker = $banChecker;
+        $this->logService = $logService;
+        $this->redirectService = $redirectService;
     }
 
 
@@ -48,25 +68,19 @@ class LoginController extends Controller
      * @param $user
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function authenticated (Request $request, $user) {
-        if($user->ban == 1)
-        {
+    public function authenticated(Request $request, $user)
+    {
+        if ($this->banChecker->banned($user)) {
             Auth::logout();
-            $request->session()->flash('status', self::BAN_MSG);
-            return redirect(route('welcome'));
 
-        }
-        else {
-
-            $activity_log = new Activity_log();
-
-            $activity_log->user_id = $user->id;
-            $activity_log->activity = 'User login';
-            $activity_log->save();
-
-            $request->session()->flash('status', 'You are logged in!');
+            return $this->redirectService->redirectWithFlash(
+                $request, 'welcome', 'status', self::BAN_MSG
+            );
+        } else {
+            $this->logService->log($user,'User login');
         }
     }
+
 
     /**
      * Log if logout
@@ -74,19 +88,15 @@ class LoginController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function logout (Request $request) {
-        $activity_log = new Activity_log();
-
-        $activity_log->user_id = $request->user()->id;
-        $activity_log->activity = 'User logout';
-        $activity_log->save();
+    public function logout(Request $request)
+    {
+        $this->logService->log($request->user(),'User logout');
 
         Auth::logout();
 
-        $request->session()->flash('status','You are logged out!');
-
-        return redirect(route('welcome'));
-
+        return $this->redirectService->redirectWithFlash(
+            $request, 'welcome', 'status', self::lOGOUT_MSG
+        );
     }
 
 }

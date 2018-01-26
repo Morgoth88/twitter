@@ -3,25 +3,23 @@
 namespace App\Listeners;
 
 use App\Events\MessageUpdated;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class messageUpdateListener
+class MessageUpdateDListener
 {
+
     /**
-     * Create the event listener.
-     *
-     * @return void
+     * messageUpdateListener constructor.
      */
     public function __construct()
     {
         //
     }
 
+
     /**
      * Handle the event.
      *
-     * @param  MessageUpdated  $event
+     * @param  MessageUpdated $event
      * @return void
      */
     public function handle(MessageUpdated $event)

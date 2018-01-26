@@ -2,28 +2,30 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class MessageDeleted implements ShouldBroadcast
 {
+
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+
     public $message;
+
+
     /**
-     * Create a new event instance.
-     *
-     * @return void
+     * MessageDeleted constructor.
+     * @param $message
      */
     public function __construct($message)
     {
-        $this->message =  $message;
+        $this->message = $message;
     }
+
 
     /**
      * Get the channels the event should broadcast on.
@@ -35,15 +37,19 @@ class MessageDeleted implements ShouldBroadcast
         return new PrivateChannel('messageDelete');
     }
 
-    public function broadcastAs () {
+
+    public function broadcastAs()
+    {
         return 'msgDel';
     }
 
-    public function broadcastWith () {
+
+    public function broadcastWith()
+    {
         return [
             'message' => [
                 'id' => $this->message
-                ]
-            ];
+            ]
+        ];
     }
 }
