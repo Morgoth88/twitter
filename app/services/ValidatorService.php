@@ -8,32 +8,32 @@ use Illuminate\Validation\Rule;
 class ValidatorService
 {
 
+    private $emailChecker;
+
+
+    public function __construct(EmailCheckerService $emailChecker)
+    {
+        $this->emailChecker = $emailChecker;
+    }
+
+
     public function validateUserUpdateRequest($request)
     {
-        $validator = Validator::make($request->all(), [
+        Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
-            Rule::unique('users')->ignore($request->user()->id),
+            'email' => 'required|string|email|max:255|unique:users',
             'new_password' => 'required|string|min:6'
-        ]);
-
-        if ($validator->fails()) {
-            return redirect(route('accountUpdateForm'))
-                ->withErrors($validator)
-                ->withInput();
-        } else {
-            return true;
-        }
+        ])->validate();
     }
 
 
     public function ValidateUserRegistration($data)
     {
-        return Validator::make($data, [
+        Validator::make($data, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
-        ]);
+        ])->validate();
     }
 
 
@@ -45,16 +45,23 @@ class ValidatorService
      */
     public function ValidateMessage($request)
     {
-        $validator = Validator::make($request->all(), [
-            'tweet' => 'required|string']);
+        Validator::make($request->all(), [
+            'tweet' => 'required|string'])
+            ->validate();
+    }
 
-        if ($validator->fails()) {
-            return redirect(route('index'))
-                ->withErrors($validator)
-                ->withInput();
-        } else {
-            return true;
-        }
+
+    /**
+     * validate comment
+     *
+     * @param $request
+     * @return $this|bool
+     */
+    public function ValidateComment($request)
+    {
+        Validator::make($request->all(), [
+            'comment' => 'required|string'])
+            ->validate();
     }
 
 }

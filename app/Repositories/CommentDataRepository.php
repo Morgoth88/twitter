@@ -8,27 +8,12 @@ class CommentDataRepository extends AbstractRepository
 {
 
     /**
-     * ban post
-     * @param $post
-     */
-    public function banPost($post)
-    {
-        $post->text = self::BAN_POST_TEXT;
-        $post->old = 1;
-        $post->save();;
-    }
-
-
-
-
-
-    /**
      * return message with all comments sorted by created at
      *
      * @param $message
      * @return mixed
      */
-    public function getAllPosts($message)
+    public function getAllComments($message)
     {
         return Comment::with('user')->where([['message_id', $message->id], ['old', 0]])->get();
     }
@@ -41,7 +26,7 @@ class CommentDataRepository extends AbstractRepository
      * @param $message
      * @return mixed
      */
-    public function createPost($request, $message)
+    public function createComment($request, $message)
     {
         $comment = $request->user()->comment()
             ->create([
@@ -57,13 +42,28 @@ class CommentDataRepository extends AbstractRepository
 
 
     /**
+     * delete comment
+     *
+     * @param $comment
+     * @return mixed
+     */
+    public function deleteComment($comment)
+    {
+        $id = $comment->id;
+        $comment->delete();
+
+        return $id;
+    }
+
+
+    /**
      * create new comment from old
      *
      * @param $request
      * @param $comment
      * @return mixed
      */
-    public function updatePost($request, $comment)
+    public function updateComment($request, $comment)
     {
         $newComment = $request->user()->comment()->create([
             'text' => htmlspecialchars($request->comment, ENT_QUOTES),
@@ -76,4 +76,29 @@ class CommentDataRepository extends AbstractRepository
 
         return $newComment;
     }
+
+
+    /**
+     * return count of actual comments
+     *
+     * @param $message
+     * @return mixed
+     */
+    public function getCommentsCount($message)
+    {
+        return $message->comment()->where('old', 0)->count();
+    }
+
+
+    /**
+     * ban post
+     * @param $post
+     */
+    public function banComment($post)
+    {
+        $post->text = self::BAN_POST_TEXT;
+        $post->old = 1;
+        $post->save();;
+    }
+
 }

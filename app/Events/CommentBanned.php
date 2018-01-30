@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Repositories\CommentDataRepository;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -52,11 +53,15 @@ class CommentBanned implements ShouldBroadcast
      */
     public function broadcastWith()
     {
+        $repo = new CommentDataRepository();
+        $count = $repo->getCommentsCount($this->comment->message);
+
         return [
             'comment' => [
                 'id' => $this->comment->id,
                 'message_id' => $this->comment->message_id
-            ]
+            ],
+            'commentsCount' => $count
         ];
     }
 }

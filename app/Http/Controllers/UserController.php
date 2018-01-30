@@ -18,7 +18,7 @@ class UserController extends Controller
 {
 
 
-    private $userRepo;
+    private $userDataRepository;
 
 
     private $adminChecker;
@@ -43,7 +43,7 @@ class UserController extends Controller
                                 RedirectService $redirectService)
     {
         $this->middleware('auth');
-        $this->userRepo = $userRepo;
+        $this->userDataRepository = $userRepo;
         $this->adminChecker = $adminChecker;
         $this->logService = $logService;
         $this->redirectService = $redirectService;
@@ -62,7 +62,7 @@ class UserController extends Controller
     {
         if ($this->adminChecker->isAdmin($user)) {
             return $jsonResponseService->okResponse(
-                $this->userRepo->getUserData($user)
+                $this->userDataRepository->getUserData($user)
             );
         } else {
             return $jsonResponseService->unauthorizedResponse();
@@ -82,14 +82,12 @@ class UserController extends Controller
                            ValidatorService $validator,
                            PasswordCheckerService $passwordChecker)
     {
-        $user = $this->userRepo->getUserById($request->user()->id);
-
         $validator->validateUserUpdateRequest($request);
+        $user = $this->userDataRepository->getUserById($request->user()->id);
 
         if ($passwordChecker->checkPasswords($request, $user)) {
 
-            $this->userRepo->updateUserData($user, $request);
-
+            $this->userDataRepository->updateUserData($user, $request);
             $this->logService->log($request->user(), 'Account update');
 
             return $this->redirectService->redirectWithFlash(
@@ -97,7 +95,7 @@ class UserController extends Controller
             );
         } else {
             return $this->redirectService->redirectWithFlash(
-                $request, 'accountUpdateForm', 'status', 'Passwords do not match'
+                $request, 'accountUpdateForm', 'error', 'Passwords do not match'
             );
         }
     }
@@ -117,13 +115,8 @@ class UserController extends Controller
         if ($this->adminChecker->isAdmin($request->user()) &&
             !$this->adminChecker->isAdmin($user)) {
 
-            $banService->banMessages($user->message);
-            $banService->banComments($user->comment);
-
             $banService->banUser($user);
-
-            $this->logService->log($user,"User baned by {$request->user()->email}");
-
+            $this->logService->log($user, "User baned by {$request->user()->email}");
             event(new UserBanned($user));
 
             $jsonResponseService->userBanResponse($user);

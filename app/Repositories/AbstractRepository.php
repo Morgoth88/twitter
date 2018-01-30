@@ -11,25 +11,26 @@ abstract class AbstractRepository
     /**
      * return records where old = 1
      *
-     * @param $table
+     * @param $eloquentClass
      * @return mixed
      */
-    public function getOldRecords($table)
+    public function getOldRecords($eloquentClass)
     {
-        return $table::where('old', 1)->get();
+        return $eloquentClass::where('old', 1)->get();
     }
 
 
     /**
      * get oldest record time
      *
-     * @param $table
+     * @param $eloquentClass
      * @return mixed
      */
-    public function getOldestRecord($table)
+    public function getOldestRecord($eloquentClass)
     {
-        return $table::where('old', 1)->min('updated_at');
+        return $eloquentClass::where('old', 1)->min('updated_at');
     }
+
 
 
 }

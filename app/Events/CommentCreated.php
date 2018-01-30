@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Repositories\CommentDataRepository;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -23,12 +24,11 @@ class CommentCreated implements ShouldBroadcast
     /**
      * CommentCreated constructor.
      * @param $comment
-     * @param $user
      */
-    public function __construct($comment, $user)
+    public function __construct($comment)
     {
         $this->comment = $comment;
-        $this->user = $user;
+        $this->user = $comment->user;
     }
 
 
@@ -57,6 +57,9 @@ class CommentCreated implements ShouldBroadcast
      */
     public function broadcastWith()
     {
+        $repo = new CommentDataRepository();
+        $count = $repo->getCommentsCount($this->comment->message);
+
         return [
             'comment' => [
                 'id' => $this->comment->id,
@@ -70,7 +73,8 @@ class CommentCreated implements ShouldBroadcast
                 'user_id' => $this->user->id,
                 'userName' => $this->user->name,
                 'userRole' => $this->user->role_id,
-            ]
+            ],
+            'commentsCount' => $count
         ];
     }
 }

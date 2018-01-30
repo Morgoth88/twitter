@@ -6,14 +6,15 @@ function banUsr(data) {
     for(mess in messages)
     {
 
-       if($('.tweet[data-id='+ messages[mess] +']').length){
-           $('.tweet[data-id='+ messages[mess] +']').remove();
+       if($('.tweet[data-id='+ messages[mess].id +']').length){
+           $('.tweet[data-id='+ messages[mess].id +']').remove();
        }
     }
+
     for(comm in comments)
     {
-       if($('.comment[data-id='+ comments[comm]+']').length){
-           $('.comment[data-id='+ comments[comm] +']').remove();
+       if($('.comment[data-id='+ comments[comm].id+']').length){
+           $('.comment[data-id='+ comments[comm].id +']').remove();
        }
     }
 }

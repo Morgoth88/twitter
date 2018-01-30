@@ -10,7 +10,7 @@ class MessageDataRepository extends AbstractRepository
     /**
      * @param $message
      */
-    public function banPost($message)
+    public function banMessage($message)
     {
         $message->text = self::BAN_POST_TEXT;
         $message->old = 1;
@@ -23,11 +23,25 @@ class MessageDataRepository extends AbstractRepository
 
 
     /**
+     * create new tweet
+     *
+     * @param $request
+     * @return mixed
+     */
+    public function createMessage($request)
+    {
+        return $request->user()->message()->create([
+            'text' => htmlspecialchars($request->tweet, ENT_QUOTES)
+        ]);
+    }
+
+
+    /**
      * return all messages sorted by updated at, with all message comments
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getAllPosts()
+    public function getAllMessages()
     {
         return Message::with(['comment' => function($q)
         {
@@ -40,43 +54,44 @@ class MessageDataRepository extends AbstractRepository
 
 
     /**
-     * create new tweet
+     * create new message, hide old message and transfer old message comments to new message
      *
      * @param $request
+     * @param $post
      * @return mixed
      */
-    public function createPost($request)
+    public function updateMessage($request, $post)
     {
-        return $request->user()->message()->create([
-            'text' => htmlspecialchars($request->tweet, ENT_QUOTES)
+        $newPost = $request->user()->message()->create([
+            'text' => htmlspecialchars($request->tweet, ENT_QUOTES),
+            'old_id' => $post->id,
+            'created_at' => $post->created_at
         ]);
+
+        foreach ($post->comment as &$comment) {
+            $comment->message_id = $newPost->id;
+            $comment->save();
+        }
+
+        $post->old = 1;
+        $post->save();
+
+        return $newPost;
     }
 
 
     /**
-     * create new message, hide old message and transfer old message comments to new message
+     * delete message
      *
-     * @param $request
      * @param $message
      * @return mixed
      */
-    public function updatePost($request, $message)
+    public function deleteMessage($message)
     {
-        $newMessage = $request->user()->message()->create([
-            'text' => htmlspecialchars($request->tweet, ENT_QUOTES),
-            'old_id' => $message->id,
-            'created_at' => $message->created_at
-        ]);
+        $id = $message->id;
+        $message->delete();
 
-        foreach ($message->comment as &$comment) {
-            $comment->message_id = $newMessage->id;
-            $comment->save();
-        }
-
-        $message->old = 1;
-        $message->save();
-
-        return $newMessage;
+        return $id;
     }
 
 }

@@ -10,6 +10,16 @@
                     <div class="panel-heading">Update your Account</div>
 
                     <div class="panel-body">
+                        @if (session('status'))
+                            <div class="alert alert-success">
+                                {{ session('status') }}
+                            </div>
+                        @endif
+                        @if (session('error'))
+                            <div class="alert alert-danger">
+                                {{ session('error') }}
+                            </div>
+                        @endif
                         <form class="form-horizontal" method="POST" action="{{ route('accountUpdate') }}">
                             {{ csrf_field() }}
                             {{method_field('PUT')}}

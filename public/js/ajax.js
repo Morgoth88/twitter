@@ -328,7 +328,7 @@ function getTweets(page = 1) {
 
                 $('.tweet[data-id=' + msgId + ']').children('.comments-container').append(CmntHtml);
 
-                var commentCount = data.data[i].comment.length;
+                var commentCount =  data.data[i].comment.length;
                 var commentCounter = (commentCount == 1) ? commentCount + ' comment' : commentCount + ' comments';
 
                 $('.tweet[data-id=' + msgId + ']').children('.tweet-icons').children('.comment-count').text(commentCounter);

@@ -18,19 +18,19 @@ class UserDataRepository
      */
     public function getUserData($user)
     {
-        $result['MessCount'] = Message::where(
+        $result['MessagesCount'] = Message::where(
             [['user_id', $user->id], ['old', 0]])
             ->count();
 
-        $result['CommCount'] = Comment::where(
+        $result['CommentsCount'] = Comment::where(
             [['user_id', $user->id], ['old', 0]]
         )->count();
 
-        $result['lastCreatMess'] = Message::where(
+        $result['lastCreatedMessageTime'] = Message::where(
             [['user_id', $user->id], ['old', 0]])
             ->max('created_at');
 
-        $result['lastCreatComm'] = Comment::where(
+        $result['lastCreatedCommentTime'] = Comment::where(
             [['user_id', $user->id], ['old', 0]])
             ->max('created_at');
 
@@ -63,7 +63,6 @@ class UserDataRepository
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->new_password);
-
         $user->save();
     }
 

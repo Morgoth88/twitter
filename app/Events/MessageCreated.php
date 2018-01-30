@@ -20,18 +20,14 @@ class MessageCreated implements ShouldBroadcast
     public $user;
 
 
-    public $requestUser;
-
-
     /**
      * newMessageCreated constructor.
      * @param $message
-     * @param $user
      */
-    public function __construct($message, $user)
+    public function __construct($message)
     {
         $this->message = $message;
-        $this->user = $user;
+        $this->user = $message->user;
     }
 
 

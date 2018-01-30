@@ -23,12 +23,11 @@ class CommentUpdated implements ShouldBroadcast
     /**
      * CommentUpdated constructor.
      * @param $comment
-     * @param $user
      */
-    public function __construct($comment, $user)
+    public function __construct($comment)
     {
         $this->comment = $comment;
-        $this->user = $user;
+        $this->user = $comment->user;
     }
 
 

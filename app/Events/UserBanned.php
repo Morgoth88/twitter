@@ -46,27 +46,13 @@ class UserBanned implements ShouldBroadcast
 
     public function broadcastWith()
     {
-
-        $result = [];
-
-        if (count($this->user->comment) > 0) {
-            foreach ($this->user->comment as $comment) {
-                $result['CmntIds'][] = $comment->id;
-            }
-        }
-
-        if (count($this->user->message) > 0) {
-            foreach ($this->user->message as $message) {
-                $result['msgIds'][] = $message->id;
-            }
-        }
-
         return [
             'user' => [
                 'user_id' => $this->user->id,
-                'messages' => ($result['msgIds']) ? $result['msgIds'] : '',
-                'comments' => ($result['CmntIds']) ? $result['CmntIds'] : '',
+                'messages' => $this->user->message,
+                'comments' => $this->user->comment,
             ]
         ];
     }
+
 }

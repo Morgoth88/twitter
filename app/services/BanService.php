@@ -10,21 +10,13 @@ use Illuminate\Support\Facades\DB;
 class BanService
 {
 
-    /**
-     * @var
-     */
+
     private $commentRepo;
 
 
-    /**
-     * @var
-     */
     private $messageRepo;
 
 
-    /**
-     * @var
-     */
     private $userRepo;
 
 
@@ -49,8 +41,9 @@ class BanService
      */
     public function banComments($comments)
     {
-        foreach ($comments as & $comment)
+        foreach ($comments as & $comment) {
             $this->commentRepo->banComment($comment);
+        }
     }
 
 
@@ -70,7 +63,7 @@ class BanService
      */
     public function banComment($comment)
     {
-        $this->commentRepo->banPost($comment);
+        $this->commentRepo->banComment($comment);
     }
 
 
@@ -79,7 +72,7 @@ class BanService
      */
     public function banMessage($message)
     {
-        $this->messageRepo->banPost($message);
+        $this->messageRepo->banMessage($message);
     }
 
 
@@ -89,6 +82,9 @@ class BanService
     public function banUser($user)
     {
         DB::table('sessions')->where('user_id', $user->id)->delete();
+
+        $this->banMessages($user->message);
+        $this->banComments($user->comment);
 
         $this->userRepo->banUser($user);
     }

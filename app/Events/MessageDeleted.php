@@ -48,7 +48,7 @@ class MessageDeleted implements ShouldBroadcast
     {
         return [
             'message' => [
-                'id' => $this->message
+                'id' => $this->message->id
             ]
         ];
     }

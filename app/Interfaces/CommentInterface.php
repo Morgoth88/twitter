@@ -19,4 +19,7 @@ interface CommentInterface
 
 
     public function update(Request $request, Message $message, Comment $comment);
+
+
+    public function ban(Request $request ,Message $message, Comment $comment);
 }

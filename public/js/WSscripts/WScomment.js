@@ -72,7 +72,7 @@ function createComment(data) {
 
     $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').prepend(html);
 
-    var commentCount = data.commentCount;
+    var commentCount = data.commentsCount;
     var commentCounter = (commentCount == 1) ? commentCount + ' comment' : commentCount + ' comments';
 
     $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.tweet-icons').children('.comment-count').text(commentCounter);
@@ -135,7 +135,7 @@ Echo.private('comment')
         if($('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.allLink').text() == 'hide'  ){
             createComment(data);
         }
-        if(commentCount > 2  && $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.allLink').text() != 'hide'){
+        else if(commentCount > 2  && $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.allLink').text() != 'hide'){
             allCommentsLinkCreate(data);
         }
         else {
@@ -152,17 +152,15 @@ function deleteComment(data) {
     var comment = $('.comment[data-id='+ data.comment['id'] +']');
     comment.remove();
 
-    var commentCount = data.commentCount;
+    var commentCount = data.commentsCount - 1;
     var commentCounter = (commentCount == 1) ? commentCount + ' comment' : commentCount + ' comments';
 
     $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.tweet-icons').children('.comment-count').text(commentCounter);
 
-    var lastComment = $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.comment').eq(2);
-    lastComment.show();
-
+     $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.comment').eq(2).show();
 
     if(commentCount < 4 ){
-        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('a').remove();
+        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.allLink').remove();
     }
 }
 
@@ -182,7 +180,7 @@ function banComment(data) {
     var comment = $('.comment[data-id='+ data.comment['id'] +']');
     comment.remove();
 
-    var commentCount = data.commentCount;
+    var commentCount = data.commentsCount;
     var commentCounter = (commentCount == 1) ? commentCount + ' comment' : commentCount + ' comments';
 
     $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.tweet-icons').children('.comment-count').text(commentCounter);
@@ -192,7 +190,7 @@ function banComment(data) {
 
 
     if(commentCount < 4 ){
-        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('a').remove();
+        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.allLink').remove();
     }
 }
 
