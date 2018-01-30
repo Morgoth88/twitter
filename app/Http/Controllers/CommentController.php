@@ -79,7 +79,7 @@ class CommentController extends Controller
                            Message $message,
                            Request $request)
     {
-        $validator->ValidateComment($request);
+        $validator->ValidateComment($request->all());
 
         $comment = $commentCreator->createPost($request, $message);
 
@@ -108,7 +108,7 @@ class CommentController extends Controller
         $this->authorize('updateDeleteComment', $comment);
         if ($this->timeHelper->lessThanTwoMinutes($comment->created_at)) {
 
-            $validator->ValidateComment($request);
+            $validator->ValidateComment($request->all());
 
             $newComment = $commentUpdater->updatePost($request, $comment);
 

@@ -19,6 +19,19 @@ class JsonResponseService
 
 
     /**
+     * return json response with data and ok 200 http status
+     *
+     * @param $data
+     * @return mixed
+     */
+    public function serverErrorResponse($data)
+    {
+        return response(json_encode($data), 500)
+            ->header('Content-Type', 'application/json');
+    }
+
+
+    /**
      * return json response with data and created 201 http status
      *
      * @param $data

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\UserBanned;
+use App\Exceptions\ValidatorException;
 use App\Repositories\UserDataRepository;
 use App\services\AdminCheckerService;
 use App\services\BanService;
@@ -76,28 +77,30 @@ class UserController extends Controller
      * @param Request $request
      * @param ValidatorService $validator
      * @param PasswordCheckerService $passwordChecker
+     * @param JsonResponseService $jsonResponseService
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function update(Request $request,
                            ValidatorService $validator,
-                           PasswordCheckerService $passwordChecker)
+                           PasswordCheckerService $passwordChecker,
+                           JsonResponseService $jsonResponseService)
     {
-        $validator->validateUserUpdateRequest($request);
-        $user = $this->userDataRepository->getUserById($request->user()->id);
+            $validator->validateUserUpdateRequest($request->all());
+            $user = $this->userDataRepository->getUserById($request->user()->id);
 
-        if ($passwordChecker->checkPasswords($request, $user)) {
+            if ($passwordChecker->checkPasswords($request, $user)) {
 
-            $this->userDataRepository->updateUserData($user, $request);
-            $this->logService->log($request->user(), 'Account update');
+                $this->userDataRepository->updateUserData($user, $request);
+                $this->logService->log($request->user(), 'Account update');
 
-            return $this->redirectService->redirectWithFlash(
-                $request, 'index', 'status', 'Account was successfully updated'
-            );
-        } else {
-            return $this->redirectService->redirectWithFlash(
-                $request, 'accountUpdateForm', 'error', 'Passwords do not match'
-            );
-        }
+                return $this->redirectService->redirectWithFlash(
+                    $request, 'index', 'status', 'Account was successfully updated'
+                );
+            } else {
+                return $this->redirectService->redirectWithFlash(
+                    $request, 'accountUpdateForm', 'error', 'Passwords do not match'
+                );
+            }
     }
 
 

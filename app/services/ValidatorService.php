@@ -4,62 +4,43 @@ namespace App\services;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Exceptions\ValidatorException;
 
 class ValidatorService
 {
 
-    private $emailChecker;
 
-
-    public function __construct(EmailCheckerService $emailChecker)
+    public function validateUserUpdateRequest($DataArray)
     {
-        $this->emailChecker = $emailChecker;
-    }
-
-
-    public function validateUserUpdateRequest($request)
-    {
-        Validator::make($request->all(), [
+            return Validator::make($DataArray, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'new_password' => 'required|string|min:6'
-        ])->validate();
+        ])->validate();;
     }
 
 
-    public function ValidateUserRegistration($data)
+    public function ValidateUserRegistration($DataArray)
     {
-        Validator::make($data, [
+        return Validator::make($DataArray, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
-        ])->validate();
+        ]);
     }
 
 
-    /**
-     * validate message
-     *
-     * @param $request
-     * @return $this|bool
-     */
-    public function ValidateMessage($request)
+    public function ValidateMessage($DataArray)
     {
-        Validator::make($request->all(), [
+        return Validator::make($DataArray, [
             'tweet' => 'required|string'])
             ->validate();
     }
 
 
-    /**
-     * validate comment
-     *
-     * @param $request
-     * @return $this|bool
-     */
-    public function ValidateComment($request)
+    public function ValidateComment($DataArray)
     {
-        Validator::make($request->all(), [
+        return Validator::make($DataArray, [
             'comment' => 'required|string'])
             ->validate();
     }

@@ -10,6 +10,7 @@ use App\Events\MessageBanned;
 use App\Events\MessageDeleted;
 use App\Events\MessageUpdated;
 use App\Events\MessageCreated;
+use App\Exceptions\ValidatorException;
 use App\Repositories\UserDataRepository;
 use App\services\AdminCheckerService;
 use App\services\BanService;
@@ -75,12 +76,12 @@ class MessageController extends Controller
                            ValidatorService $validator,
                            Request $request)
     {
-        $validator->ValidateMessage($request);
+            $validator->ValidateMessage($request->all());
 
-        $message = $messageCreator->createPost($request);
-        event(new MessageCreated($message));
+            $message = $messageCreator->createPost($request);
+            event(new MessageCreated($message));
 
-        return $this->jsonResponse->createdResponse($message);
+            return $this->jsonResponse->createdResponse($message);
     }
 
 
@@ -98,7 +99,7 @@ class MessageController extends Controller
         $this->authorize('updateDelete', $message);
 
         if ($this->timeHelper->lessThanTwoMinutes($message->created_at)) {
-            $validator->ValidateMessage($request);
+            $validator->ValidateMessage($request->all());
 
             $newMessage = $messageUpdater->updatePost($request, $message);
             event(new MessageUpdated($newMessage));
