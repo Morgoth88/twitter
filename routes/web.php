@@ -1,6 +1,6 @@
 <?php
 
-use App\services\DbCleanService;
+use App\Services\DbCleanService;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,8 +18,11 @@ use App\services\DbCleanService;
  ************************************************************************************/
 Route::get('/', function(DbCleanService $DbCleanService)
 {
-    $DbCleanService->PeriodicLogClean();
-    $DbCleanService->periodicOldRecordsClean();
+    try {
+        $DbCleanService->PeriodicLogClean();
+        $DbCleanService->periodicOldRecordsClean();
+    }catch (InvalidArgumentException $exception){
+    }
     return view('welcome');
 })->name('welcome');
 
@@ -37,11 +40,11 @@ Route::prefix('api/v1')->group(function()
      * Account updates routes
      *
      **************************************************************************/
-    //Acount update form route
-    Route::get('/account', 'PageController@AccountUpdatePage')
+    //Account update form route
+    Route::get('/account/{user}', 'PageController@AccountUpdatePage')
         ->name('accountUpdateForm');
-    //Acount update route
-    Route::put('/account', 'UserController@update')
+    //Account update route
+    Route::put('/account/{user}', 'UserController@update')
         ->name('accountUpdate');
 
 

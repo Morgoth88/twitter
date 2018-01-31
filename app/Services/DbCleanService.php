@@ -1,6 +1,6 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
 use App\Comment;
 use App\Message;
@@ -74,13 +74,13 @@ class DbCleanService
         $oldestCommentTime = $this->CommentRepo->getOldestRecord(Comment::class);
 
         if ($this->timeHelper->weekPassed($oldestMessageTime)) {
-            $this->foreacher->OrmDeleteForeach(
+            $this->foreacher->ormDeleteForeach(
                 $this->MessageRepo->getOldRecords(Message::class)
             );
         }
 
         if ($this->timeHelper->weekPassed($oldestCommentTime)) {
-            $this->foreacher->OrmDeleteForeach(
+            $this->foreacher->ormDeleteForeach(
                 $this->CommentRepo->getOldRecords(Comment::class)
             );
         }

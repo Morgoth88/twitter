@@ -1,6 +1,6 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
 use App\Repositories\CommentDataRepository;
 use App\Repositories\MessageDataRepository;

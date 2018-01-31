@@ -3,17 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Events\UserBanned;
-use App\Exceptions\ValidatorException;
 use App\Repositories\UserDataRepository;
-use App\services\AdminCheckerService;
-use App\services\BanService;
-use App\services\LogService;
-use App\services\PasswordCheckerService;
-use App\services\ValidatorService;
+use App\Services\AdminCheckerService;
+use App\Services\BanService;
+use App\Services\LogService;
+use App\Services\PasswordCheckerService;
+use App\Services\ValidatorService;
 use App\User;
 use Illuminate\Http\Request;
-use App\services\JsonResponseService;
-use App\services\RedirectService;
+use App\Services\JsonResponseService;
+use App\Services\RedirectService;
 
 class UserController extends Controller
 {
@@ -62,9 +61,11 @@ class UserController extends Controller
                              JsonResponseService $jsonResponseService)
     {
         if ($this->adminChecker->isAdmin($user)) {
+
             return $jsonResponseService->okResponse(
                 $this->userDataRepository->getUserData($user)
             );
+
         } else {
             return $jsonResponseService->unauthorizedResponse();
         }
@@ -77,30 +78,32 @@ class UserController extends Controller
      * @param Request $request
      * @param ValidatorService $validator
      * @param PasswordCheckerService $passwordChecker
-     * @param JsonResponseService $jsonResponseService
+     * @param User $user
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function update(Request $request,
                            ValidatorService $validator,
                            PasswordCheckerService $passwordChecker,
-                           JsonResponseService $jsonResponseService)
+                           User $user)
     {
-            $validator->validateUserUpdateRequest($request->all());
-            $user = $this->userDataRepository->getUserById($request->user()->id);
+        $validator->validateUserUpdateRequest($request->all());
 
-            if ($passwordChecker->checkPasswords($request, $user)) {
+        //$user = $this->userDataRepository->getUserById($request->user()->id);
 
-                $this->userDataRepository->updateUserData($user, $request);
-                $this->logService->log($request->user(), 'Account update');
+        if ($passwordChecker->checkPasswords(
+            $request->password, $user->password)) {
 
-                return $this->redirectService->redirectWithFlash(
-                    $request, 'index', 'status', 'Account was successfully updated'
-                );
-            } else {
-                return $this->redirectService->redirectWithFlash(
-                    $request, 'accountUpdateForm', 'error', 'Passwords do not match'
-                );
-            }
+            $this->userDataRepository->updateUserData($user, $request);
+            $this->logService->log($request->user(), 'Account update');
+
+            return $this->redirectService->redirectWithFlash(
+                $request, 'index', 'status', 'Account was successfully updated'
+            );
+        } else {
+            return $this->redirectService->redirectWithFlash(
+                $request, 'accountUpdateForm', 'error', 'Passwords do not match'
+            );
+        }
     }
 
 

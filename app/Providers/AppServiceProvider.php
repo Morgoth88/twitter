@@ -9,7 +9,7 @@ class AppServiceProvider extends ServiceProvider
 {
 
     /**
-     * Bootstrap any application services.
+     * Bootstrap any application Services.
      *
      * @return void
      */
@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
 
 
     /**
-     * Register any application services.
+     * Register any application Services.
      *
      * @return void
      */

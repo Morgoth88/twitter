@@ -1,10 +1,8 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use App\Exceptions\ValidatorException;
 
 class ValidatorService
 {
@@ -20,7 +18,7 @@ class ValidatorService
     }
 
 
-    public function ValidateUserRegistration($DataArray)
+    public function validateUserRegistration($DataArray)
     {
         return Validator::make($DataArray, [
             'name' => 'required|string|max:255',
@@ -30,7 +28,7 @@ class ValidatorService
     }
 
 
-    public function ValidateMessage($DataArray)
+    public function validateMessage($DataArray)
     {
         return Validator::make($DataArray, [
             'tweet' => 'required|string'])
@@ -38,7 +36,7 @@ class ValidatorService
     }
 
 
-    public function ValidateComment($DataArray)
+    public function validateComment($DataArray)
     {
         return Validator::make($DataArray, [
             'comment' => 'required|string'])

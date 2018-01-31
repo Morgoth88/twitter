@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Repositories\UserDataRepository;
-use App\services\ValidatorService;
+use App\Services\ValidatorService;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use App\services\LogService;
+use App\Services\LogService;
 
 class RegisterController extends Controller
 {
@@ -70,7 +70,7 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return $this->validatorService->ValidateUserRegistration($data);
+        return $this->validatorService->validateUserRegistration($data);
     }
 
 

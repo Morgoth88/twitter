@@ -67,7 +67,14 @@ function commentForm(id) {
                 },
                 contentType: 'application/json',
                 dataType: 'json',
-                data: JSON.stringify(data)
+                data: JSON.stringify(data),
+                statusCode: {
+                    422: function() {
+                        $('#tweetTextarea').attr('placeholder','please fill' +
+                            ' this field correctly');
+                        $('#tweetTextarea').css({'border-color':'red',
+                            'box-shadow':'0 0 17px red'});
+                    }}
             }).done(function (data) {
                 comment_form_div.remove();
             });

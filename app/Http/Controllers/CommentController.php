@@ -14,23 +14,22 @@ use App\Events\CommentCreated;
 use App\Message;
 use Illuminate\Http\Request;
 use App\Repositories\UserDataRepository;
-use App\services\AdminCheckerService;
-use App\services\BanService;
-use App\services\JsonResponseService;
-use App\services\TimeHelperService;
-use App\services\ValidatorService;
+use App\Services\AdminCheckerService;
+use App\Services\BanService;
+use App\Services\JsonResponseService;
+use App\Services\TimeHelperService;
+use App\Services\ValidatorService;
 
 class CommentController extends Controller
 {
 
-
     private $jsonResponse;
-
 
     private $timeHelper;
 
-
     private $adminChecker;
+
+    private $validator;
 
 
     /**
@@ -38,15 +37,18 @@ class CommentController extends Controller
      * @param JsonResponseService $jsonResponseService
      * @param TimeHelperService $timeHelperService
      * @param AdminCheckerService $adminCheckerService
+     * @param ValidatorService $validator
      */
     public function __construct(JsonResponseService $jsonResponseService,
                                 TimeHelperService $timeHelperService,
-                                AdminCheckerService $adminCheckerService)
+                                AdminCheckerService $adminCheckerService,
+                                ValidatorService $validator)
     {
         $this->middleware('auth');
         $this->jsonResponse = $jsonResponseService;
         $this->timeHelper = $timeHelperService;
         $this->adminChecker = $adminCheckerService;
+        $this->validator = $validator;
     }
 
 
@@ -69,20 +71,17 @@ class CommentController extends Controller
      * Create comment
      *
      * @param CommentCreator $commentCreator
-     * @param ValidatorService $validator
      * @param Message $message
      * @param Request $request
      * @return mixed
      */
     public function create(CommentCreator $commentCreator,
-                           ValidatorService $validator,
                            Message $message,
                            Request $request)
     {
-        $validator->ValidateComment($request->all());
+        $this->validator->validateComment($request->all());
 
         $comment = $commentCreator->createPost($request, $message);
-
         event(new CommentCreated($comment));
 
         return $this->jsonResponse->createdResponse($comment);
@@ -93,25 +92,23 @@ class CommentController extends Controller
      * update comment
      *
      * @param CommentUpdater $commentUpdater
-     * @param ValidatorService $validator
      * @param Request $request
      * @param Message $message
      * @param Comment $comment
      * @return mixed
      */
     public function update(CommentUpdater $commentUpdater,
-                           ValidatorService $validator,
                            Request $request,
                            Message $message,
                            Comment $comment)
     {
         $this->authorize('updateDeleteComment', $comment);
+
         if ($this->timeHelper->lessThanTwoMinutes($comment->created_at)) {
 
-            $validator->ValidateComment($request->all());
+            $this->validator->validateComment($request->all());
 
             $newComment = $commentUpdater->updatePost($request, $comment);
-
             event(new CommentUpdated($newComment));
 
             return $this->jsonResponse->okResponse($newComment);
@@ -138,7 +135,6 @@ class CommentController extends Controller
         if ($this->timeHelper->lessThanTwoMinutes($comment->created_at)) {
 
             event(new CommentDeleted($comment));
-
             $id = $commentDeleter->deletePost($comment);
 
             return $this->jsonResponse->okResponse("message : Comment $id was deleted");
@@ -170,7 +166,6 @@ class CommentController extends Controller
             !$this->adminChecker->isAdmin($commentUser)) {
 
             $banService->banComment($comment);
-
             event(new CommentBanned($comment));
 
             return $this->jsonResponse->okResponse(

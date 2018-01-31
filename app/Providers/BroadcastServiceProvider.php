@@ -9,7 +9,7 @@ class BroadcastServiceProvider extends ServiceProvider
 {
 
     /**
-     * Bootstrap any application services.
+     * Bootstrap any application Services.
      *
      * @return void
      */

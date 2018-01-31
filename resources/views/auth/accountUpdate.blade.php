@@ -20,7 +20,8 @@
                                 {{ session('error') }}
                             </div>
                         @endif
-                        <form class="form-horizontal" method="POST" action="{{ route('accountUpdate') }}">
+                        <form class="form-horizontal" method="POST"
+                              action="{{ route('accountUpdate',['user' => Illuminate\Support\Facades\Auth::user()->id]) }}">
                             {{ csrf_field() }}
                             {{method_field('PUT')}}
 

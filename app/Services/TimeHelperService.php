@@ -1,6 +1,6 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
 use InvalidArgumentException;
 
@@ -23,7 +23,7 @@ class TimeHelperService
      */
     public function lessThanTwoMinutes($createdAt)
     {
-        if (!$createdAt)
+        if (!$createdAt || $createdAt === true)
             throw new \InvalidArgumentException('Invalid argument');
 
         if (time() - strtotime($createdAt) <= self::TWO_MINUTES &&
@@ -41,7 +41,7 @@ class TimeHelperService
      */
     public function weekPassed($time)
     {
-        if (!$time)
+        if (!$time || $time === true)
             throw new InvalidArgumentException('Invalid argument');
 
         if ((time() - strtotime($time)) >= self::WEEK) {

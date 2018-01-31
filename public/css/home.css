@@ -1,31 +1,38 @@
-body{
+body {
     background: #578290;
     font-family: 'Muli', sans-serif;
 }
-#tweetTextarea{
+
+#tweetTextarea {
     border-radius: 5px;
     border: 2px solid #d3e0e9;
     width: 500px;
     height: 100px;
     padding: 10px;
 }
-#tweet-form{
+
+#tweet-form {
     text-align: center;
 }
-#tweetBtn{
+
+#tweetBtn {
     margin-left: 570px;
 }
-#buttons-div{
+
+#buttons-div {
     text-align: center;
 }
-#submitBtn, #cancelBtn{
+
+#submitBtn, #cancelBtn {
     margin: 3px;
 }
+
 .panel-body {
     padding: 15px;
     background: #dee7ec;
 }
-.tweet{
+
+.tweet {
     border: 1px solid #c5c5c5;
     border-radius: 8px;
     box-shadow: 7px 5px 7px #98b8c5;
@@ -35,13 +42,15 @@ body{
     position: relative;
     background: white;
 }
-.tweet-name{
+
+.tweet-name {
     font-weight: bold;
     font-size: 14px;
     color: black;
     margin: 5px 5px 0 5px;
 }
-.tweet-text{
+
+.tweet-text {
     font-size: 14px;
     margin: 15px 15px 5px 15px;
     max-width: 550px;
@@ -50,103 +59,132 @@ body{
     border-radius: 5px;
     padding: 10px;
 }
-.tweet-time{
+
+.tweet-time {
     font-size: 12px;
     font-weight: lighter;
 }
-.tweet-time-div{
+
+.tweet-time-div {
     margin: 0px 5px 0px 5px;
     border-bottom: 2px solid #8dc2e6;;
 }
-.tweet-updtTime{
+
+.tweet-updtTime {
     margin-left: 10px;
     font-size: 12px;
     font-weight: lighter;
 }
-.tweet-icons{
+
+.tweet-icons {
     margin-left: 10px;
 }
+
 .up-del-links {
     display: inline-flex;
     position: absolute;
     right: 5px;
 }
-.comment-link{
+
+.comment-link {
 
 }
-#msgDltBtn{
+
+#msgDltBtn {
     border: none;
     background: none;
     color: #a7a7a7;
 }
-#msgUpdtBtn{
+
+#msgUpdtBtn {
     border: none;
     background: none;
     color: #a7a7a7
 }
-#cmntBtn{
+
+#cmntBtn {
     border: none;
     background: none;
     color: #4ca24c
 }
-#cmntShowBtn{
+
+#cmntShowBtn {
     border: none;
     background: none;
     color: darkslategray;
 }
-#cmntShowBtn:hover{
+
+#cmntShowBtn:hover {
     color: green;
     font-weight: bold;
 }
-#banUserBtn, #banCommBtn, #banMessBtn{
+
+#banUserBtn, #banCommBtn, #banMessBtn {
     border: none;
     background: none;
     color: #ca0000;
 }
-#banUserBtn a, #banCommBtn a, #banMessBtn a{
+
+#banUserBtn a, #banCommBtn a, #banMessBtn a {
     text-decoration: none;
     color: #ca0000;
 }
-.comment-name{
+
+.comment-name {
     font-weight: bold;
     font-size: 12px;
     color: black;
 }
-.comment-time{
+
+.comment-time {
     margin-left: 10px;
     font-size: 10px;
     font-weight: lighter;
 }
-.comment-updtTime{
+
+.comment-updtTime {
     margin-left: 10px;
     font-size: 11px;
     font-weight: lighter;
 }
-.comment-text{
+
+.comment-text {
     font-size: 12px;
     margin: 3px 5px;
     max-width: 450px;
     word-wrap: break-word;
     border-bottom: 1px solid #8dc2e6;
 }
-.comments-container{
+
+.comments-container {
     margin: 7px 7px;
     padding: 10px;
 }
-.btn-warning a{
+
+.btn-warning a {
     text-decoration: none;
     color: white;
 }
-#comment-form, #tweet-update-form{
+
+#comment-form, #tweet-update-form {
     text-align: center;
 }
-.comment-count{
+
+.comment-count {
     margin-left: 400px;
 }
-.pagination_buttons{
+
+.pagination_buttons {
     text-align: center;
 }
-.allLink{
+
+.allLink {
     cursor: pointer;
     margin-left: -10px;
 }
+
+::placeholder {
+    color: red;
+    opacity: 1;
+}
+

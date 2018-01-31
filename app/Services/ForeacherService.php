@@ -1,6 +1,6 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
 class ForeacherService
 {
@@ -8,7 +8,7 @@ class ForeacherService
     /**
      * @param $items
      */
-    public function OrmDeleteForeach($items)
+    public function ormDeleteForeach($items)
     {
         foreach ($items as $item) {
             $item->delete();

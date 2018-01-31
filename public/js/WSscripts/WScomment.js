@@ -159,7 +159,11 @@ function deleteComment(data) {
 
      $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.comment').eq(2).show();
 
-    if(commentCount < 4 ){
+    if(commentCount == 0){
+        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').remove();
+        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.tweet-icons').children('.comment-count').remove();
+    }
+    else if(commentCount < 4 ){
         $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.allLink').remove();
     }
 }
@@ -189,7 +193,11 @@ function banComment(data) {
     lastComment.show();
 
 
-    if(commentCount < 4 ){
+    if(commentCount == 0){
+        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').remove();
+        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.tweet-icons').children('.comment-count').remove();
+    }
+    else if(commentCount < 4 ){
         $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.allLink').remove();
     }
 }
