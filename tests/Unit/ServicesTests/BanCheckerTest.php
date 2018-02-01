@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Services\BanCheckerService;
 use Tests\TestCase;
+use stdClass;
 
 class BanCheckerTest extends TestCase
 {
@@ -20,87 +21,42 @@ class BanCheckerTest extends TestCase
     }
 
 
+    public function providerBannedUserInputs()
+    {
+        return [
+            [true, 1],
+            [false, 0],
+            [false, '0'],
+            [false, '1'],
+            [false, 'gdfhgfgh'],
+            [false, ''],
+            [false, null],
+            [false, false],
+            [false, true],
+            [false, new  stdClass()],
+            [false, [1]],
+            [false, 1.1],
+        ];
+    }
 
-
-    //true
+    //test
     /**************************************************************************/
-    public function testBannedUser()
-    {
-        $this->user->ban = 1;
-        $this->assertTrue($this->banChecker->banned($this->user));
 
-    }
-
-
-
-    //false
+    //test
     /**************************************************************************/
-    public function testNotBannedUser()
+
+    /**
+     * test inputs
+     *
+     * @dataProvider providerBannedUserInputs
+     * @param $result
+     * @param $inputData
+     */
+    public function testBannedUser($result, $inputData)
     {
-        $this->user->ban = 0;
-        $this->assertFalse($this->banChecker->banned($this->user));
-    }
+        $this->user->ban = $inputData;
+        $this->assertEquals($result, $this->banChecker->banned($this->user));
 
-
-    public function testInvalidInt()
-    {
-        $this->user->ban = -1;
-        $this->assertFalse($this->banChecker->banned($this->user));
-    }
-
-
-    public function testString()
-    {
-        $this->user->ban = '1';
-        $this->assertFalse($this->banChecker->banned($this->user));
-    }
-
-
-    public function testInvalidBigInt()
-    {
-        $this->user->ban = 100018;
-        $this->assertFalse($this->banChecker->banned($this->user));
-    }
-
-
-    public function testNull()
-    {
-        $this->user->ban = null;
-        $this->assertFalse($this->banChecker->banned($this->user));
-    }
-
-
-    public function testEmptyString()
-    {
-        $this->user->ban = '';
-        $this->assertFalse($this->banChecker->banned($this->user));
-    }
-
-
-    public function testFalse()
-    {
-        $this->user->ban = false;
-        $this->assertFalse($this->banChecker->banned($this->user));
-    }
-
-    public function testTrue()
-    {
-        $this->user->ban = true;
-        $this->assertFalse($this->banChecker->banned($this->user));
-    }
-
-
-    public function testArray()
-    {
-        $this->user->ban = [1];
-        $this->assertFalse($this->banChecker->banned($this->user));
-    }
-
-
-    public function testObject()
-    {
-        $this->user->ban = $this->user;
-        $this->assertFalse($this->banChecker->banned($this->user));
     }
 
 }

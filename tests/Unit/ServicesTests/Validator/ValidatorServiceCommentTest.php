@@ -7,7 +7,7 @@ use App\Services\ValidatorService;
 use stdClass;
 use TypeError;
 
-class ValidatorServiceMessageTest extends TestCase
+class ValidatorServiceCommentTest extends TestCase
 {
 
     private $validatorService;
@@ -28,14 +28,14 @@ class ValidatorServiceMessageTest extends TestCase
      *
      * @return array
      */
-    public function providerValidateMessageValidInputs()
+    public function providerValidateCommentValidInputs()
     {
         return [
             [
-                null, ['tweet' => 'something']
+                null, ['comment' => 'something']
             ],
             [
-                null, ['tweet' => 'null']
+                null, ['comment' => 'null']
             ],
         ];
     }
@@ -46,7 +46,7 @@ class ValidatorServiceMessageTest extends TestCase
      *
      * @return array
      */
-    public function providerValidateMessageInvalidInputs()
+    public function providerValidateCommentInvalidInputs()
     {
         return [
             [
@@ -60,10 +60,10 @@ class ValidatorServiceMessageTest extends TestCase
                 [127 => 'something']
             ],
             [
-                ['tweet' => '']
+                ['comment' => '']
             ],
             [
-                ['tweet' => 123456]
+                ['comment' => 123456]
             ]
         ];
     }
@@ -74,7 +74,7 @@ class ValidatorServiceMessageTest extends TestCase
      *
      * @return array
      */
-    public function providerValidateMessageErrorTypeInputs()
+    public function providerValidateCommentErrorTypeInputs()
     {
         return [
             [''],
@@ -93,40 +93,40 @@ class ValidatorServiceMessageTest extends TestCase
     /**
      * test valid inputs
      *
-     * @dataProvider providerValidateMessageValidInputs
+     * @dataProvider providerValidateCommentValidInputs
      * @param $result
      * @param $inputData
      */
-    public function testValidateMessageValidInputs($result, $inputData)
+    public function testValidateCommentValidInputs($result, $inputData)
     {
         $this->assertEquals($result, $this->validatorService
-            ->validateMessage($inputData));
+            ->validateComment($inputData));
     }
 
 
     /**
      * test invalid input data
      *
-     * @dataProvider providerValidateMessageInvalidInputs
+     * @dataProvider providerValidateCommentInvalidInputs
      * @expectedException Illuminate\Validation\ValidationException
      * @param $inputData
      */
-    public function testValidateMessageInvalidInputs($inputData)
+    public function testValidateCommentInvalidInputs($inputData)
     {
-        $this->validatorService->validateMessage($inputData);
+        $this->validatorService->validateComment($inputData);
     }
 
 
     /**
      * test error input data
      *
-     * @dataProvider providerValidateMessageErrorTypeInputs
+     * @dataProvider providerValidateCommentErrorTypeInputs
      * @expectedException TypeError
      * @param $inputData
      */
-    public function testValidateMessageErrorTypeInputs($inputData)
+    public function testValidateCommentErrorTypeInputs($inputData)
     {
-        $this->validatorService->validateMessage($inputData);
+        $this->validatorService->validateComment($inputData);
     }
 
 }

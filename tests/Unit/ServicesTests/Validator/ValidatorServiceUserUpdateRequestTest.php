@@ -4,98 +4,134 @@ namespace Tests\Unit;
 
 use App\Services\ValidatorService;
 use Tests\TestCase;
+use Tests\Unit\ServicesTests\Validator\UserUpdateValidationDataProvider;
+use TypeError;
+use stdClass;
 
 class ValidatorServiceUserUpdateRequestTest extends TestCase
 {
 
     private $validatorService;
 
+    private $userUpdateValidationDataProvider;
+
+
+    public  function __construct($name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+
+        $this->userUpdateValidationDataProvider =
+            new UserUpdateValidationDataProvider();
+    }
+
 
     protected function setUp()
     {
         parent::setUp();
+
         $this->validatorService = new ValidatorService();
+
     }
 
 
+    //data providers
+    /**************************************************************************/
+
     /**
-     * valid validation
+     * valid inputs
+     *
+     * @return array
      */
-    public function testValidName()
+    public function providerUserUpdateRequestValidInputs()
     {
-        $data = [
-            'name' => 'Adam',
-            'email' => 'Adam@seznam.cz',
-            'new_password' => '123456'
+        return [
+            [
+                null, [
+                'name' => str_random(5),
+                'email' => 'Adam@seznam.cz',
+                'new_password' => str_random(6)
+            ]
+            ],
+            [
+                null, [
+                'name' => str_random(255),
+                'email' => 'Ad@sem.com',
+                'new_password' => str_random(20)
+            ]
+            ],
         ];
-
-        $this->assertNull($this->validatorService
-            ->validateUserUpdateRequest($data));
     }
 
 
     /**
+     * invalid inputs
+     *
+     * @return array
+     */
+    public function providerUserUpdateRequestInvalidInputs()
+    {
+        return $this->userUpdateValidationDataProvider->getTestData();
+    }
+
+
+    /**
+     * error inputs
+     *
+     * @return array
+     */
+    public function providerUserUpdateRequestErrorInputs()
+    {
+        return [
+            [''],
+            [null],
+            [false],
+            [true],
+            [new stdClass()],
+        ];
+    }
+
+
+    //tests
+    /**************************************************************************/
+
+    /**
+     * test function with valid inputs
+     *
+     * @dataProvider providerUserUpdateRequestValidInputs
+     * @param $result
+     * @param $inputData
+     */
+    public function testValidName($result, $inputData)
+    {
+        $this->assertEquals($result, $this->validatorService
+            ->validateUserUpdateRequest($inputData));
+    }
+
+
+    /**
+     * test function with invalid inputs
+     *
      * @expectedException Illuminate\Validation\ValidationException
+     * @dataProvider providerUserUpdateRequestInvalidInputs
+     * @param $inputData
      */
-    public function testInvalidName()
+    public function testInvalidName($inputData)
     {
-        $data = [
-            'name' => '',
-            'email' => 'Adam@seznam.cz',
-            'new_password' => '123456'
-        ];
-
-        $this->validatorService->validateUserUpdateRequest($data);
+        $this->validatorService->validateUserUpdateRequest($inputData);
     }
 
 
     /**
-     * @expectedException Illuminate\Validation\ValidationException
+     * test function with error inputs
+     *
+     * @expectedException TypeError
+     * @dataProvider providerUserUpdateRequestErrorInputs
+     * @param $inputData
      */
-    public function testInvalidEmail()
+    public function testInvalidEmail($inputData)
     {
-        $data = [
-            'name' => 'Adam',
-            'email' => '@',
-            'new_password' => '123456'
-        ];
 
-        $this->validatorService->validateUserUpdateRequest($data);
-    }
-
-
-    /**
-     * @expectedException Illuminate\Validation\ValidationException
-     */
-    public function testInvalidPassword()
-    {
-        $data = [
-            'name' => 'Adam',
-            'email' => 'Adam@seznam.cz',
-            'new_password' => '1234'
-        ];
-
-        $this->validatorService->validateUserUpdateRequest($data);
-    }
-
-
-    /**
-     * @expectedException Illuminate\Validation\ValidationException
-     */
-    public function testInvalidLongName()
-    {
-        $data = [
-            'name' => 'Adambdbdfbfdhggbdfbdfbgdgbdfbdbgbdbdbdfbgbdgbduykkuyilyly
-            ylyliyliylyllyuilyulfggwrybumoeagbhhhhhhhhguyutyjtjjrtjjyrtyjrjyrjjy
-            ytjrjrtjrtjrtyjtjrtyjjrjrjhhhhhhhhhhhhhjjjjjjjjjjjjjjjjjyyyyyyyyy
-            llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
-            jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj
-            iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii',
-            'email' => 'Adam@seznam.cz',
-            'new_password' => '123456'
-        ];
-
-        $this->validatorService->validateUserUpdateRequest($data);
+        $this->validatorService->validateUserUpdateRequest($inputData);
     }
 
 }

@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Services\AdminCheckerService;
+use stdClass;
 
 class AdminCheckerTest extends TestCase
 {
@@ -20,88 +21,39 @@ class AdminCheckerTest extends TestCase
     }
 
 
+    public function providerAdminRoleInputs()
+    {
+        return [
+            [true, 1],
+            [false, 0],
+            [false, '0'],
+            [false, '1'],
+            [false, 'gdfhgfgh'],
+            [false, ''],
+            [false, null],
+            [false, false],
+            [false, true],
+            [false, new  stdClass()],
+            [false, [1]],
+            [false, 1.1],
+        ];
+    }
 
-    //true
+    //test
     /**************************************************************************/
-    public function testAdminRole()
+
+    /**
+     * test admin role
+     *
+     * @dataProvider providerAdminRoleInputs
+     * @param $result
+     * @param $inputData
+     */
+    public function testAdminRole($result, $inputData)
     {
-        $this->user->role_id = 1;
-        $this->assertTrue($this->adminChecker->isAdmin($this->user));
+        $this->user->role_id = $inputData;
+        $this->assertEquals($result ,$this->adminChecker->isAdmin($this->user));
 
-    }
-
-
-
-
-    //false
-    /**************************************************************************/
-    public function testUserRole()
-    {
-        $this->user->role_id = 0;
-        $this->assertFalse($this->adminChecker->isAdmin($this->user));
-    }
-
-
-    public function testInvalidInt()
-    {
-        $this->user->role_id = -1;
-        $this->assertFalse($this->adminChecker->isAdmin($this->user));
-    }
-
-
-    public function testString()
-    {
-        $this->user->role_id = '1';
-        $this->assertFalse($this->adminChecker->isAdmin($this->user));
-    }
-
-
-    public function testInvalidBigInt()
-    {
-        $this->user->role_id = 100018;
-        $this->assertFalse($this->adminChecker->isAdmin($this->user));
-    }
-
-
-    public function testNull()
-    {
-        $this->user->role_id = null;
-        $this->assertFalse($this->adminChecker->isAdmin($this->user));
-    }
-
-
-    public function testEmptyString()
-    {
-        $this->user->role_id = '';
-        $this->assertFalse($this->adminChecker->isAdmin($this->user));
-    }
-
-
-    public function testFalse()
-    {
-        $this->user->role_id = false;
-        $this->assertFalse($this->adminChecker->isAdmin($this->user));
-    }
-
-
-    public function testTrue()
-    {
-        $this->user->role_id = true;
-        $this->assertFalse($this->adminChecker->isAdmin($this->user));
-    }
-
-
-    public function testArray()
-    {
-        $this->user->role_id = [1];
-        $this->assertFalse($this->adminChecker->isAdmin($this->user));
-    }
-
-
-    public function testObject()
-    {
-        $this->user->role_id = $this->user;
-        $this->assertFalse($this->adminChecker->isAdmin($this->user));
     }
 
 }

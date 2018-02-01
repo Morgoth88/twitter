@@ -10,6 +10,7 @@ use App\Events\MessageBanned;
 use App\Events\MessageDeleted;
 use App\Events\MessageUpdated;
 use App\Events\MessageCreated;
+use App\Exceptions\NoDataException;
 use App\Exceptions\ValidatorException;
 use App\Repositories\UserDataRepository;
 use App\Services\AdminCheckerService;
@@ -61,9 +62,14 @@ class MessageController extends Controller
     public
     function read(MessageReader $messageReader)
     {
-        return $this->jsonResponse->okResponse(
-            $messageReader->readPost()
-        );
+        try {
+            return $this->jsonResponse->okResponse(
+                $messageReader->readPost()
+            );
+        }catch (NoDataException $exception){
+            return$this->jsonResponse
+                ->exceptionResponse($exception->getMessage());
+        }
     }
 
 

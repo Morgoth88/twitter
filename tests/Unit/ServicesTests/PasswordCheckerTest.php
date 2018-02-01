@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Services\PasswordCheckerService;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
+use stdClass;
 
 class PasswordCheckerTest extends TestCase
 {
@@ -19,63 +20,48 @@ class PasswordCheckerTest extends TestCase
     }
 
 
-    public function testValidPasswordCheck()
-    {
-        $hashedPassword = Hash::make('123456');
-        $plainPassword = '123456';
+    //data providers
+    /**************************************************************************/
 
-        $this->assertTrue($this->passwordChecker->checkPasswords(
-            $plainPassword, $hashedPassword));
+    /**
+     * valid PasswordCheck inputs provider
+     *
+     * @return array
+     */
+    public function providerValidPasswordCheckInputs()
+    {
+        return [
+            'password match' => [true, '123456', '123456'],
+
+            'password not match' => [false, '123456', '123'],
+            'password not match' => [false, '654321', '123456'],
+            'password not match' => [false, '1234567', '654321'],
+            'hashed password is empty' => [false, '123456', ''],
+            'plain password is empty' => [false, '', '123456'],
+            'plain password is null' => [false, null, '123456'],
+            'hashed password is null' => [false, '123456', null],
+            'hashed password is true' => [false, '123456', true],
+            'plain password is true' => [false, true, '123456'],
+        ];
     }
 
+    //tests
+    /**************************************************************************/
 
-    public function testSwappedPasswords()
+    /**
+     * test password checker with multiple inputs
+     *
+     * @dataProvider providerValidPasswordCheckInputs
+     * @param $plainPassword
+     * @param $hashedPassword
+     * @param $result
+     */
+    public function testValidPasswordCheck($result, $plainPassword,
+                                           $hashedPassword)
     {
-        $hashedPassword = '123456';
-        $plainPassword = Hash::make('123456');
-
-        $this->assertFalse($this->passwordChecker->checkPasswords(
-            $plainPassword, $hashedPassword));
+        $this->assertEquals($result, $this->passwordChecker->checkPasswords(
+            $plainPassword, Hash::make($hashedPassword)));
     }
 
-
-    public function testNotMatchedPasswords()
-    {
-        $hashedPassword = Hash::make('123456');
-        $plainPassword = '654321';
-
-        $this->assertFalse($this->passwordChecker->checkPasswords(
-            $plainPassword, $hashedPassword));
-    }
-
-
-    public function testNotHashedPassword()
-    {
-        $hashedPassword = '123456';
-        $plainPassword = '123456';
-
-        $this->assertFalse($this->passwordChecker->checkPasswords(
-            $plainPassword, $hashedPassword));
-    }
-
-
-    public function testEmptyPassword()
-    {
-        $hashedPassword = '';
-        $plainPassword = '';
-
-        $this->assertFalse($this->passwordChecker->checkPasswords(
-            $plainPassword, $hashedPassword));
-    }
-
-
-    public function testNullPasswords()
-    {
-        $hashedPassword = null;
-        $plainPassword = null;
-
-        $this->assertFalse($this->passwordChecker->checkPasswords(
-            $plainPassword, $hashedPassword));
-    }
 
 }

@@ -8,10 +8,16 @@ use Tests\TestCase;
 class NewMessageTest extends TestCase
 {
 
+    private $user;
+    private $messageText;
+
+
     protected function setUp()
     {
         parent::setUp();
 
+        $this->user = User::find(2);
+        $this->messageText = 'comment test';
     }
 
 
@@ -20,16 +26,14 @@ class NewMessageTest extends TestCase
      */
     public function testValidRequest()
     {
-        $user = factory(User::class)->create();
-        $text = 'TestMessage';
 
-        $response = $this->actingAs($user)->json('POST',
+        $response = $this->actingAs($this->user)->json('POST',
             'api/v1/tweet', ['tweet'
-            => $text]);
+            => $this->messageText]);
 
         $response->assertStatus(201)
             ->assertJson([
-                'text' => $text
+                'text' => $this->messageText
             ]);
     }
 
@@ -39,10 +43,9 @@ class NewMessageTest extends TestCase
      */
     public function testInvalidMessageRequest()
     {
-        $user = factory(User::class)->create();
         $text = '';
 
-        $response = $this->actingAs($user)->json('POST',
+        $response = $this->actingAs($this->user)->json('POST',
             'api/v1/tweet', ['tweet'
             => $text]);
 
@@ -55,12 +58,10 @@ class NewMessageTest extends TestCase
      */
     public function testInvalidInputNameRequest()
     {
-        $user = factory(User::class)->create();
-        $text = 'TestMessage';
 
-        $response = $this->actingAs($user)->json('POST',
+        $response = $this->actingAs($this->user)->json('POST',
             'api/v1/tweet', ['something'
-            => $text]);
+            => $this->messageText]);
 
         $response->assertStatus(422);
     }
@@ -71,12 +72,10 @@ class NewMessageTest extends TestCase
      */
     public function testInvalidRouteRequest()
     {
-        $user = factory(User::class)->create();
-        $text = 'TestMessage';
 
-        $response = $this->actingAs($user)->json('POST',
+        $response = $this->actingAs($this->user)->json('POST',
             'api/v1/tweeteee', ['tweet'
-            => $text]);
+            => $this->messageText]);
 
         $response->assertStatus(404
         );
@@ -88,11 +87,10 @@ class NewMessageTest extends TestCase
      */
     public function testUnauthorizedRequest()
     {
-        $text = 'TestMessage';
 
         $response = $this->json('POST',
             'api/v1/tweet', ['tweet'
-            => $text]);
+            => $this->messageText]);
 
         $response->assertStatus(401);
     }

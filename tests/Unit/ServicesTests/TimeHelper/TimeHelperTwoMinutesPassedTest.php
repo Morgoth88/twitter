@@ -5,20 +5,19 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use App\Services\TimeHelperService;
 use InvalidArgumentException;
+use stdClass;
+use ErrorException;
 
 class TimeHelperTwoMinutesPassedTest extends TestCase
 {
 
     private $timeHelper;
 
-    private $postMock;
-
 
     protected function setUp()
     {
         parent::setUp();
         $this->timeHelper = new TimeHelperService();
-        $this->postMock = $this->getMockBuilder('Message')->getMock();
     }
 
 
@@ -28,79 +27,116 @@ class TimeHelperTwoMinutesPassedTest extends TestCase
     }
 
 
-    //true
+    //data providers
     /**************************************************************************/
-    public function testTwoMinutes()
+
+    /**
+     * valid inputs
+     *
+     * @return array
+     */
+    public function providerLessThanTwoMinutesValidInputs()
     {
-        $this->assertTrue($this->timeHelper
-            ->lessThanTwoMinutes($this->timeToDate(time() - 120)));
+        return [
+            // 2 minutes 10 second ago
+            [false, $this->timeToDate(time() - 130)],
+            // 4 minutes ago
+            [false, $this->timeToDate(time() - 240)],
+            // 1 hour ago
+            [false, $this->timeToDate(time() - 3600)],
+            // 1 day ago
+            [false, $this->timeToDate(time() - 3600 * 24)],
+            // 1 year ago
+            [false, $this->timeToDate(time() - 3600 * 24 * 365)],
+            // 10 years ago
+            [false, $this->timeToDate(time() - 3600 * 24 * 365 * 10)],
+            //future
+            [false, $this->timeToDate(time() + 10)],
+
+            // now
+            [true, $this->timeToDate(time())],
+            // 1 second ago
+            [true, $this->timeToDate(time() - 1)],
+            // 61 seconds ago
+            [true, $this->timeToDate(time() - 61)],
+            // 1 minute 50 seconds ago
+            [true, $this->timeToDate(time() - 110)],
+        ];
     }
 
 
-    public function testOneMinuteFiftyNineSeconds()
+    /**
+     * invalid inputs
+     *
+     * @return array
+     */
+    public function providerLessThanTwoMinutesInvalidInputs()
     {
-        $this->assertTrue($this->timeHelper
-            ->lessThanTwoMinutes($this->timeToDate(time() - 119)));
+        return [
+            [null],
+            [false],
+            [true],
+            [''],
+        ];
     }
 
 
-    //false
+    /**
+     * error inputs
+     *
+     * @return array
+     */
+    public function providerLessThanTwoMinutesErrorInputs()
+    {
+        return [
+            [[$this->timeToDate(time() - 119)]],
+            [new stdClass()],
+        ];
+    }
+
+
+    //tests
     /**************************************************************************/
-    public function testTwoMinutesOneSecond()
+
+    /**
+     * test function with valid inputs
+     *
+     * @dataProvider providerLessThanTwoMinutesValidInputs
+     * @param $result
+     * @param $inputData
+     */
+    public function testLessThanTwoMinutesValidInputs($result, $inputData)
     {
-        $this->assertFalse($this->timeHelper
-            ->lessThanTwoMinutes($this->timeToDate(time() - 121)));
-    }
-
-
-    public function testYear()
-    {
-        $this->assertFalse($this->timeHelper
-            ->lessThanTwoMinutes($this->timeToDate(time() - 3600 * 24 * 365)));
-    }
-
-
-    public function testTomorrow()
-    {
-        $this->assertFalse($this->timeHelper
-            ->lessThanTwoMinutes($this->timeToDate(time() + 3600 * 24)));
+        $this->assertEquals($result, $this->timeHelper
+            ->lessThanTwoMinutes($inputData));
     }
 
 
     /**
+     * test function with invalid inputs
+     *
      * @expectedException InvalidArgumentException
+     *
+     * @dataProvider providerLessThanTwoMinutesInvalidInputs
+     * @param $inputData
      */
-    public function testNull()
+    public function testLessThanTwoMinutesInvalidArgumentException($inputData)
     {
-        $this->timeHelper->lessThanTwoMinutes(null);
+        $this->timeHelper->lessThanTwoMinutes($inputData);
     }
 
 
     /**
-     * @expectedException InvalidArgumentException
+     * test function with error inputs
+     *
+     * @expectedException ErrorException
+     *
+     * @dataProvider providerLessThanTwoMinutesErrorInputs
+     * @param $inputData
      */
-    public function testFalse()
+    public function testLessThanTwoMinutesErrorInputs($inputData)
     {
-        $this->timeHelper->lessThanTwoMinutes(false);
+        $this->timeHelper->lessThanTwoMinutes($inputData);
     }
-
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testEmpty()
-    {
-        $this->timeHelper->lessThanTwoMinutes('');
-    }
-
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testTrue()
-    {
-        $this->timeHelper->lessThanTwoMinutes(true);
-    }
-
 
 }

@@ -5,13 +5,17 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use App\User;
 
-
 class databaseTest extends TestCase
 {
+
+    private $user;
+    private $text;
 
     protected function setUp()
     {
         parent::setUp();
+        $this->user = User::find(2);
+        $this->text = 'Database Test'.rand(0,10000000);
     }
 
 
@@ -20,15 +24,12 @@ class databaseTest extends TestCase
      */
     public function testRecordPresence()
     {
-        $user = factory(User::class)->create();
-        $text = 'testMessage'.rand(0,10000000);
-
-        $this->actingAs($user)->json('POST',
+        $this->actingAs($this->user)->json('POST',
             'api/v1/tweet', ['tweet'
-            => $text]);
+            => $this->text]);
 
         $this->assertDatabaseHas('message', [
-            'text' => $text
+            'text' => $this->text
         ]);
     }
 

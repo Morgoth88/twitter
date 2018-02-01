@@ -8,10 +8,18 @@ use App\User;
 class NewCommentTest extends TestCase
 {
 
+    private $user;
+    private $messageText;
+    private $commentText;
+
+
     protected function setUp()
     {
         parent::setUp();
 
+        $this->user = User::find(2);
+        $this->messageText = 'comment test';
+        $this->commentText = 'test comment';
     }
 
 
@@ -20,16 +28,13 @@ class NewCommentTest extends TestCase
      */
     public function testValidRequest()
     {
-        $user = factory(User::class)->create();
-        $text = 'TestComment';
-
-        $message = $user->message()->create([
-            'text' => 'testMessageWithComment'
+        $message = $this->user->message()->create([
+            'text' => $this->messageText
         ]);
 
-        $response = $this->actingAs($user)->json('POST',
+        $response = $this->actingAs($this->user)->json('POST',
             'api/v1/tweet/' . $message->id . '/comment', ['comment'
-            => $text]);
+            => $this->commentText]);
 
         $response->assertStatus(201);
 
@@ -41,14 +46,13 @@ class NewCommentTest extends TestCase
      */
     public function testInvalidCommentRequest()
     {
-        $user = factory(User::class)->create();
         $text = '';
 
-        $message = $user->message()->create([
-            'text' => 'testMessageWithComment'
+        $message = $this->user->message()->create([
+            'text' => $this->messageText
         ]);
 
-        $response = $this->actingAs($user)->json('POST',
+        $response = $this->actingAs($this->user)->json('POST',
             'api/v1/tweet/' . $message->id . '/comment', ['comment'
             => $text]);
 
@@ -61,16 +65,13 @@ class NewCommentTest extends TestCase
      */
     public function testInvalidInputNameRequest()
     {
-        $user = factory(User::class)->create();
-        $text = 'TestComment';
-
-        $message = $user->message()->create([
-            'text' => 'testMessageWithComment'
+        $message = $this->user->message()->create([
+            'text' => $this->messageText
         ]);
 
-        $response = $this->actingAs($user)->json('POST',
+        $response = $this->actingAs($this->user)->json('POST',
             'api/v1/tweet/' . $message->id . '/comment', ['comm'
-            => $text]);
+            => $this->commentText]);
 
         $response->assertStatus(422);
     }
@@ -81,12 +82,9 @@ class NewCommentTest extends TestCase
      */
     public function testInvalidRouteRequest()
     {
-        $user = factory(User::class)->create();
-        $text = 'TestComment';
-
-        $response = $this->actingAs($user)->json('POST',
+        $response = $this->actingAs($this->user)->json('POST',
             'api/v1/tweet/comment', ['comment'
-            => $text]);
+            => $this->commentText]);
 
         $response->assertStatus(405);
     }
@@ -97,31 +95,26 @@ class NewCommentTest extends TestCase
      */
     public function testInvalidMessageIdRequest()
     {
-        $user = factory(User::class)->create();
-        $text = 'TestComment';
-
-        $response = $this->actingAs($user)->json('POST',
+        $response = $this->actingAs($this->user)->json('POST',
             'api/v1/tweet/null/comment', ['comment'
-            => $text]);
+            => $this->commentText]);
 
         $response->assertStatus(404);
     }
+
 
     /**
      * unauthorized test
      */
     public function testUnauthorizedRequest()
     {
-        $user = factory(User::class)->create();
-        $text = 'TestComment';
-
-        $message = $user->message()->create([
-            'text' => 'testMessageWithComment'
+        $message = $this->user->message()->create([
+            'text' => $this->messageText
         ]);
 
         $response = $this->json('POST',
             'api/v1/tweet/' . $message->id . '/comment', ['comment'
-            => $text]);
+            => $this->commentText]);
 
         $response->assertStatus(401);
 

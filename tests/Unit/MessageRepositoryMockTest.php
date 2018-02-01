@@ -13,6 +13,7 @@ class MessageRepositoryMockTest extends TestCase
 
     private $messageReader;
 
+
     protected function setUp()
     {
         parent::setUp();

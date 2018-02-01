@@ -75,6 +75,7 @@ function createComment(data) {
     var commentCount = data.commentsCount;
     var commentCounter = (commentCount == 1) ? commentCount + ' comment' : commentCount + ' comments';
 
+    $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.tweet-icons').children('.comment-count').show();
     $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.tweet-icons').children('.comment-count').text(commentCounter);
 
     $('.tweet-time').each(function () {
@@ -161,10 +162,10 @@ function deleteComment(data) {
 
     if(commentCount == 0){
         $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').remove();
-        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.tweet-icons').children('.comment-count').remove();
+        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.tweet-icons').children('.comment-count').hide();
     }
     else if(commentCount < 4 ){
-        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.allLink').remove();
+        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.allLink').hide();
     }
 }
 
@@ -195,10 +196,10 @@ function banComment(data) {
 
     if(commentCount == 0){
         $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').remove();
-        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.tweet-icons').children('.comment-count').remove();
+        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.tweet-icons').children('.comment-count').hide();
     }
     else if(commentCount < 4 ){
-        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.allLink').remove();
+        $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.allLink').hide();
     }
 }
 
@@ -224,7 +225,7 @@ function updateComment(data) {
 
     /*change tweet id and text*/
     var commentText = oldcomment.children('.comment-text');
-    commentText.attr('data-id', data.comment['id']);
+    commentText.attr('data-comment-id', data.comment['id']);
     commentText.text(data.comment['text']);
 
     oldcomment.attr('data-id', data.comment['id']);

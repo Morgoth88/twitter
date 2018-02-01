@@ -27,7 +27,7 @@ class TimeHelperService
             throw new \InvalidArgumentException('Invalid argument');
 
         if (time() - strtotime($createdAt) <= self::TWO_MINUTES &&
-            time() - strtotime($createdAt) > 0) {
+            time() - strtotime($createdAt) >= 0) {
             return true;
         } else {
             return false;

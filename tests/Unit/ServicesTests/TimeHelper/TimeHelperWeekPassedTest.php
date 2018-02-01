@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use App\Services\TimeHelperService;
 use InvalidArgumentException;
+use stdClass;
+use ErrorException;
 
 class TimeHelperWeekPassedTest extends TestCase
 {
@@ -25,89 +27,120 @@ class TimeHelperWeekPassedTest extends TestCase
     }
 
 
-    //true
+    //data providers
     /**************************************************************************/
-    public function testWeekPassed()
-    {
-        $this->assertTrue($this->timeHelper
-            ->weekPassed($this->timeToDate(time() - 3600 * 24 * 7)));
 
+    /**
+     * valid inputs
+     *
+     * @return array
+     */
+    public function providerWeekPassedValidInputs()
+    {
+        return [
+            // now
+            [false, $this->timeToDate(time())],
+            // second ago
+            [false, $this->timeToDate(time() - 1)],
+            // 30 minutes ago
+            [false, $this->timeToDate(time() - 1800)],
+            // 1 hour ago
+            [false, $this->timeToDate(time() - 3600)],
+            // day ago
+            [false, $this->timeToDate(time() - 3600 * 24)],
+            // 3 days ago
+            [false, $this->timeToDate(time() - 3600 * 24 * 3)],
+            // 6 days ago
+            [false, $this->timeToDate(time() - 3600 * 24 * 6)],
+            // 6 days 23 minutes 50 seconds ago
+            [false, $this->timeToDate(time() - 3600 * 24 * 7 + 10)],
+            // future
+            [false, $this->timeToDate(time() + 10)],
+
+            // 7 days ago
+            [true, $this->timeToDate(time() - 3600 * 26 * 7)],
+            // 7 days 10 seconds ago
+            [true, $this->timeToDate(time() - 3600 * 24 * 7 - 10)],
+            // 8 days ago
+            [true, $this->timeToDate(time() - 3600 * 24 * 8)],
+            // 1 year ago
+            [true, $this->timeToDate(time() - 3600 * 24 * 365)],
+            // 10 years ago
+            [true, $this->timeToDate(time() - 3600 * 24 * 365 * 10)],
+        ];
     }
 
 
-    public function testEightDaysPassed()
+    /**
+     * invalid inputs
+     *
+     * @return array
+     */
+    public function providerWeekPassedInvalidInputs()
     {
-        $this->assertTrue($this->timeHelper
-            ->weekPassed($this->timeToDate(time() - 3600 * 24 * 8)));
-
+        return [
+            [null],
+            [false],
+            [true],
+            [''],
+        ];
     }
 
 
-    public function testYearPassed()
+    /**
+     * error inputs
+     *
+     * @return array
+     */
+    public function providerWeekPassedErrorInputs()
     {
-        $this->assertTrue($this->timeHelper
-            ->weekPassed($this->timeToDate(time() - 3600 * 24 * 365)));
-
+        return [
+            [[$this->timeToDate(time() - 119)]],
+            [new stdClass()],
+        ];
     }
 
-    //false
+
+    //tests
     /**************************************************************************/
-    public function testSixDaysPassed()
+
+    /**
+     * test function with valid inputs
+     *
+     * @dataProvider providerWeekPassedValidInputs
+     * @param $result
+     * @param $inputData
+     */
+    public function testWeekPassedValidInputs($result, $inputData)
     {
-        $this->assertFalse($this->timeHelper
-            ->weekPassed($this->timeToDate(time() - 3600 * 24 * 6)));
-
-    }
-
-
-    public function testMinutePassed()
-    {
-        $this->assertFalse($this->timeHelper
-            ->weekPassed($this->timeToDate(time() - 60)));
-
-    }
-
-
-    public function testTommorow()
-    {
-        $this->assertFalse($this->timeHelper
-            ->weekPassed($this->timeToDate(time() + 3600 * 24)));
-
+        $this->assertEquals($result, $this->timeHelper
+            ->weekPassed($inputData));
     }
 
 
     /**
+     * test function with invalid inputs
+     *
      * @expectedException InvalidArgumentException
+     * @dataProvider providerWeekPassedInvalidInputs
+     * @param $inputData
      */
-    public function testNull()
+    public function testWeekPassedInvalidInputs($inputData)
     {
-        $this->timeHelper->weekPassed(null);
+        $this->timeHelper->weekPassed($inputData);
     }
 
 
     /**
-     * @expectedException InvalidArgumentException
+     * test function with error inputs
+     *
+     * @expectedException ErrorException
+     * @dataProvider providerWeekPassedErrorInputs
+     * @param $inputData
      */
-    public function testFalse()
+    public function testWeekPassedErrorInputs($inputData)
     {
-        $this->timeHelper->weekPassed(false);
+        $this->timeHelper->weekPassed($inputData);
     }
 
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testEmpty()
-    {
-        $this->timeHelper->weekPassed('');
-    }
-
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testTrue()
-    {
-        $this->timeHelper->weekPassed(true);
-    }
 }

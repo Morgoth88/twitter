@@ -51,7 +51,7 @@ class JsonResponseService
      */
     public function unauthorizedResponse()
     {
-        return response(json_encode('message : Unauthorized action'), 401)
+        return response(json_encode(['message' => "Unauthorized action"]), 401)
             ->header('Content-Type', 'application/json');
     }
 
@@ -63,9 +63,9 @@ class JsonResponseService
      */
     public function timeExpiredResponse()
     {
-        return response(json_encode('message : Time limit to change expired'),
-            401)
-            ->header('Content-Type', 'application/json');
+        return response(json_encode([
+            'message' => "Time limit to change expired"
+        ]), 401)->header('Content-Type', 'application/json');
     }
 
 
@@ -77,7 +77,19 @@ class JsonResponseService
      */
     public function userBanResponse($user)
     {
-        return response(json_encode("message : user $user->id was banned "), 200)
+        return response(json_encode([
+            'message' => "user $user->id was banned"
+        ]), 200)->header('Content-Type', 'application/json');
+    }
+    /**
+     * return json response with user ban message
+     *
+     * @param $message
+     * @return mixed
+     */
+    public function exceptionResponse($message)
+    {
+        return response(json_encode(['error' => ['message' => $message]]), 500)
             ->header('Content-Type', 'application/json');
     }
 
