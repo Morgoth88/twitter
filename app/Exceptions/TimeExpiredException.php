@@ -3,7 +3,7 @@
 namespace App\Exceptions;
 use Exception;
 
-class NoDataException extends Exception
+class TimeExpiredException extends Exception
 {
 
 }

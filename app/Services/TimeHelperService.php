@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\TimeExpiredException;
 use InvalidArgumentException;
 
 class TimeHelperService
@@ -20,6 +21,7 @@ class TimeHelperService
      *
      * @param $createdAt
      * @return bool
+     * @throws TimeExpiredException
      */
     public function lessThanTwoMinutes($createdAt)
     {
@@ -30,7 +32,7 @@ class TimeHelperService
             time() - strtotime($createdAt) >= 0) {
             return true;
         } else {
-            return false;
+            throw new TimeExpiredException('Time limit expired');
         }
     }
 

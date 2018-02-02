@@ -3,6 +3,7 @@
 namespace App\CrudClasses\Message;
 
 use App\Repositories\MessageDataRepository;
+use App\Exceptions\DataErrorException;
 
 class MessageCreator
 {
@@ -21,14 +22,20 @@ class MessageCreator
 
 
     /**
-     * create message
+     *  create message
      *
      * @param $request
-     * @return mixed
+     * @return null
+     * @throws DataErrorException
      */
     public function createPost($request)
     {
-        return $this->messageDataRepository->createMessage($request);
+        $data = $this->messageDataRepository->createMessage($request);
+        if ($data) {
+            return $data;
+        } else {
+            throw new DataErrorException('DataRepository error');
+        }
     }
 
 }

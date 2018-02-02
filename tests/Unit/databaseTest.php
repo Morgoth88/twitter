@@ -14,8 +14,13 @@ class databaseTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->user = User::find(2);
+        $this->user = factory(User::class)->create();
         $this->text = 'Database Test'.rand(0,10000000);
+    }
+    protected function tearDown()
+    {
+        parent::tearDown();
+        $this->user->delete();
     }
 
 

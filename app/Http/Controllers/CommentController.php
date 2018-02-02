@@ -11,6 +11,7 @@ use App\Events\CommentBanned;
 use App\Events\CommentDeleted;
 use App\Events\CommentUpdated;
 use App\Events\CommentCreated;
+use App\Exceptions\DataErrorException;
 use App\Message;
 use Illuminate\Http\Request;
 use App\Repositories\UserDataRepository;
@@ -19,6 +20,9 @@ use App\Services\BanService;
 use App\Services\JsonResponseService;
 use App\Services\TimeHelperService;
 use App\Services\ValidatorService;
+use Illuminate\Validation\ValidationException;
+use App\Exceptions\TimeExpiredException;
+use App\Exceptions\UserRoleException;
 
 class CommentController extends Controller
 {
@@ -61,9 +65,15 @@ class CommentController extends Controller
      */
     public function read(CommentReader $commentReader, Message $message)
     {
-        return $this->jsonResponse->okResponse(
-            $commentReader->readPost($message)
-        );
+        try {
+            return $this->jsonResponse->okResponse(
+                $commentReader->readPost($message)
+            );
+        } catch (DataErrorException $dataErrorException) {
+            return $this->jsonResponse
+                ->exceptionResponse($dataErrorException
+                    ->getMessage(), 500);
+        }
     }
 
 
@@ -79,12 +89,24 @@ class CommentController extends Controller
                            Message $message,
                            Request $request)
     {
-        $this->validator->validateComment($request->all());
+        try {
+            $this->validator->validateComment($request->all());
 
-        $comment = $commentCreator->createPost($request, $message);
-        event(new CommentCreated($comment));
+            $comment = $commentCreator->createPost($request, $message);
+            event(new CommentCreated($comment));
 
-        return $this->jsonResponse->createdResponse($comment);
+            return $this->jsonResponse->createdResponse($comment);
+
+        } catch (DataErrorException $dataErrorException) {
+            return $this->jsonResponse
+                ->exceptionResponse($dataErrorException
+                    ->getMessage(), 500);
+
+        } catch (ValidationException $validationException) {
+            return $this->jsonResponse
+                ->exceptionResponse($validationException
+                    ->getMessage(), 422);
+        }
     }
 
 
@@ -104,7 +126,8 @@ class CommentController extends Controller
     {
         $this->authorize('updateDeleteComment', $comment);
 
-        if ($this->timeHelper->lessThanTwoMinutes($comment->created_at)) {
+        try {
+            $this->timeHelper->lessThanTwoMinutes($comment->created_at);
 
             $this->validator->validateComment($request->all());
 
@@ -112,8 +135,22 @@ class CommentController extends Controller
             event(new CommentUpdated($newComment));
 
             return $this->jsonResponse->okResponse($newComment);
-        } else {
-            return $this->jsonResponse->timeExpiredResponse();
+
+        } catch (DataErrorException $dataErrorException) {
+            return $this->jsonResponse
+                ->exceptionResponse($dataErrorException
+                    ->getMessage(), 500);
+
+        } catch (ValidationException $validationException) {
+            return $this->jsonResponse
+                ->exceptionResponse($validationException
+                    ->getMessage(), 422);
+
+        } catch (TimeExpiredException $expiredException) {
+            return $this->jsonResponse
+                ->exceptionResponse($expiredException
+                    ->getMessage(), 408);
+
         }
     }
 
@@ -132,14 +169,24 @@ class CommentController extends Controller
     {
         $this->authorize('updateDeleteComment', $comment);
 
-        if ($this->timeHelper->lessThanTwoMinutes($comment->created_at)) {
+        try {
+            $this->timeHelper->lessThanTwoMinutes($comment->created_at);
 
             event(new CommentDeleted($comment));
             $id = $commentDeleter->deletePost($comment);
 
             return $this->jsonResponse->okResponse("message : Comment $id was deleted");
-        } else {
-            return $this->jsonResponse->timeExpiredResponse();
+
+        } catch (DataErrorException $dataErrorException) {
+            return $this->jsonResponse
+                ->exceptionResponse($dataErrorException
+                    ->getMessage(), 500);
+
+        } catch (TimeExpiredException $expiredException) {
+            return $this->jsonResponse
+                ->exceptionResponse($expiredException
+                    ->getMessage(), 408);
+
         }
     }
 
@@ -160,10 +207,11 @@ class CommentController extends Controller
                         Message $message,
                         Comment $comment)
     {
-        $commentUser = $userDataRepository->getUserById($comment->user_id);
+        try {
+            $commentUser = $userDataRepository->getUserById($comment->user_id);
 
-        if ($this->adminChecker->isAdmin($request->user()) &&
-            !$this->adminChecker->isAdmin($commentUser)) {
+            $this->adminChecker->isAdmin($request->user());
+            $this->adminChecker->isUser($commentUser);
 
             $banService->banComment($comment);
             event(new CommentBanned($comment));
@@ -171,9 +219,10 @@ class CommentController extends Controller
             return $this->jsonResponse->okResponse(
                 "message : Tweet $comment->id was banned"
             );
-        } else {
-            return $this->jsonResponse->unauthorizedResponse();
+        } catch (UserRoleException $roleException) {
+            return $this->jsonResponse
+                ->exceptionResponse($roleException
+                    ->getMessage(), 409);
         }
-
     }
 }

@@ -3,6 +3,7 @@
 namespace App\CrudClasses\Message;
 
 use App\Repositories\MessageDataRepository;
+use App\Exceptions\DataErrorException;
 
 class MessageUpdater
 {
@@ -26,10 +27,16 @@ class MessageUpdater
      * @param $request
      * @param $post
      * @return mixed
+     * @throws DataErrorException
      */
     public function updatePost($request, $post)
     {
-        return $this->messageDataRepository->updateMessage($request, $post);
+        $data = $this->messageDataRepository->updateMessage($request, $post);
+        if ($data) {
+            return $data;
+        } else {
+            throw new DataErrorException('DataRepository error');
+        }
     }
 
 }

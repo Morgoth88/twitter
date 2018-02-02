@@ -7,27 +7,25 @@ use App\Repositories\UserDataRepository;
 use App\Services\AdminCheckerService;
 use App\Services\BanService;
 use App\Services\LogService;
-use App\Services\PasswordCheckerService;
 use App\Services\ValidatorService;
 use App\User;
 use Illuminate\Http\Request;
 use App\Services\JsonResponseService;
 use App\Services\RedirectService;
+use App\Exceptions\UserRoleException;
 
 class UserController extends Controller
 {
 
-
     private $userDataRepository;
-
 
     private $adminChecker;
 
-
     private $logService;
 
-
     private $redirectService;
+
+    private $jsonResponse;
 
 
     /**
@@ -36,17 +34,20 @@ class UserController extends Controller
      * @param AdminCheckerService $adminChecker
      * @param LogService $logService
      * @param RedirectService $redirectService
+     * @param JsonResponseService $jsonResponseService
      */
     public function __construct(UserDataRepository $userRepo,
                                 AdminCheckerService $adminChecker,
                                 LogService $logService,
-                                RedirectService $redirectService)
+                                RedirectService $redirectService,
+                                JsonResponseService $jsonResponseService)
     {
         $this->middleware('auth');
         $this->userDataRepository = $userRepo;
         $this->adminChecker = $adminChecker;
         $this->logService = $logService;
         $this->redirectService = $redirectService;
+        $this->jsonResponse = $jsonResponseService;
     }
 
 
@@ -54,20 +55,20 @@ class UserController extends Controller
      * if request user is admin, return json response with misc user's data
      *
      * @param User $user
-     * @param JsonResponseService $jsonResponseService
      * @return mixed
      */
-    public function showUser(User $user,
-                             JsonResponseService $jsonResponseService)
+    public function showUser(User $user)
     {
-        if ($this->adminChecker->isAdmin($user)) {
+        try {
+            $this->adminChecker->isAdmin($user);
 
-            return $jsonResponseService->okResponse(
+            return $this->jsonResponse->okResponse(
                 $this->userDataRepository->getUserData($user)
             );
-
-        } else {
-            return $jsonResponseService->unauthorizedResponse();
+        } catch (UserRoleException $roleException) {
+            return $this->jsonResponse
+                ->exceptionResponse($roleException
+                    ->getMessage(), 409);
         }
     }
 
@@ -77,33 +78,21 @@ class UserController extends Controller
      *
      * @param Request $request
      * @param ValidatorService $validator
-     * @param PasswordCheckerService $passwordChecker
      * @param User $user
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function update(Request $request,
                            ValidatorService $validator,
-                           PasswordCheckerService $passwordChecker,
                            User $user)
     {
-        $validator->validateUserUpdateRequest($request->all());
+        $validator->validateUserUpdateRequest($request->all(), $user);
 
-        //$user = $this->userDataRepository->getUserById($request->user()->id);
+        $this->userDataRepository->updateUserData($user, $request);
+        $this->logService->log($request->user(), 'Account update');
 
-        if ($passwordChecker->checkPasswords(
-            $request->password, $user->password)) {
-
-            $this->userDataRepository->updateUserData($user, $request);
-            $this->logService->log($request->user(), 'Account update');
-
-            return $this->redirectService->redirectWithFlash(
-                $request, 'index', 'status', 'Account was successfully updated'
-            );
-        } else {
-            return $this->redirectService->redirectWithFlash(
-                $request, 'accountUpdateForm', 'error', 'Passwords do not match'
-            );
-        }
+        return $this->redirectService->redirectWithFlash(
+            $request, 'index', 'status', 'Account was successfully updated'
+        );
     }
 
 
@@ -113,21 +102,26 @@ class UserController extends Controller
      * @param User $user
      * @param Request $request
      * @param BanService $banService
-     * @param JsonResponseService $jsonResponseService
+     * @return mixed
      */
-    public function ban(User $user, Request $request, BanService $banService,
-                        JsonResponseService $jsonResponseService)
+    public function ban(User $user,
+                        Request $request,
+                        BanService $banService)
     {
-        if ($this->adminChecker->isAdmin($request->user()) &&
-            !$this->adminChecker->isAdmin($user)) {
+        try {
+            $this->adminChecker->isAdmin($request->user());
+            $this->adminChecker->isUser($user);
 
             $banService->banUser($user);
             $this->logService->log($user, "User baned by {$request->user()->email}");
             event(new UserBanned($user));
 
-            $jsonResponseService->userBanResponse($user);
-        } else {
-            $jsonResponseService->unauthorizedResponse();
+            return $this->jsonResponse->userBanResponse($user);
+
+        } catch (UserRoleException $roleException) {
+            return $this->jsonResponse
+                ->exceptionResponse($roleException
+                    ->getMessage(), 409);
         }
     }
 

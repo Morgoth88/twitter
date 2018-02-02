@@ -19,11 +19,18 @@ class DeleteMessageTest extends TestCase
 
         Session::start();
 
-        $this->user = User::find(2);
+        $this->user = factory(User::class)->create();
 
         $this->tweet = $this->actingAs($this->user)->json('POST',
             'api/v1/tweet', ['tweet'
             => 'Test Message']);
+    }
+
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+        $this->user->delete();
     }
 
 

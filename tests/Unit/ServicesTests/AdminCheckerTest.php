@@ -21,10 +21,9 @@ class AdminCheckerTest extends TestCase
     }
 
 
-    public function providerAdminRoleInputs()
+    public function providerAdminRoleInvalidInputs()
     {
         return [
-            [true, 1],
             [false, 0],
             [false, '0'],
             [false, '1'],
@@ -43,16 +42,27 @@ class AdminCheckerTest extends TestCase
     /**************************************************************************/
 
     /**
-     * test admin role
+     * test admin role with valid input
+     */
+    public function testAdminRoleValidInput()
+    {
+        $this->user->role_id = 1;
+        $this->assertTrue($this->adminChecker->isAdmin($this->user));
+    }
+
+
+    /**
+     * test admin role with invalid inputs
      *
-     * @dataProvider providerAdminRoleInputs
+     * @dataProvider providerAdminRoleInvalidInputs
+     * @expectedException App\Exceptions\UserRoleException
      * @param $result
      * @param $inputData
      */
     public function testAdminRole($result, $inputData)
     {
         $this->user->role_id = $inputData;
-        $this->assertEquals($result ,$this->adminChecker->isAdmin($this->user));
+        $this->assertEquals($result, $this->adminChecker->isAdmin($this->user));
 
     }
 

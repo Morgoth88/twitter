@@ -81,15 +81,19 @@ class JsonResponseService
             'message' => "user $user->id was banned"
         ]), 200)->header('Content-Type', 'application/json');
     }
+
+
     /**
      * return json response with user ban message
      *
      * @param $message
+     * @param $status
      * @return mixed
      */
-    public function exceptionResponse($message)
+    public function exceptionResponse($message, $status)
     {
-        return response(json_encode(['error' => ['message' => $message]]), 500)
+        return response(json_encode(['error' => ['message' => $message]]),
+            $status)
             ->header('Content-Type', 'application/json');
     }
 

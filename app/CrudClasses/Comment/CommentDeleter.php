@@ -3,6 +3,7 @@
 namespace App\CrudClasses\Comment;
 
 use App\Repositories\CommentDataRepository;
+use App\Exceptions\DataErrorException;
 
 class CommentDeleter
 {
@@ -16,8 +17,20 @@ class CommentDeleter
     }
 
 
+    /**
+     * delete comment
+     *
+     * @param $post
+     * @return mixed
+     * @throws DataErrorException
+     */
     public function deletePost($post)
     {
-        return $this->commentDataRepository->deleteComment($post);
+        $data = $this->commentDataRepository->deleteComment($post);
+        if ($data) {
+            return $data;
+        } else {
+            throw new DataErrorException('DataRepository error');
+        }
     }
 }

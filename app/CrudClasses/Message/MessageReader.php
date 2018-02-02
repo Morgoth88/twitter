@@ -3,7 +3,7 @@
 namespace App\CrudClasses\Message;
 
 use App\Repositories\MessageDataRepository;
-use App\Exceptions\NoDataException;
+use App\Exceptions\DataErrorException;
 
 class MessageReader
 {
@@ -23,7 +23,7 @@ class MessageReader
 
     /**
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     * @throws NoDataException
+     * @throws DataErrorException
      */
     public function readPost()
     {
@@ -31,7 +31,7 @@ class MessageReader
         if ($data) {
             return $data;
         } else {
-            throw new NoDataException('No data');
+            throw new DataErrorException('DataRepository error');
         }
     }
 

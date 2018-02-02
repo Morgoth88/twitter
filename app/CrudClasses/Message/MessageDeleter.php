@@ -3,6 +3,7 @@
 namespace App\CrudClasses\Message;
 
 use App\Repositories\MessageDataRepository;
+use App\Exceptions\DataErrorException;
 
 class MessageDeleter
 {
@@ -25,9 +26,15 @@ class MessageDeleter
      *
      * @param $post
      * @return mixed
+     * @throws DataErrorException
      */
     public function deletePost($post)
     {
-        return $this->messageDataRepository->deleteMessage($post);
+        $data = $this->messageDataRepository->deleteMessage($post);
+        if ($data) {
+            return $data;
+        } else {
+            throw new DataErrorException('DataRepository error');
+        }
     }
 }

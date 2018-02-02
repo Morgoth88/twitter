@@ -16,8 +16,15 @@ class NewMessageTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = User::find(2);
+        $this->user = factory(User::class)->create();
         $this->messageText = 'comment test';
+    }
+
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+        $this->user->delete();
     }
 
 

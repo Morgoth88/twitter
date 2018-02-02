@@ -10,8 +10,9 @@ use App\Events\MessageBanned;
 use App\Events\MessageDeleted;
 use App\Events\MessageUpdated;
 use App\Events\MessageCreated;
-use App\Exceptions\NoDataException;
-use App\Exceptions\ValidatorException;
+use App\Exceptions\DataErrorException;
+use App\Exceptions\TimeExpiredException;
+use App\Exceptions\UserRoleException;
 use App\Repositories\UserDataRepository;
 use App\Services\AdminCheckerService;
 use App\Services\BanService;
@@ -20,6 +21,7 @@ use App\Services\TimeHelperService;
 use Illuminate\Http\Request;
 use App\Message;
 use App\Services\ValidatorService;
+use Illuminate\Validation\ValidationException;
 
 class MessageController extends Controller
 {
@@ -63,12 +65,13 @@ class MessageController extends Controller
     function read(MessageReader $messageReader)
     {
         try {
-            return $this->jsonResponse->okResponse(
-                $messageReader->readPost()
-            );
-        }catch (NoDataException $exception){
-            return$this->jsonResponse
-                ->exceptionResponse($exception->getMessage());
+            return $this->jsonResponse
+                ->okResponse($messageReader->readPost());
+
+        } catch (DataErrorException $dataErrorException) {
+            return $this->jsonResponse
+                ->exceptionResponse($dataErrorException
+                    ->getMessage(), 500);
         }
     }
 
@@ -80,16 +83,27 @@ class MessageController extends Controller
      * @param Request $request
      * @return mixed
      */
-    public
-    function create(MessageCreator $messageCreator,
-                    Request $request)
+    public function create(MessageCreator $messageCreator,
+                           Request $request)
     {
-        $this->validator->validateMessage($request->all());
+        try {
+            $this->validator->validateMessage($request->all());
 
-        $message = $messageCreator->createPost($request);
-        event(new MessageCreated($message));
+            $message = $messageCreator->createPost($request);
+            event(new MessageCreated($message));
 
-        return $this->jsonResponse->createdResponse($message);
+            return $this->jsonResponse->createdResponse($message);
+
+        } catch (ValidationException $validationException) {
+            return $this->jsonResponse
+                ->exceptionResponse($validationException
+                    ->getMessage(), 422);
+
+        } catch (DataErrorException $dataErrorException) {
+            return $this->jsonResponse
+                ->exceptionResponse($dataErrorException
+                    ->getMessage(), 500);
+        }
     }
 
 
@@ -101,13 +115,14 @@ class MessageController extends Controller
      * @param Message $message
      * @return mixed
      */
-    public
-    function update(MessageUpdater $messageUpdater,
-                    Request $request, Message $message)
+    public function update(MessageUpdater $messageUpdater,
+                           Request $request,
+                           Message $message)
     {
         $this->authorize('updateDelete', $message);
 
-        if ($this->timeHelper->lessThanTwoMinutes($message->created_at)) {
+        try {
+            $this->timeHelper->lessThanTwoMinutes($message->created_at);
 
             $this->validator->validateMessage($request->all());
 
@@ -115,8 +130,21 @@ class MessageController extends Controller
             event(new MessageUpdated($newMessage));
 
             return $this->jsonResponse->okResponse($newMessage);
-        } else {
-            return $this->jsonResponse->timeExpiredResponse();
+
+        } catch (TimeExpiredException $expiredException) {
+            return $this->jsonResponse
+                ->exceptionResponse($expiredException
+                    ->getMessage(), 408);
+
+        } catch (ValidationException $validationException) {
+            return $this->jsonResponse
+                ->exceptionResponse($validationException
+                    ->getMessage(), 422);
+
+        } catch (DataErrorException $dataErrorException) {
+            return $this->jsonResponse
+                ->exceptionResponse($dataErrorException
+                    ->getMessage(), 500);
         }
     }
 
@@ -128,20 +156,28 @@ class MessageController extends Controller
      * @param Message $message
      * @return mixed
      */
-    public
-    function delete(MessageDeleter $messageDeleter,
-                    Message $message)
+    public function delete(MessageDeleter $messageDeleter,
+                           Message $message)
     {
         $this->authorize('updateDelete', $message);
 
-        if ($this->timeHelper->lessThanTwoMinutes($message->created_at)) {
+        try {
+            $this->timeHelper->lessThanTwoMinutes($message->created_at);
 
             event(new MessageDeleted($message));
             $id = $messageDeleter->deletePost($message);
 
             return $this->jsonResponse->okResponse("message : Tweet $id was deleted");
-        } else {
-            return $this->jsonResponse->timeExpiredResponse();
+
+        } catch (TimeExpiredException $expiredException) {
+            return $this->jsonResponse
+                ->exceptionResponse($expiredException
+                    ->getMessage(), 408);
+
+        } catch (DataErrorException $dataErrorException) {
+            return $this->jsonResponse
+                ->exceptionResponse($dataErrorException
+                    ->getMessage(), 500);
         }
     }
 
@@ -155,23 +191,27 @@ class MessageController extends Controller
      * @param Request $request
      * @return mixed
      */
-    public
-    function ban(BanService $banService,
-                 UserDataRepository $userDataRepository,
-                 Message $message,
-                 Request $request)
+    public function ban(BanService $banService,
+                        UserDataRepository $userDataRepository,
+                        Message $message,
+                        Request $request)
     {
-        $messageUser = $userDataRepository->getUserById($message->user_id);
+        try {
+            $messageUser = $userDataRepository->getUserById($message->user_id);
 
-        if ($this->adminChecker->isAdmin($request->user()) &&
-            !$this->adminChecker->isAdmin($messageUser)) {
+            $this->adminChecker->isAdmin($request->user());
+            $this->adminChecker->isUser($messageUser);
 
             $banService->banMessage($message);
             event(new MessageBanned($message));
 
-            return $this->jsonResponse->okResponse("message : Tweet $message->id was banned");
-        } else {
-            return $this->jsonResponse->unauthorizedResponse();
+            return $this->jsonResponse
+                ->okResponse("message : Tweet $message->id was banned");
+
+        } catch (UserRoleException $roleException) {
+            return $this->jsonResponse
+                ->exceptionResponse($roleException
+                    ->getMessage(), 409);
         }
     }
 

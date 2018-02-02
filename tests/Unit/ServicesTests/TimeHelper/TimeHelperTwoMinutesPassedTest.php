@@ -38,21 +38,6 @@ class TimeHelperTwoMinutesPassedTest extends TestCase
     public function providerLessThanTwoMinutesValidInputs()
     {
         return [
-            // 2 minutes 10 second ago
-            [false, $this->timeToDate(time() - 130)],
-            // 4 minutes ago
-            [false, $this->timeToDate(time() - 240)],
-            // 1 hour ago
-            [false, $this->timeToDate(time() - 3600)],
-            // 1 day ago
-            [false, $this->timeToDate(time() - 3600 * 24)],
-            // 1 year ago
-            [false, $this->timeToDate(time() - 3600 * 24 * 365)],
-            // 10 years ago
-            [false, $this->timeToDate(time() - 3600 * 24 * 365 * 10)],
-            //future
-            [false, $this->timeToDate(time() + 10)],
-
             // now
             [true, $this->timeToDate(time())],
             // 1 second ago
@@ -61,6 +46,32 @@ class TimeHelperTwoMinutesPassedTest extends TestCase
             [true, $this->timeToDate(time() - 61)],
             // 1 minute 50 seconds ago
             [true, $this->timeToDate(time() - 110)],
+        ];
+    }
+
+
+    /**
+     * false inputs
+     *
+     * @return array
+     */
+    public function providerLessThanTwoMinutesFalseInputs()
+    {
+        return [
+            // 2 minutes 10 second ago
+            [$this->timeToDate(time() - 130)],
+            // 4 minutes ago
+            [$this->timeToDate(time() - 240)],
+            // 1 hour ago
+            [$this->timeToDate(time() - 3600)],
+            // 1 day ago
+            [$this->timeToDate(time() - 3600 * 24)],
+            // 1 year ago
+            [$this->timeToDate(time() - 3600 * 24 * 365)],
+            // 10 years ago
+            [$this->timeToDate(time() - 3600 * 24 * 365 * 10)],
+            //future
+            [$this->timeToDate(time() + 10)],
         ];
     }
 
@@ -135,6 +146,19 @@ class TimeHelperTwoMinutesPassedTest extends TestCase
      * @param $inputData
      */
     public function testLessThanTwoMinutesErrorInputs($inputData)
+    {
+        $this->timeHelper->lessThanTwoMinutes($inputData);
+    }
+
+
+    /**
+     * test function with false inputs
+     *
+     * @expectedException App\Exceptions\TimeExpiredException
+     * @dataProvider providerLessThanTwoMinutesFalseInputs
+     * @param $inputData
+     */
+    public function testLessThanTwoMinutesFalseInputs($inputData)
     {
         $this->timeHelper->lessThanTwoMinutes($inputData);
     }

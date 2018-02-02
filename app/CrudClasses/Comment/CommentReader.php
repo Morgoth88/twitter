@@ -3,6 +3,7 @@
 namespace App\CrudClasses\Comment;
 
 use App\Repositories\CommentDataRepository;
+use App\Exceptions\DataErrorException;
 
 class CommentReader
 {
@@ -16,8 +17,20 @@ class CommentReader
     }
 
 
+    /**
+     * read all comments from repo
+     *
+     * @param $post
+     * @return mixed
+     * @throws DataErrorException
+     */
     public function readPost($post)
     {
-        return $this->commentDataRepository->getAllComments($post);
+        $data = $this->commentDataRepository->getAllComments($post);
+        if ($data) {
+            return $data;
+        } else {
+            throw new DataErrorException('DataRepository error');
+        }
     }
 }

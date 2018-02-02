@@ -3,6 +3,7 @@
 namespace App\CrudClasses\Comment;
 
 use App\Repositories\CommentDataRepository;
+use App\Exceptions\DataErrorException;
 
 class CommentCreator
 {
@@ -22,10 +23,16 @@ class CommentCreator
      * @param $request
      * @param $post
      * @return mixed
+     * @throws DataErrorException
      */
     public function createPost($request, $post)
     {
-        return $this->commentDataRepository->createComment($request, $post);
+        $data = $this->commentDataRepository->createComment($request, $post);
+        if ($data) {
+            return $data;
+        } else {
+            throw new DataErrorException('DataRepository error');
+        }
     }
 
 }
