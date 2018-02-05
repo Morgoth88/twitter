@@ -13,6 +13,7 @@ use App\Events\MessageCreated;
 use App\Exceptions\DataErrorException;
 use App\Exceptions\TimeExpiredException;
 use App\Exceptions\UserRoleException;
+use App\Interfaces\MessageInterface;
 use App\Repositories\UserDataRepository;
 use App\Services\AdminCheckerService;
 use App\Services\BanService;
@@ -23,7 +24,7 @@ use App\Message;
 use App\Services\ValidatorService;
 use Illuminate\Validation\ValidationException;
 
-class MessageController extends Controller
+class MessageController extends Controller implements MessageInterface
 {
 
     private $jsonResponse;

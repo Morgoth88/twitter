@@ -55,12 +55,13 @@ class UserController extends Controller
      * if request user is admin, return json response with misc user's data
      *
      * @param User $user
+     * @param Request $request
      * @return mixed
      */
-    public function showUser(User $user)
+    public function showUser(Request $request, User $user)
     {
         try {
-            $this->adminChecker->isAdmin($user);
+            $this->adminChecker->isAdmin($request->user());
 
             return $this->jsonResponse->okResponse(
                 $this->userDataRepository->getUserData($user)

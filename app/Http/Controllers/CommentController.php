@@ -12,6 +12,7 @@ use App\Events\CommentDeleted;
 use App\Events\CommentUpdated;
 use App\Events\CommentCreated;
 use App\Exceptions\DataErrorException;
+use App\Interfaces\CommentInterface;
 use App\Message;
 use Illuminate\Http\Request;
 use App\Repositories\UserDataRepository;
@@ -24,7 +25,7 @@ use Illuminate\Validation\ValidationException;
 use App\Exceptions\TimeExpiredException;
 use App\Exceptions\UserRoleException;
 
-class CommentController extends Controller
+class CommentController extends Controller implements CommentInterface
 {
 
     private $jsonResponse;
@@ -194,15 +195,15 @@ class CommentController extends Controller
     /**
      * Comment ban
      *
-     * @param UserDataRepository $userDataRepository
      * @param BanService $banService
+     * @param UserDataRepository $userDataRepository
      * @param Request $request
      * @param Message $message
      * @param Comment $comment
      * @return mixed
      */
-    public function ban(UserDataRepository $userDataRepository,
-                        BanService $banService,
+    public function ban(BanService $banService,
+                        UserDataRepository $userDataRepository,
                         Request $request,
                         Message $message,
                         Comment $comment)
