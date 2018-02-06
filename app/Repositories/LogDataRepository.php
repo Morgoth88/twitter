@@ -32,14 +32,12 @@ class LogDataRepository
 
 
     /**
-     * deletes all records that are newer than oldest record
+     * deletes all old records
      *
-     * @param $oldestLogTime
      */
-    public function deleteOldRecords($oldestLogTime)
+    public function deleteOldLogs()
     {
-        ActivityLog::where('created_at', '>=', $oldestLogTime)
-            ->delete();
+        ActivityLog::All()->delete();
     }
 
 

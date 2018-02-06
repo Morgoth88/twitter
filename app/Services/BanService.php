@@ -4,57 +4,38 @@ namespace App\Services;
 
 use App\Repositories\CommentDataRepository;
 use App\Repositories\MessageDataRepository;
+use App\Repositories\SessionDataRepository;
 use App\Repositories\UserDataRepository;
-use Illuminate\Support\Facades\DB;
 
 class BanService
 {
 
+    private $commentDataRepository;
 
-    private $commentRepo;
+    private $messageDataRepository;
 
+    private $userDataRepository;
 
-    private $messageRepo;
-
-
-    private $userRepo;
+    private $sessionDataRepository;
 
 
     /**
      * BanService constructor.
+     *
      * @param MessageDataRepository $messageRepo
      * @param CommentDataRepository $commentRepo
      * @param UserDataRepository $userRepo
+     * @param SessionDataRepository $sessionRepo
      */
     public function __construct(MessageDataRepository $messageRepo,
                                 CommentDataRepository $commentRepo,
-                                UserDataRepository $userRepo)
+                                UserDataRepository $userRepo,
+                                SessionDataRepository $sessionRepo)
     {
-        $this->messageRepo = $messageRepo;
-        $this->commentRepo = $commentRepo;
-        $this->userRepo = $userRepo;
-    }
-
-
-    /**
-     * @param $comments
-     */
-    public function banComments($comments)
-    {
-        foreach ($comments as & $comment) {
-            $this->commentRepo->banComment($comment);
-        }
-    }
-
-
-    /**
-     * @param $messages
-     */
-    public function banMessages($messages)
-    {
-        foreach ($messages as &$message) {
-            $this->messageRepo->banMessage($message);
-        }
+        $this->messageDataRepository = $messageRepo;
+        $this->commentDataRepository = $commentRepo;
+        $this->userDataRepository = $userRepo;
+        $this->sessionDataRepository = $sessionRepo;
     }
 
 
@@ -63,7 +44,7 @@ class BanService
      */
     public function banComment($comment)
     {
-        $this->commentRepo->banComment($comment);
+        $this->commentDataRepository->ban($comment);
     }
 
 
@@ -72,7 +53,8 @@ class BanService
      */
     public function banMessage($message)
     {
-        $this->messageRepo->banMessage($message);
+        $this->messageDataRepository->ban($message);
+        $this->messageDataRepository->banAll($message->comment);
     }
 
 
@@ -81,12 +63,12 @@ class BanService
      */
     public function banUser($user)
     {
-        DB::table('sessions')->where('user_id', $user->id)->delete();
+        $this->sessionDataRepository->deleteUserSession($user);
 
-        $this->banMessages($user->message);
-        $this->banComments($user->comment);
+        $this->messageDataRepository->banAll($user->message);
+        $this->commentDataRepository->banAll($user->comment);
 
-        $this->userRepo->banUser($user);
+        $this->userDataRepository->banUser($user);
     }
 
 }

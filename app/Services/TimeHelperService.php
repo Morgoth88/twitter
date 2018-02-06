@@ -26,7 +26,7 @@ class TimeHelperService
     public function lessThanTwoMinutes($createdAt)
     {
         if (!$createdAt || $createdAt === true)
-            throw new \InvalidArgumentException('Invalid argument');
+            throw new InvalidArgumentException('Invalid argument');
 
         if (time() - strtotime($createdAt) <= self::TWO_MINUTES &&
             time() - strtotime($createdAt) >= 0) {
@@ -53,14 +53,5 @@ class TimeHelperService
         }
     }
 
-
-    /**
-     * @param $message
-     * @return bool
-     */
-    public static function updated($message)
-    {
-        return $message->updated_at != $message->created_at;
-    }
-
 }
+

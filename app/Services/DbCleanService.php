@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Comment;
-use App\Message;
 use App\Repositories\CommentDataRepository;
 use App\Repositories\LogDataRepository;
 use App\Repositories\MessageDataRepository;
@@ -11,54 +9,45 @@ use App\Repositories\MessageDataRepository;
 class DbCleanService
 {
 
-    private $LogRepo;
+    private $logDataRepository;
 
+    private $messageDataRepository;
 
-    private $MessageRepo;
-
-
-    private $CommentRepo;
-
+    private $commentDataRepository;
 
     private $timeHelper;
 
 
-    private $foreacher;
-
-
     /**
      * DbCleanService constructor.
-     * @param LogDataRepository $logDataRepository
+     * @param LogDataRepository $logRepo
      * @param TimeHelperService $timeHelper
      * @param MessageDataRepository $messageRepo
      * @param CommentDataRepository $commentRepo
-     * @param ForeacherService $foreacherService
      */
-    public function __construct(LogDataRepository $logDataRepository,
+    public function __construct(LogDataRepository $logRepo,
                                 TimeHelperService $timeHelper,
                                 MessageDataRepository $messageRepo,
-                                CommentDataRepository $commentRepo,
-                                ForeacherService $foreacherService)
+                                CommentDataRepository $commentRepo)
     {
-        $this->LogRepo = $logDataRepository;
+        $this->logDataRepository = $logRepo;
         $this->timeHelper = $timeHelper;
-        $this->CommentRepo = $commentRepo;
-        $this->MessageRepo = $messageRepo;
-        $this->foreacher = $foreacherService;
+        $this->commentDataRepository = $commentRepo;
+        $this->messageDataRepository = $messageRepo;
     }
 
 
     /**
      * check if oldest record in log table is older than 1 week and delete
-     * all newest logs
+     * all logs
      *
      */
     public function PeriodicLogClean()
     {
-        $oldestLogTime = $this->LogRepo->getOldestRecord();
+        $oldestLogDate = $this->logDataRepository->getOldestRecord();
 
-        if ($this->timeHelper->weekPassed($oldestLogTime)) {
-            $this->LogRepo->deleteOldRecords($oldestLogTime);
+        if ($this->timeHelper->weekPassed($oldestLogDate)) {
+            $this->logDataRepository->deleteOldLogs();
         }
     }
 
@@ -70,19 +59,22 @@ class DbCleanService
      */
     public function periodicOldRecordsClean()
     {
-        $oldestMessageTime = $this->MessageRepo->getOldestRecord(Message::class);
-        $oldestCommentTime = $this->CommentRepo->getOldestRecord(Comment::class);
+        $oldestMessageDate = $this->messageDataRepository->getOldestRecord();
+        $oldestCommentDate = $this->commentDataRepository->getOldestRecord();
 
-        if ($this->timeHelper->weekPassed($oldestMessageTime)) {
-            $this->foreacher->ormDeleteForeach(
-                $this->MessageRepo->getOldRecords(Message::class)
-            );
+        if ($this->timeHelper->weekPassed($oldestMessageDate)) {
+
+            $oldMessages = $this->messageDataRepository->getOldRecords();
+
+            $this->messageDataRepository->deleteAll($oldMessages);
+
         }
 
-        if ($this->timeHelper->weekPassed($oldestCommentTime)) {
-            $this->foreacher->ormDeleteForeach(
-                $this->CommentRepo->getOldRecords(Comment::class)
-            );
+        if ($this->timeHelper->weekPassed($oldestCommentDate)) {
+
+            $oldComments = $this->messageDataRepository->getOldRecords();
+
+            $this->commentDataRepository->deleteAll($oldComments);
         }
     }
 

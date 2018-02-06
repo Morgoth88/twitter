@@ -26,7 +26,7 @@ class CommentDeleter
      */
     public function deletePost($post)
     {
-        $data = $this->commentDataRepository->deleteComment($post);
+        $data = $this->commentDataRepository->delete($post);
         if ($data) {
             return $data;
         } else {

@@ -44,7 +44,7 @@ class CommentBanned implements ShouldBroadcast
      */
     public function broadcastAs()
     {
-        return 'cmntBan';
+        return 'commentBanned';
     }
 
 

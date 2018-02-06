@@ -48,7 +48,7 @@ class MessageController extends Controller implements MessageInterface
                                 AdminCheckerService $adminCheckerService,
                                 ValidatorService $validator)
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'revalidate']);
         $this->jsonResponse = $jsonResponseService;
         $this->timeHelper = $timeHelperService;
         $this->adminChecker = $adminCheckerService;

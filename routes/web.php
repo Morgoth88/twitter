@@ -52,7 +52,7 @@ Route::prefix('api/v1')->group(function()
      * User info page for Admin
      *
      **************************************************************************/
-    Route::get('/user/{user}/get', 'UserController@showUser')
+    Route::get('info/user/{user}', 'UserController@showUser')
         ->name('getUser');
     Route::get('/user/{user}', 'PageController@UserPage')
         ->name('showUser');
@@ -84,13 +84,13 @@ Route::prefix('api/v1')->group(function()
      **************************************************************************/
     //Create message
     Route::post('/tweet', 'MessageController@create')
-        ->name('createComment');
+        ->name('wsCreateComment');
     //Read messages
     Route::get('/tweet', 'MessageController@read')
         ->name('readTweet');
     //update message
     Route::put('/tweet/{message}', 'MessageController@update')
-        ->name('updateTweet');
+        ->name('wsUpdateTweet');
     //delete message
     Route::delete('/tweet/{message}', 'MessageController@delete')
         ->name('deleteTweet');
@@ -102,14 +102,14 @@ Route::prefix('api/v1')->group(function()
      **************************************************************************/
     //Create comment
     Route::post('/tweet/{message}/comment', 'CommentController@create')
-        ->name('createComment');
+        ->name('wsCreateComment');
     //get all comments
     Route::get('/tweet/{message}/comment', 'CommentController@read')
         ->name('getComments');
     //Update comment
     Route::put('/tweet/{message}/comment/{comment}', 'CommentController@update')
-        ->name('updateComment');
+        ->name('wsUpdateComment');
     //Delete comment
     Route::delete('/tweet/{message}/comment/{comment}', 'CommentController@delete')
-        ->name('deleteComment');
+        ->name('wsDeleteComment');
 });

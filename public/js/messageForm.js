@@ -1,188 +1,178 @@
 function createForm() {
 
-    if (!$('#tweetForm').length) {
-        var label = $('<div></div>');
-        label.attr('id', 'formLabel');
-        label.html('<strong>New tweet</strong>');
+    let tweetForm = $('#tweetForm');
 
-        var form = $('<form></form>');
-        form.attr('method', 'POST');
-        form.attr('id', 'tweetForm');
-        form.attr('action', '/api/v1/tweet');
+    if (!tweetForm.length) {
 
-        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        let form = $('<form id="tweetForm" ></form>');
 
-        var csrfInput = $('<input>');
-        csrfInput.attr('type', 'hidden');
-        csrfInput.attr('name', '_token');
-        csrfInput.attr('value', csrfToken);
+        let label = $('<div id="formLabel"><strong>New tweet</strong></div>');
 
-        var textarea = $('<textarea></textarea>');
-        textarea.attr('id', 'tweetTextarea');
-        textarea.attr('name', 'tweet');
+        let textArea = $('<textarea id="tweetTextarea" name="tweet"></textarea>');
 
-        form.prepend(csrfInput);
-        form.prepend(textarea);
+        form.prepend(textArea);
         form.prepend(label);
 
-        var buttonsDiv = $('<div></div>');
-        buttonsDiv.attr('id', 'buttons-div');
 
-        var submitBtn = $('<button><i class="fa fa-check" aria-hidden="true" fa-3x></i></button>');
-        submitBtn.attr('type', 'submit');
-        submitBtn.attr('class', 'btn btn-success');
-        submitBtn.attr('id', 'submitBtn');
 
-        var cancelBtn = $('<button><i class="fa fa-undo" aria-hidden="true" fa-3x></i></button>');
-        cancelBtn.attr('id', 'cancelBtn');
-        cancelBtn.attr('class', 'btn btn-warning');
+        let buttonsDiv = $('<div id="buttons-div"></div>');
 
-        buttonsDiv.append(submitBtn);
-        buttonsDiv.append(cancelBtn);
+        let submitButton = $('<button type="submit" class="btn btn-success"' +
+            ' id="submitBtn"><i class="fa fa-check" aria-hidden="true" fa-3x></i>' +
+            '</button>');
 
+        let cancelButton = $('<button id="cancelBtn" class="btn btn-warning">' +
+            '<i class="fa fa-undo" aria-hidden="true" fa-3x></i>' +
+            '</button>');
+
+        buttonsDiv.append(submitButton);
+        buttonsDiv.append(cancelButton);
         form.append(buttonsDiv);
 
-        var tweet_form = $('<div id="tweet-form"></div>');
 
-        tweet_form.prepend(form);
+        let tweetForm = $('<div id="tweet-form"></div>');
+        tweetForm.html(form);
 
-        $('.panel-heading').append(tweet_form);
 
-        submitBtn.click(function (event) {
+        $('.panel-heading').append(tweetForm);
+
+
+        /**********************************************************************/
+
+
+        submitButton.click(function (event) {
             event.preventDefault();
 
-            var newTweet = textarea.val()
+            let newTweet = textArea.val();
 
-            var data = {
+            let data = {
                 tweet: newTweet
-            }
+            };
+
+            let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
             $.ajax({
                 url: '/api/v1/tweet',
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': csrfToken
                 },
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify(data),
                 statusCode: {
-                    422: function() {
-                        $('#tweetTextarea').attr('placeholder','please fill' +
+                    422: function () {
+                        textArea.attr('placeholder', 'please fill' +
                             ' this field correctly');
-                        $('#tweetTextarea').css({'border-color':'red',
-                            'box-shadow':'0 0 17px red'});
-                    }}
-            }).done(function (data) {
-                tweet_form.remove();
+                        textArea.css({
+                            'border-color': 'red',
+                            'box-shadow': '0 0 17px red'
+                        });
+                    }
+                }
+            }).done(function () {
+                tweetForm.remove();
             });
-
         });
 
-        cancelBtn.click(function () {
-            $('#tweetForm').remove();
+        cancelButton.click(function () {
+            tweetForm.remove();
         });
-
     }
     else {
-        $('#tweetForm').remove();
+        tweetForm.remove();
     }
 }
 
+
+
+
 function updateForm(id) {
 
-    var tweet = $('.tweet-text[data-id=' + id + ']').text();
+    let tweetUpdateForm = $('#tweet-update-form');
 
-    if (!$('#tweetForm').length) {
+    if (!tweetUpdateForm.length) {
 
-        var label = $('<div></div>');
-        label.attr('id', 'formLabel');
-        label.html('<strong>Update tweet</strong>');
+        let tweet = $('.tweet-text[data-id=' + id + ']').text();
 
-        var form = $('<form></form>');
-        form.attr('method', 'POST');
-        form.attr('id', 'tweetForm');
-        form.attr('action', '/api/v1/tweet/' + id);
+        let form = $('<form id="tweetForm" ></form>');
 
-        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        let label = $('<div id="formLabel"><strong>Update tweet</strong></div>');
 
-        var csrfInput = $('<input>');
-        csrfInput.attr('type', 'hidden');
-        csrfInput.attr('name', '_token');
-        csrfInput.attr('value', csrfToken);
+        let textArea = $('<textarea id="tweetTextarea" name="tweet"></textarea>');
 
-        var methodInput = $('<input>');
-        methodInput.attr('type', 'hidden');
-        methodInput.attr('name', '_method');
-        methodInput.attr('value', 'PUT');
+        textArea.val(tweet);
 
-        var textarea = $('<textarea></textarea>');
-        textarea.attr('id', 'tweetTextarea');
-        textarea.attr('name', 'tweet');
-
-        textarea.val(tweet);
-
-        form.prepend(csrfInput);
-        form.prepend(methodInput);
-        form.prepend(textarea);
+        form.prepend(textArea);
         form.prepend(label);
 
-        var buttonsDiv = $('<div></div>');
-        buttonsDiv.attr('id', 'buttons-div');
 
-        var submitBtn = $('<button><i class="fa fa-check" aria-hidden="true" fa-3x></i></button>');
-        submitBtn.attr('type', 'submit');
-        submitBtn.attr('class', 'btn btn-success');
-        submitBtn.attr('id', 'submitBtn');
 
-        var cancelBtn = $('<button><i class="fa fa-undo" aria-hidden="true" fa-3x></i></button>');
-        cancelBtn.attr('id', 'cancelBtn');
-        cancelBtn.attr('class', 'btn btn-warning');
+        let buttonsDiv = $('<div id="buttons-div"></div>');
 
-        buttonsDiv.append(submitBtn);
-        buttonsDiv.append(cancelBtn);
+        let submitButton = $('<button type="submit" class="btn btn-success"' +
+            ' id="submitBtn"><i class="fa fa-check" aria-hidden="true" fa-3x></i>' +
+            '</button>');
 
+        let cancelButton = $('<button id="cancelBtn" class="btn btn-warning">' +
+            '<i class="fa fa-undo" aria-hidden="true" fa-3x></i>' +
+            '</button>');
+
+        buttonsDiv.append(submitButton);
+        buttonsDiv.append(cancelButton);
         form.append(buttonsDiv);
 
-        var tweet_up_form_div = $('<div></div>');
-        tweet_up_form_div.attr('id', 'tweet-update-form');
+        let tweetUpdateForm = $('<div id="tweet-update-form"></div>');
+        tweetUpdateForm.html(form);
+
+        $('div[data-id=' + id + ']').closest('.tweet-text').prepend(tweetUpdateForm);
 
 
-        tweet_up_form_div.prepend(form);
+        /**********************************************************************/
 
-        $('div[data-id=' + id + ']').closest('.tweet-text').prepend(tweet_up_form_div);
 
-        submitBtn.click(function (event) {
+        submitButton.click(function (event) {
             event.preventDefault();
 
-            var newTweet = textarea.val()
-            var data = {
+            let newTweet = textArea.val();
+
+            let data = {
                 tweet: newTweet,
                 id: id
-            }
+            };
+
+            let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
             $.ajax({
                 url: '/api/v1/tweet/' + id,
                 method: 'PUT',
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': csrfToken
                 },
                 contentType: 'application/json',
                 dataType: 'json',
-                data: JSON.stringify(data)
-            }).done(function (data) {
-
-                tweet_up_form_div.remove();
+                data: JSON.stringify(data),
+                statusCode: {
+                    422: function () {
+                        textArea.attr('placeholder', 'please fill' +
+                            ' this field correctly');
+                        textArea.css({
+                            'border-color': 'red',
+                            'box-shadow': '0 0 17px red'
+                        });
+                    }
+                }
+            }).done(function () {
+                tweetUpdateForm.remove();
             });
 
         });
 
-
-        cancelBtn.click(function () {
-            $('#tweetForm').remove();
+        cancelButton.click(function () {
+            tweetUpdateForm.remove();
         });
     }
     else {
-        $('#tweetForm').remove();
+        tweetUpdateForm.remove();
     }
 }

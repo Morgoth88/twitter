@@ -45,6 +45,7 @@ class NewCommentTest extends TestCase
 
         $response->assertStatus(201);
 
+        $message->delete();
     }
 
 
@@ -64,6 +65,8 @@ class NewCommentTest extends TestCase
             => $text]);
 
         $response->assertStatus(422);
+
+        $message->delete();
     }
 
 
@@ -81,6 +84,8 @@ class NewCommentTest extends TestCase
             => $this->commentText]);
 
         $response->assertStatus(422);
+
+        $message->delete();
     }
 
 
@@ -125,6 +130,7 @@ class NewCommentTest extends TestCase
 
         $response->assertStatus(401);
 
+        $message->delete();
     }
 
 }

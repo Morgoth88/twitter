@@ -1,25 +1,18 @@
-function banUsr(data) {
 
-    var messages = data.user['messages']
-    var comments = data.user['comments']
+function banPosts (posts, elementClass) {
+    for (let post in posts){
 
-    for(mess in messages)
-    {
+        let postInDom = $('.' + elementClass + '[data-id=' + posts[post].id + ']');
 
-       if($('.tweet[data-id='+ messages[mess].id +']').length){
-           $('.tweet[data-id='+ messages[mess].id +']').remove();
-       }
-    }
-
-    for(comm in comments)
-    {
-       if($('.comment[data-id='+ comments[comm].id+']').length){
-           $('.comment[data-id='+ comments[comm].id +']').remove();
-       }
+        if(postInDom.length){
+            postInDom.remove();
+        }
     }
 }
 
 Echo.private('user')
     .listen('.userBan', (data) => {
-        banUsr(data)
+
+        banPosts(data.user['messages'],'tweet');
+        banPosts(data.user['comments'],'comment')
     });

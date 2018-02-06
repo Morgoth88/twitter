@@ -3,19 +3,22 @@
 namespace App\Repositories;
 
 use App\Comment;
+use App\Interfaces\CommentRepositoryInterface;
 
-class CommentDataRepository extends AbstractRepository
+class CommentDataRepository extends AbstractRepository implements CommentRepositoryInterface
 {
 
     /**
-     * return message with all comments sorted by created at
+     * return message with all comments
      *
      * @param $message
      * @return mixed
      */
     public function getAllComments($message)
     {
-        return Comment::with('user')->where([['message_id', $message->id], ['old', 0]])->get();
+        return Comment::with('user')
+            ->where([['message_id', $message->id], ['old', 0]])
+            ->get();
     }
 
 
@@ -42,21 +45,6 @@ class CommentDataRepository extends AbstractRepository
 
 
     /**
-     * delete comment
-     *
-     * @param $comment
-     * @return mixed
-     */
-    public function deleteComment($comment)
-    {
-        $id = $comment->id;
-        $comment->delete();
-
-        return $id;
-    }
-
-
-    /**
      * create new comment from old
      *
      * @param $request
@@ -65,11 +53,13 @@ class CommentDataRepository extends AbstractRepository
      */
     public function updateComment($request, $comment)
     {
-        $newComment = $request->user()->comment()->create([
-            'text' => htmlspecialchars($request->comment, ENT_QUOTES),
-            'old_id' => $comment->id,
-            'created_at' => $comment->created_at,
-            'message_id' => $comment->message->id]);
+        $newComment = $request->user()->comment()
+            ->create([
+                'text' => htmlspecialchars($request->comment, ENT_QUOTES),
+                'old_id' => $comment->id,
+                'created_at' => $comment->created_at,
+                'message_id' => $comment->message->id
+            ]);
 
         $comment->old = 1;
         $comment->save();
@@ -91,14 +81,22 @@ class CommentDataRepository extends AbstractRepository
 
 
     /**
-     * ban post
-     * @param $post
+     * return records where old = 1
+     * @return mixed
      */
-    public function banComment($post)
+    public function getOldRecords()
     {
-        $post->text = self::BAN_POST_TEXT;
-        $post->old = 1;
-        $post->save();;
+        return Comment::where('old', 1)->get();
+    }
+
+
+    /**
+     * get oldest record time
+     * @return mixed
+     */
+    public function getOldestRecord()
+    {
+        return Comment::where('old', 1)->min('updated_at');
     }
 
 }

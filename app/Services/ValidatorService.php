@@ -9,15 +9,23 @@ use Illuminate\Support\Facades\Validator;
 class ValidatorService
 {
 
-
     public function validateUserUpdateRequest($dataArray, $user)
     {
         return Validator::make($dataArray, [
             'name' => 'required|string|max:255',
-            'email' => ['required', 'string', 'email', 'max:255', new
-            UserEmailExist($user)],
-            'password' => ['required', 'string', 'min:6', new
-            OldPasswordMatch($user)],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                new UserEmailExist($user)
+            ],
+            'password' => [
+                'required',
+                'string',
+                'min:6',
+                new OldPasswordMatch($user)
+            ],
             'new_password' => 'required|string|min:6'
             ])->validate();;
     }

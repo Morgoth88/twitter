@@ -48,7 +48,7 @@ class CommentCreated implements ShouldBroadcast
      */
     public function broadcastAs()
     {
-        return 'newComment';
+        return 'commentCreated';
     }
 
 

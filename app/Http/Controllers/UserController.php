@@ -42,7 +42,7 @@ class UserController extends Controller
                                 RedirectService $redirectService,
                                 JsonResponseService $jsonResponseService)
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'revalidate']);
         $this->userDataRepository = $userRepo;
         $this->adminChecker = $adminChecker;
         $this->logService = $logService;

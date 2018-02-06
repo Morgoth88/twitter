@@ -40,7 +40,7 @@ class MessageBanned implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'msgBan';
+        return 'messageBanned';
     }
 
 

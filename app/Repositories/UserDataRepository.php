@@ -9,7 +9,6 @@ use App\User;
 class UserDataRepository
 {
 
-
     /**
      * return misc user data
      *
@@ -18,19 +17,19 @@ class UserDataRepository
      */
     public function getUserData($user)
     {
-        $result['MessagesCount'] = Message::where(
+        $result['messagesCount'] = Message::where(
             [['user_id', $user->id], ['old', 0]])
             ->count();
 
-        $result['CommentsCount'] = Comment::where(
+        $result['commentsCount'] = Comment::where(
             [['user_id', $user->id], ['old', 0]]
         )->count();
 
-        $result['lastCreatedMessageTime'] = Message::where(
+        $result['lastCreatedMessageDate'] = Message::where(
             [['user_id', $user->id], ['old', 0]])
             ->max('created_at');
 
-        $result['lastCreatedCommentTime'] = Comment::where(
+        $result['lastCreatedCommentDate'] = Comment::where(
             [['user_id', $user->id], ['old', 0]])
             ->max('created_at');
 

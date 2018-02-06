@@ -2,25 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\MessageRepositoryInterface;
 use App\Message;
 
-class MessageDataRepository extends AbstractRepository
+class MessageDataRepository extends AbstractRepository implements MessageRepositoryInterface
 {
-
-    /**
-     * @param $message
-     */
-    public function banMessage($message)
-    {
-        $message->text = self::BAN_POST_TEXT;
-        $message->old = 1;
-        foreach ($message->comment as &$comment) {
-            $comment->old = 1;
-            $comment->save();
-        }
-        $message->save();;
-    }
-
 
     /**
      * create new tweet
@@ -30,9 +16,10 @@ class MessageDataRepository extends AbstractRepository
      */
     public function createMessage($request)
     {
-        return $request->user()->message()->create([
-            'text' => htmlspecialchars($request->tweet, ENT_QUOTES)
-        ]);
+        return $request->user()->message()
+            ->create([
+                'text' => htmlspecialchars($request->tweet, ENT_QUOTES)
+            ]);
     }
 
 
@@ -46,7 +33,8 @@ class MessageDataRepository extends AbstractRepository
         return Message::with(['comment' => function($q)
         {
             $q->where('old', 0)->with('user')->orderBy('created_at', 'desc');
-        }])->where('old', 0)
+        }])
+            ->where('old', 0)
             ->with('user')
             ->orderBy('message.updated_at', 'desc')
             ->paginate(5);
@@ -57,41 +45,46 @@ class MessageDataRepository extends AbstractRepository
      * create new message, hide old message and transfer old message comments to new message
      *
      * @param $request
-     * @param $post
+     * @param $message
      * @return mixed
      */
-    public function updateMessage($request, $post)
+    public function updateMessage($request, $message)
     {
-        $newPost = $request->user()->message()->create([
-            'text' => htmlspecialchars($request->tweet, ENT_QUOTES),
-            'old_id' => $post->id,
-            'created_at' => $post->created_at
-        ]);
+        $newMessage = $request->user()->message()
+            ->create([
+                'text' => htmlspecialchars($request->tweet, ENT_QUOTES),
+                'old_id' => $message->id,
+                'created_at' => $message->created_at
+            ]);
 
-        foreach ($post->comment as &$comment) {
-            $comment->message_id = $newPost->id;
+        foreach ($message->comment as &$comment) {
+            $comment->message_id = $newMessage->id;
             $comment->save();
         }
 
-        $post->old = 1;
-        $post->save();
+        $message->old = 1;
+        $message->save();
 
-        return $newPost;
+        return $newMessage;
     }
 
 
     /**
-     * delete message
-     *
-     * @param $message
+     * return records where old = 1
      * @return mixed
      */
-    public function deleteMessage($message)
+    public function getOldRecords()
     {
-        $id = $message->id;
-        $message->delete();
-
-        return $id;
+        return Message::where('old', 1)->get();
     }
 
+
+    /**
+     * get oldest record time
+     * @return mixed
+     */
+    public function getOldestRecord()
+    {
+        return Message::where('old', 1)->min('updated_at');
+    }
 }

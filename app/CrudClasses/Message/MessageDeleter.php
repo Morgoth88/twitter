@@ -30,7 +30,7 @@ class MessageDeleter
      */
     public function deletePost($post)
     {
-        $data = $this->messageDataRepository->deleteMessage($post);
+        $data = $this->messageDataRepository->delete($post);
         if ($data) {
             return $data;
         } else {

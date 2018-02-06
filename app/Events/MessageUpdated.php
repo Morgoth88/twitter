@@ -44,7 +44,7 @@ class MessageUpdated implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'msgUpdt';
+        return 'messageUpdated';
     }
 
 

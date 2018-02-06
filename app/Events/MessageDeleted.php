@@ -40,7 +40,7 @@ class MessageDeleted implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'msgDel';
+        return 'messageDeleted';
     }
 
 

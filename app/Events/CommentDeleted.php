@@ -44,7 +44,7 @@ class CommentDeleted implements ShouldBroadcast
      */
     public function broadcastAs()
     {
-        return 'cmntDel';
+        return 'commentDeleted';
     }
 
 

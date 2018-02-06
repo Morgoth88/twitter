@@ -61,5 +61,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'checkIfBanned' => \App\Http\Middleware\checkIfBanned::class,
         'checkIfAdmin' => \App\Http\Middleware\checkIfAdmin::class,
+        'revalidate' => \App\Http\Middleware\RevalidateBackHistory::class
     ];
 }

@@ -12,7 +12,7 @@ class PageController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'revalidate']);
     }
 
 
@@ -32,7 +32,7 @@ class PageController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function UserPage()
+    public function userPage()
     {
         return view('user');
     }
@@ -45,7 +45,7 @@ class PageController extends Controller
      * @param Request $request
      * @return $this
      */
-    public function AccountUpdatePage(Request $request)
+    public function accountUpdatePage(Request $request)
     {
         return view('auth.accountUpdate')->with('user', $request->user());
     }

@@ -52,11 +52,9 @@
     </div>
 @section('scripts')
     <script>
-        var authUserId = "{{\Illuminate\Support\Facades\Auth::user()->id}}";
-        var authUserRole = "{{\Illuminate\Support\Facades\Auth::user()->role_id}}";
-        setTimeout(function () {
-            $('.alert-success').hide();
-        },5000)
+        var authUserId = parseInt("{{\Illuminate\Support\Facades\Auth::user()->id}}");
+
+        var authUserRole = parseInt("{{\Illuminate\Support\Facades\Auth::user()->role_id}}");
     </script>
 
     <script src="https://js.pusher.com/4.1/pusher.min.js"></script>

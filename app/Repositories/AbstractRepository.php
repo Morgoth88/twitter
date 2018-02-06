@@ -9,28 +9,58 @@ abstract class AbstractRepository
 
 
     /**
-     * return records where old = 1
+     * delete message
      *
-     * @param $eloquentClass
-     * @return mixed
+     * @param $post
+     * @return int $id
      */
-    public function getOldRecords($eloquentClass)
+    public function delete($post)
     {
-        return $eloquentClass::where('old', 1)->get();
+        $id = $post->id;
+        $post->delete();
+
+        return $id;
     }
 
 
     /**
-     * get oldest record time
+     * delete all
      *
-     * @param $eloquentClass
-     * @return mixed
+     * @param $posts
+     * @return int $id
      */
-    public function getOldestRecord($eloquentClass)
+    public function deleteAll($posts)
     {
-        return $eloquentClass::where('old', 1)->min('updated_at');
+        foreach ($posts as $post) {
+            $post->delete();
+        }
     }
 
+
+    /**
+     * ban post
+     * @param $post
+     */
+    public function ban($post)
+    {
+        $post->text = self::BAN_POST_TEXT;
+        $post->old = 1;
+        $post->save();
+    }
+
+
+    /**
+     * ban post
+     * @param $posts
+     */
+    public function banAll($posts)
+    {
+        foreach ($posts as $post) {
+            $post->text = self::BAN_POST_TEXT;
+            $post->old = 1;
+            $post->save();
+        }
+    }
 
 
 }

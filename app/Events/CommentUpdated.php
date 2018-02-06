@@ -44,7 +44,7 @@ class CommentUpdated implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'cmntUpdt';
+        return 'commentUpdated';
     }
 
 

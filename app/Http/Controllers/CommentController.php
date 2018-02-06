@@ -49,7 +49,7 @@ class CommentController extends Controller implements CommentInterface
                                 AdminCheckerService $adminCheckerService,
                                 ValidatorService $validator)
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'revalidate']);
         $this->jsonResponse = $jsonResponseService;
         $this->timeHelper = $timeHelperService;
         $this->adminChecker = $adminCheckerService;
