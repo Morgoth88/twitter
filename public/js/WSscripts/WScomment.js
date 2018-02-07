@@ -2,53 +2,20 @@ function wsCreateComment(data) {
 
     let userId = data.user['user_id'];
     let userName = data.user['userName'];
-    let useRole = data.user['userRole'];
+    let userRole = data.user['userRole'];
 
     let commentId = data.comment['id'];
-    let createdAt = data.comment['created_at'].date;
+    let commentCreatedAt = data.comment['created_at'].date;
     let commentText = data.comment['text'];
 
     let messageId = data.comment['message_id'];
 
 
-    let commentUserName = (authUserRole === 0 )
-        ? userName
-        : '<a href="/api/v1/user/' + userId + '">' + userName + '</a>';
-
-    let userBanButton = '';
-
-    if (authUserRole === 1) {
-        if (useRole === 0) {
-            userBanButton = '<button id="banUserBtn" onclick="banUser(' + userId + ')">' +
-                '<i class="fa fa-ban" aria-hidden="true"></i>' +
-                '</button>';
-        }
-    }
-
-    let commentBanButton = '';
-
-    if ((authUserRole === 1)) {
-        if (useRole === 0) {
-            commentBanButton = '<button id="banCommBtn" onclick="banComment(' + commentId + ')">' +
-                '<i class="fa fa-ban" aria-hidden="true"></i>' +
-                '</button>';
-        }
-    }
-
-
-    let commentUpdateButton = (authUserId === userId)
-        ? '<button id="msgUpdtBtn" onclick="commentUpdateForm(' + commentId + ')">' +
-        '<i class="fa fa-pencil" aria-hidden="true"></i>' +
-        '</button>'
-        : '';
-
-
-    let commentDeleteButton = (authUserId === userId)
-        ? '<button id="msgDltBtn" onclick="deleteComment(' + commentId + ')">' +
-        '<i class="fa fa-times" aria-hidden="true"></i>' +
-        '</button>'
-        : '';
-
+    let commentUserName = generatePostUserName(userName, userId);
+    let commentUserBanButton = generateUserBanButton(userRole, userId);
+    let commentBanButton = generateCommentBanButton(userRole, commentId);
+    let commentUpdateButton = generateCommentUpdateButton(userId, commentId, commentCreatedAt);
+    let commentDeleteButton = generateCommentDeleteButton(userId, commentId, commentCreatedAt);
 
     let tweet = $('.tweet[data-id=' + data.comment['message_id'] + ']');
 
@@ -57,18 +24,21 @@ function wsCreateComment(data) {
         tweet.append('<div class="comments-container"></div>')
     }
 
-    let html =
-        '<div class="comment" data-id="' + commentId + '"> ' +
-        '<div class="comment-name">' + commentUserName + '' + userBanButton +
-        '<span class="up-del-links">' + commentBanButton + commentUpdateButton + commentDeleteButton + '</span>' +
-        '<span class="comment-time" data-time="' + createdAt + '"></span>' +
-        '</div>' +
-        '<div class="comment-text" data-comment-id="' + commentId + '" data-tweet-id="' + messageId + '">' +
-        commentText + '</div>' +
-        '</div>';
+    let commentHtmlData = {
+        commentId : commentId,
+        commentText : commentText,
+        commentCreatedAt : commentCreatedAt,
+        messageId : messageId,
+        commentUserName : commentUserName,
+        commentUserBanButton : commentUserBanButton,
+        commentBanButton : commentBanButton,
+        commentUpdateButton : commentUpdateButton,
+        commentDeleteButton : commentDeleteButton
+    };
 
+    let commentHtml = generateCommentHtml(commentHtmlData);
 
-    tweet.children('.comments-container').prepend(html);
+    tweet.children('.comments-container').prepend(commentHtml);
 
     let commentCount = data.commentsCount;
     let commentCounter = (commentCount === 1)
@@ -77,24 +47,21 @@ function wsCreateComment(data) {
 
     let tweetCommentCounter = $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.tweet-icons').children('.comment-count');
 
-
     tweetCommentCounter.show();
     tweetCommentCounter.text(commentCounter);
 
-
+    //comment created at time
+    /**************************************************************************/
     let commentTimeSpan = $('.comment[data-id=' + commentId + ']').children('.comment-name').children('.comment-time');
     let commentTime = commentTimeSpan.attr('data-time');
-
     commentTimeSpan.text(moment(commentTime).fromNow());
 
-    setTimeout(function () {
-        $('.comment[data-id=' + commentId + ']').children('.comment-name').children('.up-del-links').children('#msgDltBtn').hide();
-        $('.comment[data-id=' + commentId + ']').children('.comment-name').children('.up-del-links').children('#msgUpdtBtn').hide();
-    }, 120000)
-
+    /*update & delete buttons will be removed after two minutes*/
+    /**************************************************************************/
+    hideButtons();
 }
 
-/****************************************************************************************/
+/******************************************************************************/
 
 
 function deleteLastComment(data) {
@@ -103,7 +70,7 @@ function deleteLastComment(data) {
 }
 
 
-/****************************************************************************************/
+/******************************************************************************/
 
 function allCommentsLinkCreate(data) {
     let commentsContainer = $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container');
@@ -138,9 +105,8 @@ Echo.private('comment')
     });
 
 
-/****************************************************************************************/
-/****************************************************************************************/
-/****************************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
 
 function wsDeleteComment(data) {
     let comment = $('.comment[data-id=' + data.comment['id'] + ']');
@@ -174,23 +140,21 @@ Echo.private('commentDelete')
     });
 
 
-
 Echo.private('commentBanned')
     .listen('.commentBanned', (data) => {
         wsDeleteComment(data);
     });
 
 
-/****************************************************************************************/
-/****************************************************************************************/
-/****************************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
 
 
 function wsUpdateComment(data) {
 
     let oldComment = $('.comment[data-id=' + data.comment['old_id'] + ']');
 
-    let commentId =  data.comment['id'];
+    let commentId = data.comment['id'];
 
     /*change tweet id and text*/
     let commentText = oldComment.children('.comment-text');
@@ -203,7 +167,7 @@ function wsUpdateComment(data) {
     let commentLinks = newComment.children('.comment-name').children('.up-del-links');
 
     /*change message btn route to actual id*/
-   commentLinks.children('#banCommBtn').attr('onclick', 'banComment(' + commentId + ')');
+    commentLinks.children('#banCommBtn').attr('onclick', 'banComment(' + commentId + ')');
 
     /*change update message btn to actual id*/
     commentLinks.children('#msgUpdtBtn').attr('onclick', 'commentUpdateForm(' + commentId + ')');
@@ -211,8 +175,6 @@ function wsUpdateComment(data) {
     /*change delete message btn form action route to actual id*/
     commentLinks.children('#msgDltBtn').attr('onclick', 'deleteComment(' + commentId + ')');
 }
-
-
 
 
 Echo.private('commentUpdate')

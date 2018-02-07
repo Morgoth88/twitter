@@ -5,74 +5,31 @@ function wsCreateTweet(data) {
     let userRole = data.user['userRole'];
 
     let messageId = data.message['id'];
-    let createdAt = data.message['created_at'].date;
+    let messageCreatedAt = data.message['created_at'].date;
     let messageText = data.message['text'];
 
-    let messageUserName = (authUserRole === 0 )
-        ? userName
-        : '<a href="/api/v1/user/' + userId + '">' + userName + '</a>';
+    let messageUserName = generatePostUserName(userName, userId);
+    let userBanButton = generateUserBanButton(userRole, userId);
+    let messageBanButton = generateMessageBanButton(userRole, messageId);
+    let messageUpdateButton = generateMessageUpdateButton(userId, messageId, messageCreatedAt);
+    let messageDeleteButton = generateMessageDeleteButton(userId, messageId, messageCreatedAt);
 
-    let userBanButton = '';
+    let messageHtmlData = {
+        messageId : messageId,
+        messageText : messageText,
+        messageCreatedAt : messageCreatedAt,
+        messageUserName : messageUserName,
+        userBanButton : userBanButton,
+        messageBanButton : messageBanButton,
+        messageUpdateButton : messageUpdateButton,
+        messageDeleteButton : messageDeleteButton
+    };
 
-    if ((authUserRole === 1)) {
-        if (userRole === 0) {
-            userBanButton = '<button id="banUserBtn" onclick="banUser(' + userId + ')">' +
-                '<i class="fa fa-ban" aria-hidden="true"></i>' +
-                '</button>';
-        }
-    }
-
-    let messageBanButton = '';
-
-    if ((authUserRole === 1)) {
-        if (userRole === 0) {
-            messageBanButton = '<button id="banMessBtn"' +
-                ' onclick="banTweet(' + messageId + ')">' +
-                '<i class="fa fa-ban" aria-hidden="true"></i>' +
-                '</button>';
-        }
-    }
+    $('.panel-body').prepend(generateMessageHtml(messageHtmlData));
 
 
-    let messageUpdateButton = (authUserId === userId)
-        ? '<button id="msgUpdtBtn" onclick="updateForm(' + messageId + ')">' +
-        '<i class="fa fa-pencil" aria-hidden="true"></i>' +
-        '</button>'
-        : '';
-
-
-    let messageDeleteButton = (authUserId === userId)
-        ? '<button id="msgDltBtn" onclick="deleteTweet(' + messageId + ')">' +
-        '<i class="fa fa-times" aria-hidden="true"></i>' +
-        '</button>'
-        : '';
-
-
-    let html =
-        '<div class="tweet" data-id="' + messageId + '"> ' +
-        '<div class="tweet-name">' + messageUserName + '' + userBanButton +
-        '<span class="up-del-links">' + messageBanButton + messageUpdateButton + messageDeleteButton + '</span>' +
-        '</div>' +
-        '<div class="tweet-time-div">' +
-        '<span class="tweet-time" data-time="' + createdAt + '"></span>' +
-        '</div>' +
-        '<div class="tweet-text" data-id="' + messageId + '">' + messageText + '</div>' +
-        '<div class="tweet-icons">' +
-        '<span class="comment-link">' +
-        '<button id="cmntBtn" onclick="commentForm(' + messageId + ')">' +
-        'new <i class="fa fa-comments" aria-hidden="true"></i>' +
-        '</button>' +
-        '</span>' +
-        '<span class="comment-count"></span>' +
-        '</div>' +
-        '</div>';
-
-
-    $('.panel-body').prepend(html);
-
-
-    /*pagination*/
-    /****************************************************************************************/
+    //pagination
+    /**************************************************************************/
     if ($('.tweet').length < 6) {
         $('#next').remove();
     }
@@ -89,20 +46,14 @@ function wsCreateTweet(data) {
     }
 
     //message created at time
-    /****************************************************************************************/
-
-
+    /**************************************************************************/
     let messageTimeSpan = $('.tweet[data-id=' + messageId + ']').children('.tweet-time-div').children('.tweet-time');
     let messageTime = messageTimeSpan.attr('data-time');
-
     messageTimeSpan.text(moment(messageTime).fromNow());
 
-
-    setTimeout(function () {
-        let tweetLinks = $('.tweet[data-id=' + data.message['id'] + ']').children('.tweet-name').children('.up-del-links');
-        tweetLinks.children('#msgDltBtn').hide();
-        tweetLinks.children('#msgUpdtBtn').hide();
-    }, 120000)
+    /*update & delete buttons will be removed after two minutes*/
+    /**************************************************************************/
+    hideButtons();
 }
 
 
@@ -112,15 +63,17 @@ Echo.private('message')
     });
 
 
-/****************************************************************************************/
-/****************************************************************************************/
-/****************************************************************************************/
-
+/******************************************************************************/
+/******************************************************************************/
 
 function wsDeleteMessage(data) {
 
     let tweet = $('.tweet[data-id=' + data.message['id'] + ']');
     tweet.remove();
+
+    if ($('.tweet').length < 6) {
+        $('#next').remove();
+    }
 }
 
 Echo.private('messageDelete')
@@ -135,9 +88,8 @@ Echo.private('messageBanned')
     });
 
 
-/****************************************************************************************/
-/****************************************************************************************/
-/****************************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
 
 
 function wsUpdateTweet(data) {

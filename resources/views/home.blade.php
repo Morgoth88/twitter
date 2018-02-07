@@ -58,6 +58,7 @@
     </script>
 
     <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+    <script src="{{asset('js/htmlGenerators.js')}}"></script>
     <script src="{{ asset('js/messageForm.js') }}"></script>
     <script src="{{ asset('js/commentForm.js') }}"></script>
     <script src="{{ asset('js/moment.js') }}"></script>
