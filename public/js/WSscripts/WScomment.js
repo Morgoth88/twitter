@@ -70,17 +70,12 @@ function deleteLastComment(data) {
 
 
 function allCommentsLinkCreate(data) {
-    let commentsContainer = $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container');
 
-    let html = '<span class="allLink" onclick="allComments(' + data.comment['message_id'] + ')">all comments</span>';
-    let link = $('.tweet[data-id=' + data.comment['message_id'] + ']').children('.comments-container').children('.allLink').length;
+    let tweet = $('.tweet[data-id=' + data.comment['message_id'] + ']');
+    tweet.children('.tweet-icons').children('.comment-count').attr('onclick','allComments(' + data.comment['message_id'] + ')');
 
     deleteLastComment(data);
     wsCreateComment(data);
-
-    if (!link) {
-        commentsContainer.append(html);
-    }
 }
 
 

@@ -51,17 +51,11 @@ function getTweets(page = 1) {
             /******************************************************************/
             for (let x in data.data[i].comment) {
                 //in the case of the third loop, break foreach and
-                // create all comments button
+                // add onclick  allComments on comment count span
                 /**************************************************************/
                 if (x >= 3) {
-
-                    let html = '<span class="allLink" onclick="allComments(' + messageId + ')">all comments</span>';
-                    let commentsContainer = $('.tweet[data-id=' + messageId + ']').children('.comments-container');
-                    let link = commentsContainer.children('.allLink').length;
-
-                    if (!link) {
-                        commentsContainer.append(html);
-                    }
+                    let tweet = $('.tweet[data-id=' + messageId + ']');
+                    tweet.children('.tweet-icons').children('.comment-count').attr('onclick','allComments(' + messageId + ')');
                     break;
                 }
 
@@ -180,6 +174,7 @@ function allComments(id) {
 
         let tweet = $('.tweet[data-id=' + id + ']');
         let commentsContainer = $('.tweet[data-id=' + id + ']').children('.comments-container');
+        let commentCountSpan = tweet.children('.tweet-icons').children('.comment-count');
 
         //remove comments
         /**********************************************************************/
@@ -191,8 +186,8 @@ function allComments(id) {
 
         //change all comments button text and onclick function
         /**********************************************************************/
-        commentsContainer.children('.allLink').text('hide');
-        commentsContainer.children('.allLink').attr('onclick', 'getTweets(' + newPage + ')');
+        commentCountSpan.text('hide');
+        commentCountSpan.attr('onclick', 'getTweets(' + newPage + ')');
 
         //create comments foreach
         /**********************************************************************/
@@ -233,12 +228,6 @@ function allComments(id) {
             let commentsContainer = tweet.children('.comments-container');
             commentsContainer.prepend(generateCommentHtml(commentHtmlData));
 
-            //Add comments count
-            /******************************************************************/
-            let commentCount = commentsContainer.children('.comment').length;
-            let commentCounter = (commentCount === 1) ? commentCount + ' comment' : commentCount + ' comments';
-
-            tweet.children('.tweet-icons').children('.comment-count').text(commentCounter);
         }
         /*tweets & comment created at time update every minute*/
         /**********************************************************************/

@@ -173,6 +173,7 @@ body {
 
 .comment-count {
     margin-left: 400px;
+    cursor: pointer;
 }
 
 .pagination_buttons {
