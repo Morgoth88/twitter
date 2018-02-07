@@ -25,7 +25,7 @@ class MessageReader
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      * @throws DataErrorException
      */
-    public function readPost()
+    public function allPosts()
     {
         $data = $this->messageDataRepository->getAllMessages();
         if ($data) {

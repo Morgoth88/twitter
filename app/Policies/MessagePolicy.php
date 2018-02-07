@@ -28,7 +28,7 @@ class MessagePolicy
      * @param Message $message
      * @return bool
      */
-    public function updateDelete(User $user, Message $message)
+    public function changeMessage(User $user, Message $message)
     {
         return $user->id === $message->user_id;
     }

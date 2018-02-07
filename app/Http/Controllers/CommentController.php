@@ -67,9 +67,9 @@ class CommentController extends Controller implements CommentInterface
     public function read(CommentReader $commentReader, Message $message)
     {
         try {
-            return $this->jsonResponse->okResponse(
-                $commentReader->readPost($message)
-            );
+            return $this->jsonResponse
+                ->okResponse($commentReader->allPosts($message));
+
         } catch (DataErrorException $dataErrorException) {
             return $this->jsonResponse
                 ->exceptionResponse($dataErrorException
@@ -125,7 +125,7 @@ class CommentController extends Controller implements CommentInterface
                            Message $message,
                            Comment $comment)
     {
-        $this->authorize('updateDeleteComment', $comment);
+        $this->authorize('changeComment', $comment);
 
         try {
             $this->timeHelper->lessThanTwoMinutes($comment->created_at);
@@ -168,7 +168,7 @@ class CommentController extends Controller implements CommentInterface
                            Message $message,
                            Comment $comment)
     {
-        $this->authorize('updateDeleteComment', $comment);
+        $this->authorize('changeComment', $comment);
 
         try {
             $this->timeHelper->lessThanTwoMinutes($comment->created_at);

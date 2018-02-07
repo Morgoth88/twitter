@@ -26,7 +26,7 @@ class CommentPolicy
      * @param Comment $comment
      * @return bool
      */
-    public function updateDeleteComment(User $user, Comment $comment)
+    public function changeComment(User $user, Comment $comment)
     {
         return $user->id === $comment->user->id;
     }

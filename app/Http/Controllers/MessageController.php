@@ -67,7 +67,7 @@ class MessageController extends Controller implements MessageInterface
     {
         try {
             return $this->jsonResponse
-                ->okResponse($messageReader->readPost());
+                ->okResponse($messageReader->allPosts());
 
         } catch (DataErrorException $dataErrorException) {
             return $this->jsonResponse
@@ -120,7 +120,7 @@ class MessageController extends Controller implements MessageInterface
                            Request $request,
                            Message $message)
     {
-        $this->authorize('updateDelete', $message);
+        $this->authorize('changeMessage', $message);
 
         try {
             $this->timeHelper->lessThanTwoMinutes($message->created_at);
@@ -160,7 +160,7 @@ class MessageController extends Controller implements MessageInterface
     public function delete(MessageDeleter $messageDeleter,
                            Message $message)
     {
-        $this->authorize('updateDelete', $message);
+        $this->authorize('changeMessage', $message);
 
         try {
             $this->timeHelper->lessThanTwoMinutes($message->created_at);

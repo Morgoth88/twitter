@@ -24,7 +24,7 @@ class CommentReader
      * @return mixed
      * @throws DataErrorException
      */
-    public function readPost($post)
+    public function allPosts($post)
     {
         $data = $this->commentDataRepository->getAllComments($post);
         if ($data) {
