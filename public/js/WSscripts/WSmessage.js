@@ -1,5 +1,7 @@
 function wsCreateTweet(data) {
 
+    //message data
+    /**************************************************************************/
     let userId = data.user['user_id'];
     let userName = data.user['userName'];
     let userRole = data.user['userRole'];
@@ -8,21 +10,17 @@ function wsCreateTweet(data) {
     let messageCreatedAt = data.message['created_at'].date;
     let messageText = data.message['text'];
 
-    let messageUserName = generatePostUserName(userName, userId);
-    let userBanButton = generateUserBanButton(userRole, userId);
-    let messageBanButton = generateMessageBanButton(userRole, messageId);
-    let messageUpdateButton = generateMessageUpdateButton(userId, messageId, messageCreatedAt);
-    let messageDeleteButton = generateMessageDeleteButton(userId, messageId, messageCreatedAt);
-
+    //generate comment html
+    /**************************************************************************/
     let messageHtmlData = {
         messageId : messageId,
         messageText : messageText,
         messageCreatedAt : messageCreatedAt,
-        messageUserName : messageUserName,
-        userBanButton : userBanButton,
-        messageBanButton : messageBanButton,
-        messageUpdateButton : messageUpdateButton,
-        messageDeleteButton : messageDeleteButton
+        messageUserName :  generatePostUserName(userName, userId),
+        userBanButton : generateUserBanButton(userRole, userId),
+        messageBanButton : generateMessageBanButton(userRole, messageId),
+        messageUpdateButton : generateMessageUpdateButton(userId, messageId, messageCreatedAt),
+        messageDeleteButton : generateMessageDeleteButton(userId, messageId, messageCreatedAt)
     };
 
     $('.panel-body').prepend(generateMessageHtml(messageHtmlData));
@@ -87,39 +85,39 @@ Echo.private('messageBanned')
         wsDeleteMessage(data);
     });
 
-
 /******************************************************************************/
-/******************************************************************************/
-
+/*******************************************************************************/
 
 function wsUpdateTweet(data) {
 
-    let oldTweet = $('.tweet[data-id=' + data.message['old_id'] + ']');
+    let oldMessage = $('.tweet[data-id=' + data.message['old_id'] + ']');
 
-    let messageId = data.message['id'];
+    let newMessageId = data.message['id'];
+    let newMessageText = data.message['text'];
 
     /*change tweet id and text*/
-    let tweetText = oldTweet.children('.tweet-text');
-    tweetText.attr('data-id', messageId);
-    tweetText.text(data.message['text']);
+    let tweetText = oldMessage.children('.tweet-text');
+    tweetText.attr('data-id', newMessageId);
+    tweetText.text(newMessageText);
 
-    oldTweet.attr('data-id', messageId);
+    oldMessage.attr('data-id', newMessageId);
 
-    let newTweet = $('.tweet[data-id=' + messageId + ']');
-
+    let newTweet = $('.tweet[data-id=' + newMessageId + ']');
     let newTweetLinks = newTweet.children('.tweet-name').children('.up-del-links');
 
+
+
     /*change message btn route to actual id*/
-    newTweetLinks.children('#banMessBtn').attr('onclick', 'banTweet(' + messageId + ')');
+    newTweetLinks.children('#banMessBtn').attr('onclick', 'banTweet(' + newMessageId + ')');
 
     /*change update message btn to actual id*/
-    newTweetLinks.children('#msgUpdtBtn').attr('onclick', 'updateForm(' + messageId + ')');
+    newTweetLinks.children('#msgUpdtBtn').attr('onclick', 'updateForm(' + newMessageId + ')');
 
     /*change delete message btn form action route to actual id*/
-    newTweetLinks.children('#msgDltBtn').attr('onclick', 'deleteTweet(' + messageId + ')');
+    newTweetLinks.children('#msgDltBtn').attr('onclick', 'deleteTweet(' + newMessageId + ')');
 
     /*change comment btn route to actual id*/
-    newTweetLinks.children('#cmntBtn').attr('onclick', 'commentForm(' + messageId + ')');
+    newTweetLinks.children('#cmntBtn').attr('onclick', 'commentForm(' + newMessageId + ')');
 }
 
 

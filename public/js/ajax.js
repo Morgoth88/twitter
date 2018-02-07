@@ -6,25 +6,24 @@ $(document).ready(function () {
 });
 
 
-
 //display tweets
 /******************************************************************************/
 function getTweets(page = 1) {
-
+    //ajax call
+    /**************************************************************************/
     $.ajax({
         url: '/api/v1/tweet?page=' + page,
         method: 'GET',
         dataType: 'json'
     }).done(function (data) {
 
-        $('.tweet').each(function () {
-            $(this).remove();
-        });
+        $('.panel-body').html('');
 
-        //messages
+        //create messages foreach
         /**********************************************************************/
         for (let i in data.data) {
-
+            //message data
+            /******************************************************************/
             let userName = data.data[i].user['name'];
             let userId = data.data[i].user['id'];
             let userRole = data.data[i].user['role_id'];
@@ -33,38 +32,31 @@ function getTweets(page = 1) {
             let messageCreatedAt = data.data[i].created_at;
             let messageText = data.data[i].text;
 
-            //generate tweet html
+            //generate message html
             /******************************************************************/
-            let messageUserName = generatePostUserName(userName, userId);
-            let userBanButton = generateUserBanButton(userRole, userId);
-            let messageBanButton = generateMessageBanButton(userRole, messageId);
-            let messageUpdateButton = generateMessageUpdateButton(userId, messageId, messageCreatedAt);
-            let messageDeleteButton = generateMessageDeleteButton(userId, messageId, messageCreatedAt);
-
             let messageHtmlData = {
                 messageId : messageId,
                 messageText : messageText,
                 messageCreatedAt : messageCreatedAt,
-                messageUserName : messageUserName,
-                userBanButton : userBanButton,
-                messageBanButton : messageBanButton,
-                messageUpdateButton : messageUpdateButton,
-                messageDeleteButton : messageDeleteButton
+                messageUserName : generatePostUserName(userName, userId),
+                userBanButton : generateUserBanButton(userRole, userId),
+                messageBanButton : generateMessageBanButton(userRole, messageId),
+                messageUpdateButton : generateMessageUpdateButton(userId, messageId, messageCreatedAt),
+                messageDeleteButton : generateMessageDeleteButton(userId, messageId, messageCreatedAt)
             };
 
             $('.panel-body').append(generateMessageHtml(messageHtmlData));
 
-            //comments
+            //create comments foreach
             /******************************************************************/
             for (let x in data.data[i].comment) {
+                //in the case of the third loop, break foreach and
+                // create all comments button
+                /**************************************************************/
                 if (x >= 3) {
-                    //in the case of the third loop, break foreach and
-                    // create all comments button
-                    /**********************************************************/
+
                     let html = '<span class="allLink" onclick="allComments(' + messageId + ')">all comments</span>';
-
                     let commentsContainer = $('.tweet[data-id=' + messageId + ']').children('.comments-container');
-
                     let link = commentsContainer.children('.allLink').length;
 
                     if (!link) {
@@ -73,6 +65,8 @@ function getTweets(page = 1) {
                     break;
                 }
 
+                // comment data
+                /**************************************************************/
                 let commentId = data.data[i].comment[x].id;
                 let commentCreatedAt = data.data[i].comment[x].created_at;
                 let commentText = data.data[i].comment[x].text;
@@ -80,14 +74,6 @@ function getTweets(page = 1) {
                 let commentUserNameData = data.data[i].comment[x].user['name'];
                 let commentUserId = data.data[i].comment[x].user['id'];
                 let commentUserRole = data.data[i].comment[x].user['role_id'];
-
-                //generate comment html
-                /**************************************************************/
-                let commentUserName = generatePostUserName(commentUserNameData, commentUserId);
-                let commentUserBanButton = generateUserBanButton(commentUserRole, commentUserId);
-                let commentBanButton = generateCommentBanButton(commentUserRole, commentId);
-                let commentUpdateButton = generateCommentUpdateButton(commentUserId, commentId, commentCreatedAt);
-                let commentDeleteButton = generateCommentDeleteButton(commentUserId, commentId, commentCreatedAt);
 
                 let tweet = $('.tweet[data-id=' + messageId + ']');
 
@@ -98,40 +84,42 @@ function getTweets(page = 1) {
                     tweet.append('<div class="comments-container"></div>')
                 }
 
+                //generate comment html
+                /**************************************************************/
                 let commentHtmlData = {
                     messageId : messageId,
                     commentId : commentId,
                     commentText : commentText,
                     commentCreatedAt : commentCreatedAt,
-                    commentUserName : commentUserName,
-                    commentUserBanButton : commentUserBanButton,
-                    commentBanButton : commentBanButton,
-                    commentUpdateButton : commentUpdateButton,
-                    commentDeleteButton : commentDeleteButton
+                    commentUserName :  generatePostUserName(commentUserNameData, commentUserId),
+                    commentUserBanButton : generateUserBanButton(commentUserRole, commentUserId),
+                    commentBanButton : generateCommentBanButton(commentUserRole, commentId),
+                    commentUpdateButton : generateCommentUpdateButton(commentUserId, commentId, commentCreatedAt),
+                    commentDeleteButton : generateCommentDeleteButton(commentUserId, commentId, commentCreatedAt)
                 };
 
+                let commentsContainer = tweet.children('.comments-container');
+                commentsContainer.append(generateCommentHtml(commentHtmlData))
 
                 //Add comments count
                 /**************************************************************/
-                let commentsContainer = tweet.children('.comments-container');
-                commentsContainer.append(generateCommentHtml(commentHtmlData));
-
                 let commentCount = data.data[i].comment.length;
                 let commentCounter = (commentCount === 1) ? commentCount + ' comment' : commentCount + ' comments';
 
                 tweet.children('.tweet-icons').children('.comment-count').text(commentCounter);
             }
+            //comments foreach end
+            /******************************************************************/
         }
-        //foreach end
+        //messages foreach end
         /**********************************************************************/
 
+        //add number of current page to panel body attribute
+        /**********************************************************************/
         $('.panel-body').attr('data-page', data.current_page);
 
-        /*pagination*/
-        /**********************************************************************/
-        /**********************************************************************/
-
-        // next page
+        //pagination
+        //next page
         /**********************************************************************/
         if (data.last_page <= data.current_page) {
             $('#next').remove();
@@ -148,7 +136,8 @@ function getTweets(page = 1) {
             }
         }
 
-        // previous page
+        //pagination
+        //previous page
         /**********************************************************************/
         if (data.current_page > 1) {
 
@@ -173,13 +162,16 @@ function getTweets(page = 1) {
         /*update & delete buttons will be removed after two minutes*/
         /**********************************************************************/
         hideButtons();
-
     });
 }
 
 
+//display all comments
+/******************************************************************************/
 function allComments(id) {
 
+    //ajax call
+    /**************************************************************************/
     $.ajax({
         url: '/api/v1/tweet/' + id + '/comment',
         method: 'GET',
@@ -189,20 +181,25 @@ function allComments(id) {
         let tweet = $('.tweet[data-id=' + id + ']');
         let commentsContainer = $('.tweet[data-id=' + id + ']').children('.comments-container');
 
-        commentsContainer.children('.comment').each(function () {
-            $(this).remove();
-        });
+        //remove comments
+        /**********************************************************************/
+        commentsContainer.children('.comment').html('');
 
-        //read page number from attribute
+        //read page number from panel body attribute
+        /**********************************************************************/
         let newPage = parseInt($('.panel-body').attr('data-page'));
 
-        //change all comments button text
+        //change all comments button text and onclick function
         /**********************************************************************/
         commentsContainer.children('.allLink').text('hide');
         commentsContainer.children('.allLink').attr('onclick', 'getTweets(' + newPage + ')');
 
+        //create comments foreach
+        /**********************************************************************/
         for (let x in data) {
 
+            // comment data
+            /******************************************************************/
             let messageId = data[x].message_id;
             let commentId = data[x].id;
             let commentCreatedAt = data[x].created_at;
@@ -212,14 +209,6 @@ function allComments(id) {
             let commentUserId = data[x].user['id'];
             let commentUserRole = data[x].user['role_id'];
 
-            //generate comment html
-            /******************************************************************/
-            let commentUserName = generatePostUserName(commentUserNameData, commentUserId);
-            let commentUserBanButton = generateUserBanButton(commentUserRole, commentId);
-            let commentBanButton = generateCommentBanButton(commentUserRole, commentId);
-            let commentUpdateButton = generateCommentUpdateButton(commentUserId, commentId, commentCreatedAt);
-            let commentDeleteButton = generateCommentDeleteButton(commentUserId, commentId, commentCreatedAt);
-
             //in the case of the comments-container not exist
             /**************************************************************/
             if (tweet.children('.comments-container').length < 1) {
@@ -227,20 +216,20 @@ function allComments(id) {
                 tweet.append('<div class="comments-container"></div>')
             }
 
+            //generate comment html
+            /******************************************************************/
             let commentHtmlData = {
                 commentId : commentId,
                 commentText : commentText,
                 commentCreatedAt : commentCreatedAt,
                 messageId : messageId,
-                commentUserName : commentUserName,
-                commentUserBanButton : commentUserBanButton,
-                commentBanButton : commentBanButton,
-                commentUpdateButton : commentUpdateButton,
-                commentDeleteButton : commentDeleteButton
+                commentUserName : generatePostUserName(commentUserNameData, commentUserId),
+                commentUserBanButton : generateUserBanButton(commentUserRole, commentId),
+                commentBanButton : generateCommentBanButton(commentUserRole, commentId),
+                commentUpdateButton : generateCommentUpdateButton(commentUserId, commentId, commentCreatedAt),
+                commentDeleteButton : generateCommentDeleteButton(commentUserId, commentId, commentCreatedAt)
             };
 
-            //Add html to container
-            /******************************************************************/
             let commentsContainer = tweet.children('.comments-container');
             commentsContainer.prepend(generateCommentHtml(commentHtmlData));
 
@@ -254,13 +243,10 @@ function allComments(id) {
         /*tweets & comment created at time update every minute*/
         /**********************************************************************/
         generateTime();
-        /**********************************************************************/
 
         /*update & delete buttons will be removed after two minutes*/
         /**********************************************************************/
         hideButtons()
-        /**********************************************************************/
-
     });
 }
 
