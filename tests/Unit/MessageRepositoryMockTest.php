@@ -34,6 +34,6 @@ class MessageRepositoryMockTest extends TestCase
      */
     public function testExample()
     {
-       $this->assertEquals('blabla',$this->messageReader->readPost());
+       $this->assertEquals('blabla',$this->messageReader->allPosts());
     }
 }
