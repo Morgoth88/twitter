@@ -104,7 +104,8 @@ function wsDeleteComment(data) {
     let comment = $('.comment[data-id=' + data.comment['id'] + ']');
     comment.remove();
 
-    let commentCount = data.commentsCount - 1;
+    let commentCount =(data.commentsCount > 0)? data.commentsCount - 1 : data.commentsCount;
+
     let commentCounter = (commentCount === 1)
         ? commentCount + ' comment'
         : commentCount + ' comments';

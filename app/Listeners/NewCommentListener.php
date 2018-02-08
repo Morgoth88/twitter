@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\CommentCreated;
-
+use Illuminate\Support\Facades\Log;
 
 class NewCommentListener
 {
@@ -25,6 +25,9 @@ class NewCommentListener
      */
     public function handle(CommentCreated $event)
     {
-        //
+        Log::notice('New comment was created', [
+            'id' => $event->comment->id,
+            'user id' => $event->comment->user_id
+        ]);
     }
 }

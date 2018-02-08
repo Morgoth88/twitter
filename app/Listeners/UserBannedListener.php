@@ -3,6 +3,8 @@
 namespace App\Listeners;
 
 use App\Events\UserBanned;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserBannedListener
 {
@@ -24,6 +26,9 @@ class UserBannedListener
      */
     public function handle(UserBanned $event)
     {
-        //
+        Log::notice('User was banned', [
+            'admin id' => Auth::user()->id,
+            'banned user id' => $event->user->id
+        ]);
     }
 }

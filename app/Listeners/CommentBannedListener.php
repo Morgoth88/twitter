@@ -3,6 +3,8 @@
 namespace App\Listeners;
 
 use App\Events\CommentBanned;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CommentBannedListener
 {
@@ -24,6 +26,10 @@ class CommentBannedListener
      */
     public function handle(CommentBanned $event)
     {
-        //
+        Log::notice('Comment was banned', [
+            'admin id' => Auth::user()->id,
+            'comment id' => $event->comment->id,
+            'comment user id' => $event->comment->user_id
+        ]);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\CommentDeleted;
-
+use Illuminate\Support\Facades\Log;
 
 class CommentDeletedListener
 {
@@ -25,6 +25,9 @@ class CommentDeletedListener
      */
     public function handle(CommentDeleted $event)
     {
-        //
+        Log::notice('Comment was deleted', [
+            'id' => $event->comment->id,
+            'user id' => $event->comment->user_id
+        ]);
     }
 }

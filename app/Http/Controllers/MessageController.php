@@ -22,6 +22,7 @@ use App\Services\TimeHelperService;
 use Illuminate\Http\Request;
 use App\Message;
 use App\Services\ValidatorService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class MessageController extends Controller implements MessageInterface

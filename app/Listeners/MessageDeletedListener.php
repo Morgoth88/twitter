@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\MessageDeleted;
-
+use Illuminate\Support\Facades\Log;
 
 class MessageDeletedListener
 {
@@ -25,6 +25,9 @@ class MessageDeletedListener
      */
     public function handle(MessageDeleted $event)
     {
-        //
+        Log::notice('Message was deleted', [
+            'id' => $event->message->id,
+            'user id' => $event->message->user_id
+        ]);
     }
 }

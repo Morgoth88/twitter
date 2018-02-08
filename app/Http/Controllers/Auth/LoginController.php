@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Services\BanCheckerService;
-use App\Services\LogService;
 use App\Services\RedirectService;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -37,12 +37,7 @@ class LoginController extends Controller
      */
     protected $redirectTo = 'api/v1/home';
 
-
     private $banChecker;
-
-
-    private $logService;
-
 
     private $redirectService;
 
@@ -50,15 +45,13 @@ class LoginController extends Controller
     /**
      * LoginController constructor.
      * @param BanCheckerService $banChecker
-     * @param LogService $logService
      * @param RedirectService $redirectService
      */
-    public function __construct(BanCheckerService $banChecker, LogService $logService,
+    public function __construct(BanCheckerService $banChecker,
                                 RedirectService $redirectService)
     {
         $this->middleware('guest')->except('logout');
         $this->banChecker = $banChecker;
-        $this->logService = $logService;
         $this->redirectService = $redirectService;
     }
 
@@ -77,7 +70,7 @@ class LoginController extends Controller
                 $request, 'welcome', 'status', self::BAN_MSG
             );
         } else {
-            $this->logService->log($user,'User login');
+            Log::notice('User login',['id' => $user->id]);
         }
     }
 
@@ -90,7 +83,7 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        $this->logService->log($request->user(),'User logout');
+        Log::notice('User logout',['id' => $request->user()->id]);
 
         Auth::logout();
 

@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\CommentUpdated;
-
+use Illuminate\Support\Facades\Log;
 
 class CommentUpdatedListener
 {
@@ -25,6 +25,9 @@ class CommentUpdatedListener
      */
     public function handle(CommentUpdated $event)
     {
-        //
+        Log::notice('Comment was updated', [
+            'id' => $event->comment->id,
+            'user id' => $event->comment->user_id
+        ]);
     }
 }

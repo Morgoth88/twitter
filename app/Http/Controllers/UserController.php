@@ -6,13 +6,13 @@ use App\Events\UserBanned;
 use App\Repositories\UserDataRepository;
 use App\Services\AdminCheckerService;
 use App\Services\BanService;
-use App\Services\LogService;
 use App\Services\ValidatorService;
 use App\User;
 use Illuminate\Http\Request;
 use App\Services\JsonResponseService;
 use App\Services\RedirectService;
 use App\Exceptions\UserRoleException;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -20,8 +20,6 @@ class UserController extends Controller
     private $userDataRepository;
 
     private $adminChecker;
-
-    private $logService;
 
     private $redirectService;
 
@@ -32,20 +30,17 @@ class UserController extends Controller
      * UserController constructor.
      * @param UserDataRepository $userRepo
      * @param AdminCheckerService $adminChecker
-     * @param LogService $logService
      * @param RedirectService $redirectService
      * @param JsonResponseService $jsonResponseService
      */
     public function __construct(UserDataRepository $userRepo,
                                 AdminCheckerService $adminChecker,
-                                LogService $logService,
                                 RedirectService $redirectService,
                                 JsonResponseService $jsonResponseService)
     {
         $this->middleware(['auth', 'revalidate']);
         $this->userDataRepository = $userRepo;
         $this->adminChecker = $adminChecker;
-        $this->logService = $logService;
         $this->redirectService = $redirectService;
         $this->jsonResponse = $jsonResponseService;
     }
@@ -89,7 +84,7 @@ class UserController extends Controller
         $validator->validateUserUpdateRequest($request->all(), $user);
 
         $this->userDataRepository->updateUserData($user, $request);
-        $this->logService->log($request->user(), 'Account update');
+        Log::notice('User account was updated',['id' => $user->id]);
 
         return $this->redirectService->redirectWithFlash(
             $request, 'index', 'status', 'Account was successfully updated'
@@ -114,7 +109,6 @@ class UserController extends Controller
             $this->adminChecker->isUser($user);
 
             $banService->banUser($user);
-            $this->logService->log($user, "User baned by {$request->user()->email}");
             event(new UserBanned($user));
 
             return $this->jsonResponse->userBanResponse($user);

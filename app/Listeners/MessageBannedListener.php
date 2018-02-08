@@ -3,6 +3,8 @@
 namespace App\Listeners;
 
 use App\Events\MessageBanned;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class MessageBannedListener
 {
@@ -24,6 +26,10 @@ class MessageBannedListener
      */
     public function handle(MessageBanned $event)
     {
-        //
+        Log::notice('Message was banned', [
+            'admin id' => Auth::user()->id,
+            'message id' => $event->message->id,
+            'message user id' => $event->message->user_id
+        ]);
     }
 }

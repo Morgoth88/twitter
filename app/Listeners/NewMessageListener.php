@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\MessageCreated;
+use Illuminate\Support\Facades\Log;
 
 class NewMessageListener
 {
@@ -24,6 +25,9 @@ class NewMessageListener
      */
     public function handle(MessageCreated $event)
     {
-        //
+        Log::notice('New message was created', [
+            'id' => $event->message->id,
+            'user id' => $event->message->user_id
+        ]);
     }
 }

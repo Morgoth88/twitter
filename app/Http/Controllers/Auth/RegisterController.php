@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Repositories\UserDataRepository;
 use App\Services\ValidatorService;
-use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use App\Services\LogService;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
@@ -35,28 +33,20 @@ class RegisterController extends Controller
      */
     protected $redirectTo = 'api/v1/home';
 
-
-    private $logService;
-
-
     private $userRepo;
-
 
     private $validatorService;
 
 
     /**
      * RegisterController constructor.
-     * @param LogService $logService
      * @param UserDataRepository $userRepo
      * @param ValidatorService $validatorService
      */
-    public function __construct(LogService $logService,
-                                UserDataRepository $userRepo,
+    public function __construct(UserDataRepository $userRepo,
                                 ValidatorService $validatorService)
     {
         $this->middleware('guest');
-        $this->logService = $logService;
         $this->userRepo = $userRepo;
         $this->validatorService = $validatorService;
     }
@@ -94,7 +84,6 @@ class RegisterController extends Controller
      */
     public function registered(Request $request, $user)
     {
-        $this->logService->log($user, 'User registered');
+        Log::notice('User registration', ['id' => $user->id]);
     }
-
 }

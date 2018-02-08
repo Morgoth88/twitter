@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\MessageUpdated;
+use Illuminate\Support\Facades\Log;
 
 class MessageUpdateDListener
 {
@@ -24,6 +25,9 @@ class MessageUpdateDListener
      */
     public function handle(MessageUpdated $event)
     {
-        //
+        Log::notice('Message was updated', [
+            'id' => $event->message->id,
+            'user id' => $event->message->user_id
+        ]);
     }
 }

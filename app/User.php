@@ -61,16 +61,6 @@ class User extends Authenticatable
     }
 
 
-    /**
-     * Sets relationship
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function activityLog()
-    {
-        return $this->hasMany(ActivityLog::class);
-    }
-
 
     /**
      * Sets relationship

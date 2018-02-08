@@ -19,7 +19,6 @@ use App\Services\DbCleanService;
 Route::get('/', function(DbCleanService $DbCleanService)
 {
     try {
-        $DbCleanService->PeriodicLogClean();
         $DbCleanService->periodicOldRecordsClean();
     }catch (InvalidArgumentException $exception){
     }
