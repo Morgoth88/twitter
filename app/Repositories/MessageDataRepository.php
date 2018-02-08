@@ -18,7 +18,7 @@ class MessageDataRepository extends AbstractRepository implements MessageReposit
     {
         return $request->user()->message()
             ->create([
-                'text' => htmlspecialchars($request->tweet, ENT_QUOTES)
+                'text' => $request->tweet,
             ]);
     }
 
@@ -52,7 +52,7 @@ class MessageDataRepository extends AbstractRepository implements MessageReposit
     {
         $newMessage = $request->user()->message()
             ->create([
-                'text' => htmlspecialchars($request->tweet, ENT_QUOTES),
+                'text' => $request->tweet,
                 'old_id' => $message->id,
                 'created_at' => $message->created_at
             ]);

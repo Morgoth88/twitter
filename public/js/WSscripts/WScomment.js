@@ -151,7 +151,7 @@ function wsUpdateComment(data) {
     /*change tweet id and text*/
     let commentText = oldComment.children('.comment-text');
     commentText.attr('data-comment-id', newCommentId);
-    commentText.text(data.comment['text']);
+    commentText.html(data.comment['text']);
 
     oldComment.attr('data-id', newCommentId);
 

@@ -33,7 +33,7 @@ class CommentDataRepository extends AbstractRepository implements CommentReposit
     {
         $comment = $request->user()->comment()
             ->create([
-                'text' => htmlspecialchars($request->comment, ENT_QUOTES),
+                'text' => $request->comment,
                 'message_id' => $message->id
             ]);
 
@@ -55,7 +55,7 @@ class CommentDataRepository extends AbstractRepository implements CommentReposit
     {
         $newComment = $request->user()->comment()
             ->create([
-                'text' => htmlspecialchars($request->comment, ENT_QUOTES),
+                'text' => $request->comment,
                 'old_id' => $comment->id,
                 'created_at' => $comment->created_at,
                 'message_id' => $comment->message->id

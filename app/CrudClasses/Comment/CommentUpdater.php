@@ -4,22 +4,31 @@ namespace App\CrudClasses\Comment;
 
 use App\Repositories\CommentDataRepository;
 use App\Exceptions\DataErrorException;
+use App\Services\UrlSearcherService;
 
 class CommentUpdater
 {
 
-
     private $commentDataRepository;
 
+    private $urlSearcher;
 
-    public function __construct(CommentDataRepository $commentDataRepository)
+
+    /**
+     * CommentUpdater constructor.
+     * @param CommentDataRepository $commentDataRepository
+     * @param UrlSearcherService $urlSearcherService
+     */
+    public function __construct(CommentDataRepository $commentDataRepository,
+                                UrlSearcherService $urlSearcherService)
     {
         $this->commentDataRepository = $commentDataRepository;
+        $this->urlSearcher = $urlSearcherService;
     }
 
 
     /**
-     * update comment
+     * update comment and if text contains urls change urls to links
      *
      * @param $request
      * @param $comment
@@ -28,6 +37,8 @@ class CommentUpdater
      */
     public function updatePost($request, $comment)
     {
+        $request->comment = $this->urlSearcher->UrlToLink($request->comment);
+
         $data = $this->commentDataRepository->updateComment($request, $comment);
         if ($data) {
             return $data;

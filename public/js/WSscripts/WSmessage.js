@@ -98,7 +98,7 @@ function wsUpdateTweet(data) {
     /*change tweet id and text*/
     let tweetText = oldMessage.children('.tweet-text');
     tweetText.attr('data-id', newMessageId);
-    tweetText.text(newMessageText);
+    tweetText.html(newMessageText);
 
     oldMessage.attr('data-id', newMessageId);
 
@@ -117,7 +117,7 @@ function wsUpdateTweet(data) {
     newTweetLinks.children('#msgDltBtn').attr('onclick', 'deleteTweet(' + newMessageId + ')');
 
     /*change comment btn route to actual id*/
-    newTweetLinks.children('#cmntBtn').attr('onclick', 'commentForm(' + newMessageId + ')');
+    newTweet.children('.tweet-icons').children('.comment-link').children('#cmntBtn').attr('onclick', 'commentForm(' + newMessageId + ')');
 }
 
 
